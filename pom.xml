@@ -16,7 +16,7 @@
 		<published.container.port.test>XXXX</published.container.port.test>
 		<published.container.port.production>XXXX</published.container.port.production>
 		<!-- Camunda properties -->
-		<camunda.version>7.20.0</camunda.version>
+		<camunda.version>7.21.0</camunda.version>
 		<commons-rng.version>1.5</commons-rng.version>
 		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
 		<generated-sources-java-path>src/main/java</generated-sources-java-path>

@@ -8,6 +8,7 @@ import static se.sundsvall.esigning.integration.camunda.configuration.CamundaCon
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -30,10 +31,11 @@ class CamundaConfigurationTest {
 	@Mock
 	private CamundaProperties propertiesMock;
 
+	@InjectMocks
+	private CamundaConfiguration configuration;
+
 	@Test
 	void testFeignBuilderCustomizer() {
-		final var configuration = new CamundaConfiguration();
-
 		when(propertiesMock.connectTimeout()).thenReturn(1);
 		when(propertiesMock.readTimeout()).thenReturn(2);
 		when(feignMultiCustomizerSpy.composeCustomizersToOne()).thenReturn(feignBuilderCustomizerMock);

@@ -29,7 +29,7 @@ import se.sundsvall.esigning.integration.camunda.CamundaClient;
 @Testcontainers
 abstract class AbstractCamundaAppTest extends AbstractAppTest {
 
-	private static final String CAMUNDA_IMAGE_NAME = "camunda/camunda-bpm-platform:run-7.20.0";
+	private static final String CAMUNDA_IMAGE_NAME = "camunda/camunda-bpm-platform:run-7.21.0";
 
 	@Autowired
 	protected CamundaClient camundaClient;
