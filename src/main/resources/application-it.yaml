@@ -9,6 +9,8 @@ camunda:
   bpm:
     client:
       base-url: http://replaced_by_test:8080
+  process:
+    wait-duration: '* * * ? * *'
   
 #----------------------------------------
 # Integration settings
