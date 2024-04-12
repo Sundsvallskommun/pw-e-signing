@@ -35,11 +35,11 @@ abstract class AbstractWorker implements ExternalTaskHandler {
 		camundaClient.setProcessInstanceVariable(externalTask.getProcessInstanceId(), variableName, variableValue);
 	}
 
-	public SigningRequest getSigningRequest(ExternalTask externalTask) {
+	protected SigningRequest getSigningRequest(ExternalTask externalTask) {
 		return fromJson(externalTask.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST), SigningRequest.class);
 	}
 
-	public <T> T fromJson(String json, Class<T> clazz) {
+	protected <T> T fromJson(String json, Class<T> clazz) {
 		return gson.fromJson(json, clazz);
 	}
 
