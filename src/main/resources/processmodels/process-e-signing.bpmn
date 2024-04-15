@@ -55,20 +55,13 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${signStatus == 'COMPLETED'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0y2xc0t" name="No" sourceRef="gateway_signed_or_expired" targetRef="wait_timer" />
-    <bpmn:sequenceFlow id="Flow_1hxnfyv" sourceRef="handle_signed_document" targetRef="closing_gateway_signed_or_exipred" />
     <bpmn:sequenceFlow id="signing_expired" name="Expired" sourceRef="gateway_signed_or_expired" targetRef="handle_expired_document_signing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${signStatus != 'ACTIVE' &amp;&amp; signStatus != 'COMPLETED'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_00iwjxr" sourceRef="execute_callback" targetRef="end_process" />
-    <bpmn:exclusiveGateway id="closing_gateway_signed_or_exipred">
-      <bpmn:incoming>Flow_1hxnfyv</bpmn:incoming>
-      <bpmn:incoming>Flow_0ldbiky</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ygd7kt</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1ygd7kt" sourceRef="closing_gateway_signed_or_exipred" targetRef="gateway_callback_present" />
-    <bpmn:sequenceFlow id="Flow_0ldbiky" sourceRef="handle_expired_document_signing" targetRef="closing_gateway_signed_or_exipred" />
     <bpmn:exclusiveGateway id="gateway_callback_present" name="Callback present?" default="callback_not_present">
-      <bpmn:incoming>Flow_1ygd7kt</bpmn:incoming>
+      <bpmn:incoming>Flow_0now2hs</bpmn:incoming>
+      <bpmn:incoming>Flow_18a36mu</bpmn:incoming>
       <bpmn:outgoing>callback_present</bpmn:outgoing>
       <bpmn:outgoing>callback_not_present</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -79,18 +72,20 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
     <bpmn:serviceTask id="handle_expired_document_signing" name="Handle expired document signing" camunda:type="external" camunda:topic="HandleExpiredDocumentSigningTask">
       <bpmn:documentation>Updates status on document to 'SIGNING_FAILED' with supplementary information regarding why.</bpmn:documentation>
       <bpmn:incoming>signing_expired</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ldbiky</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0now2hs</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="handle_signed_document" name="Handle signed document" camunda:type="external" camunda:topic="HandleSignedDocumentTask">
       <bpmn:documentation>Saves signed document and updates status on document to 'SIGNED'</bpmn:documentation>
       <bpmn:incoming>signing_completed</bpmn:incoming>
-      <bpmn:outgoing>Flow_1hxnfyv</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18a36mu</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="execute_callback" name="Execute callback" camunda:type="external" camunda:topic="ExecuteCallbackTask">
       <bpmn:documentation>Sends a http request to the defined callback address.</bpmn:documentation>
       <bpmn:incoming>callback_present</bpmn:incoming>
       <bpmn:outgoing>Flow_00iwjxr</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0now2hs" sourceRef="handle_expired_document_signing" targetRef="gateway_callback_present" />
+    <bpmn:sequenceFlow id="Flow_18a36mu" sourceRef="handle_signed_document" targetRef="gateway_callback_present" />
   </bpmn:process>
   <bpmn:signal id="Signal_12tih0s" name="Signal_12tih0s" />
   <bpmn:message id="Message_0l2uuvr" name="cancelMessage" />
@@ -100,12 +95,6 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
         <dc:Bounds x="172" y="202" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="157" y="178" width="66" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_15c9s3f_di" bpmnElement="end_process">
-        <dc:Bounds x="1322" y="202" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1310" y="245" width="62" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1hkm4z4_di" bpmnElement="update_document">
@@ -131,15 +120,6 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
           <dc:Bounds x="745" y="171" width="49" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_02snkdq_di" bpmnElement="closing_gateway_signed_or_exipred" isMarkerVisible="true">
-        <dc:Bounds x="1015" y="195" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1k9ckbn_di" bpmnElement="gateway_callback_present" isMarkerVisible="true">
-        <dc:Bounds x="1105" y="195" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1086" y="252" width="89" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1ycdxkb_di" bpmnElement="handle_expired_document_signing">
         <dc:Bounds x="870" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -148,8 +128,20 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
         <dc:Bounds x="870" y="180" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1k9ckbn_di" bpmnElement="gateway_callback_present" isMarkerVisible="true">
+        <dc:Bounds x="1055" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1036" y="252" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12g3iji_di" bpmnElement="execute_callback">
-        <dc:Bounds x="1190" y="80" width="100" height="80" />
+        <dc:Bounds x="1130" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15c9s3f_di" bpmnElement="end_process">
+        <dc:Bounds x="1262" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1250" y="245" width="62" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1myv89c_di" bpmnElement="Flow_1myv89c">
         <di:waypoint x="208" y="220" />
@@ -187,10 +179,6 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
           <dc:Bounds x="678" y="282" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1hxnfyv_di" bpmnElement="Flow_1hxnfyv">
-        <di:waypoint x="970" y="220" />
-        <di:waypoint x="1015" y="220" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ecipw2_di" bpmnElement="signing_expired">
         <di:waypoint x="800" y="195" />
         <di:waypoint x="800" y="120" />
@@ -200,33 +188,34 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00iwjxr_di" bpmnElement="Flow_00iwjxr">
-        <di:waypoint x="1290" y="120" />
-        <di:waypoint x="1340" y="120" />
-        <di:waypoint x="1340" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ygd7kt_di" bpmnElement="Flow_1ygd7kt">
-        <di:waypoint x="1065" y="220" />
-        <di:waypoint x="1105" y="220" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ldbiky_di" bpmnElement="Flow_0ldbiky">
-        <di:waypoint x="970" y="120" />
-        <di:waypoint x="1040" y="120" />
-        <di:waypoint x="1040" y="195" />
+        <di:waypoint x="1230" y="120" />
+        <di:waypoint x="1280" y="120" />
+        <di:waypoint x="1280" y="202" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1z08shg_di" bpmnElement="callback_present">
-        <di:waypoint x="1130" y="195" />
+        <di:waypoint x="1080" y="195" />
+        <di:waypoint x="1080" y="120" />
         <di:waypoint x="1130" y="120" />
-        <di:waypoint x="1190" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1136" y="155" width="18" height="14" />
+          <dc:Bounds x="1086" y="155" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1b298b3_di" bpmnElement="callback_not_present">
-        <di:waypoint x="1155" y="220" />
-        <di:waypoint x="1322" y="220" />
+        <di:waypoint x="1105" y="220" />
+        <di:waypoint x="1262" y="220" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1169" y="202" width="15" height="14" />
+          <dc:Bounds x="1118" y="202" width="15" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0now2hs_di" bpmnElement="Flow_0now2hs">
+        <di:waypoint x="970" y="120" />
+        <di:waypoint x="1020" y="120" />
+        <di:waypoint x="1020" y="220" />
+        <di:waypoint x="1055" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18a36mu_di" bpmnElement="Flow_18a36mu">
+        <di:waypoint x="970" y="220" />
+        <di:waypoint x="1055" y="220" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

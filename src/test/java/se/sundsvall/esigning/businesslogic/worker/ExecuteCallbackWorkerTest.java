@@ -12,6 +12,7 @@ import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
@@ -22,6 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClient.RequestHeadersSpec;
+import org.springframework.web.client.RestClient.RequestHeadersUriSpec;
+import org.springframework.web.client.RestClient.ResponseSpec;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
@@ -51,6 +56,18 @@ class ExecuteCallbackWorkerTest {
 	@Mock
 	private Gson gsonMock;
 
+	@Mock
+	private RestClient restClientMock;
+
+	@Mock
+	private RequestHeadersUriSpec<?> requestHeadersUriSpecMock;
+
+	@Mock
+	private RequestHeadersSpec<?> requestHeadersSpecMock;
+
+	@Mock
+	private ResponseSpec responseSpecMock;
+
 	@InjectMocks
 	private ExecuteCallbackWorker worker;
 
@@ -64,33 +81,57 @@ class ExecuteCallbackWorkerTest {
 	@Test
 	void execute() {
 		// Arrange
+		final var callbackUrl = "callbackUrl";
 		final var json = "json";
+		final var processinstanceId = UUID.randomUUID().toString();
 		final var bean = SigningRequest.create()
+			.withCallbackUrl(callbackUrl)
 			.withExpires(OffsetDateTime.MAX)
 			.withRegistrationNumber("2024-ACTIVE");
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getProcessInstanceId()).thenReturn(processinstanceId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
+		when(restClientMock.get()).thenAnswer(x -> requestHeadersUriSpecMock);
+		when(requestHeadersUriSpecMock.uri(anyString())).thenAnswer(mock -> requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getProcessInstanceId();
 		verify(gsonMock).fromJson(json, SigningRequest.class);
+		verify(restClientMock).get();
+		verify(requestHeadersUriSpecMock).uri(callbackUrl + "?processId=" + processinstanceId);
+		verify(requestHeadersSpecMock).retrieve();
+		verify(responseSpecMock).toBodilessEntity();
 		verify(externalTaskServiceMock).complete(externalTaskMock);
-		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock);
+		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, restClientMock, requestHeadersUriSpecMock, requestHeadersSpecMock, responseSpecMock, gsonMock);
 		verifyNoInteractions(failureHandlerMock);
 	}
 
 	@Test
 	void executeThrowsException() {
 		// Arrange
+		final var callbackUrl = "callbackUrl?key=value";
 		final var json = "json";
+		final var processinstanceId = UUID.randomUUID().toString();
 		final var bean = SigningRequest.create()
+			.withCallbackUrl(callbackUrl)
 			.withExpires(OffsetDateTime.MAX)
 			.withRegistrationNumber("2024-ACTIVE");
+
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getProcessInstanceId()).thenReturn(processinstanceId);
+		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
+		when(restClientMock.get()).thenAnswer(x -> requestHeadersUriSpecMock);
+		when(requestHeadersUriSpecMock.uri(anyString())).thenAnswer(mock -> requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+
 		final var problem = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
@@ -103,12 +144,17 @@ class ExecuteCallbackWorkerTest {
 
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getProcessInstanceId();
 		verify(gsonMock).fromJson(json, SigningRequest.class);
+		verify(restClientMock).get();
+		verify(requestHeadersUriSpecMock).uri(callbackUrl + "&processId=" + processinstanceId);
+		verify(requestHeadersSpecMock).retrieve();
+		verify(responseSpecMock).toBodilessEntity();
 		verify(externalTaskServiceMock).complete(externalTaskMock);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(eq(externalTaskServiceMock), eq(externalTaskMock), anyString());
-		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock);
+		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, restClientMock, requestHeadersUriSpecMock, requestHeadersSpecMock, responseSpecMock, gsonMock, failureHandlerMock);
 	}
 }

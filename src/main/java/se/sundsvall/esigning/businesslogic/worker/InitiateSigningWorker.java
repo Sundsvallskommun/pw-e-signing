@@ -20,8 +20,8 @@ public class InitiateSigningWorker extends AbstractWorker {
 
 	@Override
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
+		final var request = getSigningRequest(externalTask);
 		try {
-			final var request = getSigningRequest(externalTask);
 			logInfo("Initiating signing of document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
 			// TODO: Initiate signing via comfact service (UF-7786)
@@ -29,7 +29,11 @@ public class InitiateSigningWorker extends AbstractWorker {
 			externalTaskService.complete(externalTask);
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, exception.getMessage());
+			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when initiating signing (%s).".formatted(
+				exception.getClass().getSimpleName(),
+				request.getFileName(),
+				request.getRegistrationNumber(),
+				exception.getMessage()));
 		}
 	}
 }

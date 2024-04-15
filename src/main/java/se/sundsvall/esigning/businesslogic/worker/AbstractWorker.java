@@ -48,7 +48,11 @@ abstract class AbstractWorker implements ExternalTaskHandler {
 	}
 
 	protected void logException(ExternalTask externalTask, Exception exception) {
-		logger.error("Exception occurred in {} for task with id {} and businesskey {}", this.getClass().getSimpleName(), externalTask.getId(), externalTask.getBusinessKey(), exception);
+		logger.error("{} occurred in {} for task with id {} and businesskey {}",
+			exception.getClass().getSimpleName(),
+			this.getClass().getSimpleName(),
+			externalTask.getId(),
+			externalTask.getBusinessKey(), exception);
 	}
 
 	protected abstract void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService);
