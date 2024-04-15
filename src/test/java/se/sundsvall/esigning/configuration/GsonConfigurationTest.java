@@ -53,6 +53,21 @@ class GsonConfigurationTest {
 	}
 
 	@Test
+	void serializeNull() throws Exception {
+		final var json = gson.toJson(null);
+
+		assertThat(json).isEqualTo("null");
+	}
+
+	@Test
+	void serializeEmptyBean() throws Exception {
+		final var bean = TestDateClass.create();
+		final var json = gson.toJson(bean);
+
+		assertThat(json).isEqualTo("{}");
+	}
+
+	@Test
 	void deserializeOffsetDateTime() {
 		final var dateTime = OffsetDateTime.now();
 		final var json = """
@@ -62,6 +77,18 @@ class GsonConfigurationTest {
 		final var bean = gson.fromJson(json, TestDateClass.class);
 
 		assertThat(bean.getDateTime()).isEqualTo(dateTime);
+	}
+
+	@Test
+	void deserializeNull() throws Exception {
+		final String nullString = null;
+		assertThat(gson.fromJson(nullString, TestDateClass.class)).isNull();
+	}
+
+	@Test
+	void deserializeEmptyJson() throws Exception {
+		final var bean = gson.fromJson("{}", TestDateClass.class);
+		assertThat(bean.getDateTime()).isNull();
 	}
 
 	@Test

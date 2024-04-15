@@ -1,6 +1,7 @@
 package se.sundsvall.esigning.configuration;
 
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+import static java.util.Optional.ofNullable;
 
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
@@ -26,7 +27,10 @@ public class GsonConfiguration {
 		@Override
 		public OffsetDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
 			try {
-				return OffsetDateTime.parse(json.getAsString(), ISO_OFFSET_DATE_TIME);
+				return ofNullable(json)
+					.map(JsonElement::getAsString)
+					.map(string -> OffsetDateTime.parse(string, ISO_OFFSET_DATE_TIME))
+					.orElse(null);
 			} catch (Exception e) {
 				throw new JsonParseException(e);
 			}
@@ -36,7 +40,10 @@ public class GsonConfiguration {
 	private static class OffsetDateTimeSerializer implements JsonSerializer<OffsetDateTime> {
 		@Override
 		public JsonElement serialize(OffsetDateTime offsetDateTime, Type type, JsonSerializationContext context) {
-			return new JsonPrimitive(ISO_OFFSET_DATE_TIME.format(offsetDateTime));
+			return ofNullable(offsetDateTime)
+				.map(ISO_OFFSET_DATE_TIME::format)
+				.map(JsonPrimitive::new)
+				.orElse(null);
 		}
 	}
 
