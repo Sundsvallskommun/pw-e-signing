@@ -33,6 +33,8 @@ camunda:
       retries: 3
     retry:
       timeout: 10
+  process:
+    wait-duration: 0 0 * * * *
 
 #----------------------------------------
 # Integration settings

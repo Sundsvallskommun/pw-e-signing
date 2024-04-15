@@ -8,6 +8,7 @@ camunda:
   bpm:
     client:
       base-url: base-url
+      disable-auto-fetching: true
     deployment:
       autoDeployEnabled: false
       processes:
@@ -21,6 +22,8 @@ camunda:
           bpmnResourcePattern: bpmnResourcePattern_2
           dmnResourcePattern: dmnResourcePattern_2
           formResourcePattern: formResourcePattern_2
+  process:
+    wait-duration: R/PT10S
 
 #----------------------------------------
 # Integration settings
