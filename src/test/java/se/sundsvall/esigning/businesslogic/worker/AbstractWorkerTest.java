@@ -161,7 +161,7 @@ class AbstractWorkerTest {
 
 			// Assert and verify
 			loggerFactoryMock.verify(() -> LoggerFactory.getLogger(Worker.class));
-			verify(loggerMock).error("Exception occurred in {} for task with id {} and businesskey {}", Worker.class.getSimpleName(), id, businessKey, exception);
+			verify(loggerMock).error("{} occurred in {} for task with id {} and businesskey {}", exception.getClass().getSimpleName(), Worker.class.getSimpleName(), id, businessKey, exception);
 			verify(externalTaskMock).getBusinessKey();
 			verifyNoMoreInteractions(externalTaskMock);
 			verifyNoInteractions(camundaClientMock, failureHandlerMock, gsonMock);

@@ -25,8 +25,8 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 
 	@Override
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
+		final var request = getSigningRequest(externalTask);
 		try {
-			final var request = getSigningRequest(externalTask);
 			logInfo("Checking signing status for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
 			String status;
@@ -42,7 +42,11 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, exception.getMessage());
+			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when signing status check was performed (%s).".formatted(
+				exception.getClass().getSimpleName(),
+				request.getFileName(),
+				request.getRegistrationNumber(),
+				exception.getMessage()));
 		}
 	}
 }

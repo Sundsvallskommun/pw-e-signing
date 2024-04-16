@@ -25,8 +25,8 @@ public class HandleSignedDocumentWorker extends AbstractWorker {
 
 	@Override
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
+		final var request = getSigningRequest(externalTask);
 		try {
-			final var request = getSigningRequest(externalTask);
 			logInfo("Handling signed document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
 			// TODO: Save signed document instance and signed status via document service (UF-7785)
@@ -34,7 +34,11 @@ public class HandleSignedDocumentWorker extends AbstractWorker {
 			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, isNotBlank(request.getCallbackUrl())));
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, exception.getMessage());
+			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when processing signed document (%s).".formatted(
+				exception.getClass().getSimpleName(),
+				request.getFileName(),
+				request.getRegistrationNumber(),
+				exception.getMessage()));
 		}
 	}
 }
