@@ -11,8 +11,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGNING_STATUS;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS;
 
 import java.util.Map;
 import java.util.UUID;
@@ -86,7 +86,7 @@ class CheckSigningStatusWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(requestId);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(signingInstance);
 
 		// Act
@@ -96,7 +96,7 @@ class CheckSigningStatusWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).getSigningInstance(signingId);
-		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_SIGNING_STATUS, isNull(statusCode) ? "Notpresent" : statusCode));
+		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS, isNull(statusCode) ? "Notpresent" : statusCode));
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock);
 		verifyNoInteractions(failureHandlerMock);
 	}
@@ -113,7 +113,7 @@ class CheckSigningStatusWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(requestId);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(comfactFacadeClientMock.getSigningInstance(any())).thenThrow(problem);
 
 		// Act

@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
 import static se.sundsvall.esigning.integration.comfactfacade.mapper.ComfactFacadeMapper.toSigningRequest;
 
 import java.time.OffsetDateTime;
@@ -86,7 +86,7 @@ class InitiateSigningWorkerTest {
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 
 		// Act
@@ -94,7 +94,7 @@ class InitiateSigningWorkerTest {
 
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_SIGNING_ID);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(externalTaskServiceMock).complete(externalTaskMock);
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock);
@@ -120,10 +120,10 @@ class InitiateSigningWorkerTest {
 
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_SIGNING_ID);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).createSigngingInstance(eq(toSigningRequest(bean)));
-		verify(camundaClientMock).setProcessInstanceVariable(eq(processInstanceId), eq(CAMUNDA_VARIABLE_SIGNING_ID), variableValueDtoCaptor.capture());
+		verify(camundaClientMock).setProcessInstanceVariable(eq(processInstanceId), eq(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID), variableValueDtoCaptor.capture());
 		verify(externalTaskServiceMock).complete(externalTaskMock);
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock);
 		verifyNoInteractions(failureHandlerMock);
@@ -154,7 +154,7 @@ class InitiateSigningWorkerTest {
 
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_SIGNING_ID);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).createSigngingInstance(eq(toSigningRequest(bean)));
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);

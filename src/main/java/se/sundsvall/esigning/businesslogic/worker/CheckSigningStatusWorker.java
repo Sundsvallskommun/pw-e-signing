@@ -1,7 +1,7 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGNING_STATUS;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS;
 
 import java.util.Map;
 import java.util.Optional;
@@ -35,12 +35,12 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 		try {
 			logInfo("Checking signing status for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
-			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_SIGNING_ID));
+			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 			String status = Optional.ofNullable(response.getStatus())
 				.map(Status::getCode)
 				.orElse("Notpresent");
 
-			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_SIGNING_STATUS, status));
+			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS, status));
 
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
