@@ -1,9 +1,10 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGN_STATUS;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_SIGNING_STATUS;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
@@ -12,15 +13,20 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 
+import generated.se.sundsvall.comfactfacade.Status;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 
 @Component
 @ExternalTaskSubscription("CheckSigningStatusTask")
 public class CheckSigningStatusWorker extends AbstractWorker {
 
-	CheckSigningStatusWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson) {
+	private final ComfactFacadeClient comfactFacadeClient;
+
+	CheckSigningStatusWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient) {
 		super(camundaClient, failureHandler, gson);
+		this.comfactFacadeClient = comfactFacadeClient;
 	}
 
 	@Override
@@ -29,16 +35,12 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 		try {
 			logInfo("Checking signing status for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
-			String status;
-			if (OffsetDateTime.now().isAfter(request.getExpires())) {
-				status = "EXPIRED";
-			} else {
-				status = request.getRegistrationNumber().endsWith("COMPLETED") ? "COMPLETED" : "ACTIVE";
-			}
+			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_SIGNING_ID));
+			String status = Optional.ofNullable(response.getStatus())
+				.map(Status::getCode)
+				.orElse("Notpresent");
 
-			// TODO: Replace code above with logic to check signing status via comfact service (UF-7786)
-
-			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_SIGN_STATUS, status));
+			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_SIGNING_STATUS, status));
 
 		} catch (final Exception exception) {
 			logException(externalTask, exception);

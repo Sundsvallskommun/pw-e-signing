@@ -38,7 +38,7 @@ public class CamundaMapper {
 				CAMUNDA_VARIABLE_WAIT_DURATION, toVariableValueDto(VariableFormat.STRING, String.class, processProperties.waitDuration())));
 	}
 
-	public VariableValueDto toVariableValueDto(SerializationDataFormat format, Class<?> objectClass, Object objectValue) {
+	public static VariableValueDto toVariableValueDto(SerializationDataFormat format, Class<?> objectClass, Object objectValue) {
 		return new VariableValueDto()
 			.type(format.getName())
 			.value(objectValue)
@@ -47,7 +47,7 @@ public class CamundaMapper {
 				"serializationDataFormat", format.getName()));
 	}
 
-	public PatchVariablesDto toPatchVariablesDto(Map<String, VariableValueDto> variablesToUpdate) {
+	public static PatchVariablesDto toPatchVariablesDto(Map<String, VariableValueDto> variablesToUpdate) {
 		return new PatchVariablesDto()
 			.modifications(variablesToUpdate);
 	}

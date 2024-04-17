@@ -20,7 +20,7 @@ import generated.se.sundsvall.camunda.VariableValueDto;
 import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.Initiator;
-import se.sundsvall.esigning.api.model.NotificationMessage;
+import se.sundsvall.esigning.api.model.Message;
 import se.sundsvall.esigning.api.model.Signatory;
 import se.sundsvall.esigning.api.model.SigningRequest;
 
@@ -40,7 +40,7 @@ class CamundaMapperTest {
 		final var request = SigningRequest.create()
 			.withRegistrationNumber(registrationNumber)
 			.withInitiator(Initiator.create())
-			.withNotificationMessage(NotificationMessage.create())
+			.withNotificationMessage(Message.create())
 			.withSignatories(List.of(Signatory.create()));
 
 		final var dto = camundaMapper.toStartProcessInstanceDto(request);
@@ -71,7 +71,7 @@ class CamundaMapperTest {
 	void toVariableValueDto() {
 		final var value = "value";
 
-		final var dto = camundaMapper.toVariableValueDto(VariableFormat.STRING, value.getClass(), value);
+		final var dto = CamundaMapper.toVariableValueDto(VariableFormat.STRING, value.getClass(), value);
 
 		assertThat(dto.getType()).isEqualTo(VariableFormat.STRING.getName());
 		assertThat(dto.getValue()).isEqualTo(value);
@@ -84,8 +84,8 @@ class CamundaMapperTest {
 	@Test
 	void toPatchVariablesDto() {
 		final var key = "key";
-		final var value = camundaMapper.toVariableValueDto(VariableFormat.STRING, String.class, "value");
-		final var dto = camundaMapper.toPatchVariablesDto(Map.of(key, value));
+		final var value = CamundaMapper.toVariableValueDto(VariableFormat.STRING, String.class, "value");
+		final var dto = CamundaMapper.toPatchVariablesDto(Map.of(key, value));
 
 		assertThat(dto.getDeletions()).isNullOrEmpty();
 		assertThat(dto.getModifications()).hasSize(1).containsExactly(entry(key, value));

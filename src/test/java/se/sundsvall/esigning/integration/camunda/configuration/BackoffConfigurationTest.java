@@ -1,6 +1,6 @@
 package se.sundsvall.esigning.integration.camunda.configuration;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.camunda.bpm.client.backoff.BackoffStrategy;
 import org.camunda.bpm.client.backoff.ExponentialBackoffStrategy;

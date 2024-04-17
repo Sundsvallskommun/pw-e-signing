@@ -35,7 +35,7 @@ import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 
 @ExtendWith(MockitoExtension.class)
-class HandleExpiredDocumentSigningWorkerTest {
+class HandleNotSignedDocumentWorkerTest {
 
 	private static final String REQUEST_ID = "RequestId";
 
@@ -55,13 +55,13 @@ class HandleExpiredDocumentSigningWorkerTest {
 	private Gson gsonMock;
 
 	@InjectMocks
-	private HandleExpiredDocumentSigningWorker worker;
+	private HandleNotSignedDocumentWorker worker;
 
 	@Test
 	void verifyAnnotations() {
 		// Assert
 		assertThat(worker.getClass()).hasAnnotations(Component.class, ExternalTaskSubscription.class);
-		assertThat(worker.getClass().getAnnotation(ExternalTaskSubscription.class).value()).isEqualTo("HandleExpiredDocumentSigningTask");
+		assertThat(worker.getClass().getAnnotation(ExternalTaskSubscription.class).value()).isEqualTo("HandleNotSignedDocumentTask");
 	}
 
 	@Test

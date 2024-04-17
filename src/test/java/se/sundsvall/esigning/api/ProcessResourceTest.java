@@ -25,7 +25,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.Initiator;
-import se.sundsvall.esigning.api.model.NotificationMessage;
+import se.sundsvall.esigning.api.model.Message;
 import se.sundsvall.esigning.api.model.Signatory;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.api.model.StartResponse;
@@ -72,12 +72,12 @@ class ProcessResourceTest {
 				SigningRequest.create()
 					.withExpires(OffsetDateTime.now())
 					.withFileName("filename")
+					.withLanguage("en-US")
 					.withInitiator(Initiator.create()
 						.withEmail("valid.email@host.com")
 						.withPartyId(UUID.randomUUID().toString()))
-					.withNotificationMessage(NotificationMessage.create()
+					.withNotificationMessage(Message.create()
 						.withBody("body")
-						.withLanguage("de")
 						.withSubject("subject"))
 					.withRegistrationNumber("registrationNumber")
 					.withSignatories(List.of(Signatory.create()
@@ -89,19 +89,15 @@ class ProcessResourceTest {
 				.withFileName("filename")
 				.withInitiator(Initiator.create()
 					.withEmail("valid.email@host.com")
-					.withPartyId(UUID.randomUUID().toString())
-					.withLanguage("sv"))
-				.withNotificationMessage(NotificationMessage.create()
+					.withPartyId(UUID.randomUUID().toString()))
+				.withNotificationMessage(Message.create()
 					.withBody("body")
-					.withLanguage("en")
 					.withSubject("subject"))
 				.withRegistrationNumber("registrationNumber")
 				.withSignatories(List.of(Signatory.create()
 					.withEmail("valid.email@host.com")
-					.withLanguage("fi")
-					.withNotificationMessage(NotificationMessage.create()
+					.withNotificationMessage(Message.create()
 						.withBody("body")
-						.withLanguage("da")
 						.withSubject("subject"))
 					.withPartyId(UUID.randomUUID().toString())))));
 	}

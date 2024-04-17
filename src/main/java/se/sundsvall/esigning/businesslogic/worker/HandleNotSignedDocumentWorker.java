@@ -16,10 +16,10 @@ import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 
 @Component
-@ExternalTaskSubscription("HandleExpiredDocumentSigningTask")
-public class HandleExpiredDocumentSigningWorker extends AbstractWorker {
+@ExternalTaskSubscription("HandleNotSignedDocumentTask")
+public class HandleNotSignedDocumentWorker extends AbstractWorker {
 
-	HandleExpiredDocumentSigningWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson) {
+	HandleNotSignedDocumentWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson) {
 		super(camundaClient, failureHandler, gson);
 	}
 
@@ -27,7 +27,7 @@ public class HandleExpiredDocumentSigningWorker extends AbstractWorker {
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 		final var request = getSigningRequest(externalTask);
 		try {
-			logInfo("Handling exipired document signing for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
+			logInfo("Handling signing not completed for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
 			// TODO: Save expired signing status and errormessage on document instance via document service (UF-7785)
 

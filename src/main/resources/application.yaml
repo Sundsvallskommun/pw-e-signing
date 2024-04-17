@@ -1,6 +1,18 @@
 spring:
   application:
     name: pw-e-signing
+  security:
+    oauth2:
+      client:
+        provider:
+          comfactfacade:
+            token-uri: ${config.comfactfacade.token-uri}
+        registration:
+          comfactfacade:
+            authorization-grant-type: client_credentials
+            provider: comfactfacade
+            client-id: ${config.comfactfacade.client-id}
+            client-secret: ${config.comfactfacade.client-secret}
 
 #----------------------------------------
 # Open API
@@ -44,4 +56,8 @@ integration:
     connectTimeout: 5
     readTimeout: 20
     url: ${config.camunda.base-url}
+  comfactfacade:
+    connectTimeout: 5
+    readTimeout: 20
+    url: ${config.comfactfacade.base-url}
     

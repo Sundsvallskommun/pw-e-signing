@@ -41,8 +41,11 @@ class SigningRequestTest {
 		final var exipres = OffsetDateTime.now();
 		final var fileName = "fileName";
 		final var initiator = Initiator.create();
-		final var notificationMessage = NotificationMessage.create();
+		final var language = "language";
+		final var name = "name";
+		final var notificationMessage = Message.create();
 		final var registrationNumber = "registrationNumber";
+		final var reminder = Reminder.create();
 		final var signatories = List.of(Signatory.create());
 
 		final var bean = SigningRequest.create()
@@ -50,8 +53,11 @@ class SigningRequestTest {
 			.withExpires(exipres)
 			.withFileName(fileName)
 			.withInitiator(initiator)
+			.withLanguage(language)
+			.withName(name)
 			.withNotificationMessage(notificationMessage)
 			.withRegistrationNumber(registrationNumber)
+			.withReminder(reminder)
 			.withSignatories(signatories);
 
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
@@ -59,8 +65,11 @@ class SigningRequestTest {
 		assertThat(bean.getExpires()).isEqualTo(exipres);
 		assertThat(bean.getFileName()).isEqualTo(fileName);
 		assertThat(bean.getInitiator()).isEqualTo(initiator);
+		assertThat(bean.getLanguage()).isEqualTo(language);
+		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getNotificationMessage()).isEqualTo(notificationMessage);
 		assertThat(bean.getRegistrationNumber()).isEqualTo(registrationNumber);
+		assertThat(bean.getReminder()).isEqualTo(reminder);
 		assertThat(bean.getSignatories()).isEqualTo(signatories);
 	}
 

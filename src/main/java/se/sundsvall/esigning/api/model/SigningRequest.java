@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import se.sundsvall.dept44.common.validators.annotation.OneOf;
 
 @Schema(description = "Request model for starting a new e-signing process")
 public class SigningRequest {
@@ -26,14 +27,26 @@ public class SigningRequest {
 	@NotBlank
 	private String fileName;
 
+	@Schema(description = "Optional descriptive name for the document that is to be signed.", example = "Employment contract")
+	private String name;
+
 	@Schema(description = "The date and time when the signing request expires. Format is yyyy-MM-dd'T'HH:mm:ss.SSSXXX", example = "2024-01-31T12:30:00.000", requiredMode = REQUIRED)
 	@NotNull
 	private OffsetDateTime expires;
 
-	@Schema(description = "Notification message to send to signatories of the document.", example = "contract.pdf", requiredMode = REQUIRED)
+	@Schema(description = "The language used by the signing procedure. Valid values are one of [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]. Swedish will be used If no language is provided.", example = "sv-SE")
+	@OneOf(value = { "en-US", "sv-SE", "da-DK", "fr-FR", "de-DE", "nb-NO", "ru-RU", "zh-CN", "fi-FI",
+		"uk-UA" }, nullable = true, message = "The provided language is not valid. Valid values are [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA].")
+	private String language;
+
+	@Schema(description = "Notification message to send to signatories of the document.", requiredMode = REQUIRED)
 	@NotNull
 	@Valid
-	private NotificationMessage notificationMessage;
+	private Message notificationMessage;
+
+	@Schema(description = "Optional reminder to send to signatories if not completing the signing task within given timeframe.", requiredMode = REQUIRED)
+	@Valid
+	private Reminder reminder;
 
 	@Schema(description = "The party that has issued the signing of the document.", requiredMode = REQUIRED)
 	@NotNull
@@ -44,6 +57,12 @@ public class SigningRequest {
 	@NotEmpty
 	private List<@Valid Signatory> signatories;
 
+	@Schema(description = """
+		Optional callback url to call when process is finished. Requirements are:
+
+		- the url must handle requests with the get method, as this is the method used when the url is called
+		- it must be possible to call the url without authorization, i.e. it should not be secured
+		""", example = "https://callback.url")
 	@URL
 	private String callbackUrl;
 
@@ -77,6 +96,19 @@ public class SigningRequest {
 		return this;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public SigningRequest withName(String name) {
+		this.name = name;
+		return this;
+	}
+
 	public OffsetDateTime getExpires() {
 		return expires;
 	}
@@ -90,16 +122,42 @@ public class SigningRequest {
 		return this;
 	}
 
-	public NotificationMessage getNotificationMessage() {
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public SigningRequest withLanguage(String language) {
+		this.language = language;
+		return this;
+	}
+
+	public Message getNotificationMessage() {
 		return notificationMessage;
 	}
 
-	public void setNotificationMessage(NotificationMessage notificationMessage) {
+	public void setNotificationMessage(Message notificationMessage) {
 		this.notificationMessage = notificationMessage;
 	}
 
-	public SigningRequest withNotificationMessage(NotificationMessage notificationMessage) {
+	public SigningRequest withNotificationMessage(Message notificationMessage) {
 		this.notificationMessage = notificationMessage;
+		return this;
+	}
+
+	public Reminder getReminder() {
+		return reminder;
+	}
+
+	public void setReminder(Reminder reminder) {
+		this.reminder = reminder;
+	}
+
+	public SigningRequest withReminder(Reminder reminder) {
+		this.reminder = reminder;
 		return this;
 	}
 
@@ -144,7 +202,7 @@ public class SigningRequest {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(callbackUrl, expires, fileName, initiator, notificationMessage, registrationNumber, signatories);
+		return Objects.hash(callbackUrl, expires, fileName, initiator, language, name, notificationMessage, registrationNumber, reminder, signatories);
 	}
 
 	@Override
@@ -156,15 +214,16 @@ public class SigningRequest {
 			return false;
 		}
 		SigningRequest other = (SigningRequest) obj;
-		return Objects.equals(callbackUrl, other.callbackUrl) && Objects.equals(expires, other.expires) && Objects.equals(fileName, other.fileName) && Objects.equals(initiator, other.initiator) && Objects.equals(notificationMessage,
-			other.notificationMessage) && Objects.equals(registrationNumber, other.registrationNumber) && Objects.equals(signatories, other.signatories);
+		return Objects.equals(callbackUrl, other.callbackUrl) && Objects.equals(expires, other.expires) && Objects.equals(fileName, other.fileName) && Objects.equals(initiator, other.initiator) && Objects.equals(language, other.language) && Objects
+			.equals(name, other.name) && Objects.equals(notificationMessage, other.notificationMessage) && Objects.equals(registrationNumber, other.registrationNumber) && Objects.equals(reminder, other.reminder) && Objects.equals(signatories,
+				other.signatories);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SigningRequest [registrationNumber=").append(registrationNumber).append(", fileName=").append(fileName).append(", expires=").append(expires).append(", notificationMessage=").append(notificationMessage).append(", initiator=")
-			.append(initiator).append(", signatories=").append(signatories).append(", callbackUrl=").append(callbackUrl).append("]");
+		builder.append("SigningRequest [registrationNumber=").append(registrationNumber).append(", fileName=").append(fileName).append(", name=").append(name).append(", expires=").append(expires).append(", language=").append(language).append(
+			", notificationMessage=").append(notificationMessage).append(", reminder=").append(reminder).append(", initiator=").append(initiator).append(", signatories=").append(signatories).append(", callbackUrl=").append(callbackUrl).append("]");
 		return builder.toString();
 	}
 }
