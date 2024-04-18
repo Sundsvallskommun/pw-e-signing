@@ -11,5 +11,6 @@ public final class Constants {
 	public static final String CAMUNDA_VARIABLE_ESIGNING_REQUEST = "eSigningRequest";
 	public static final String CAMUNDA_VARIABLE_WAIT_DURATION = "waitDuration";
 	public static final String CAMUNDA_VARIABLE_CALLBACK_PRESENT = "callbackPresent";
-	public static final String CAMUNDA_VARIABLE_SIGN_STATUS = "signStatus";
+	public static final String CAMUNDA_VARIABLE_COMFACT_SIGNING_ID = "comfactSigningId";
+	public static final String CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS = "comfactSigningStatus";
 }

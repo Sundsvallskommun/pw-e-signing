@@ -26,30 +26,24 @@ class SignatoryTest {
 	@Test
 	void testBuilderMethods() {
 		final var email = "email";
-		final var language = "language";
 		final var name = "name";
-		final var notificationMessage = NotificationMessage.create();
+		final var notificationMessage = Message.create();
 		final var organization = "organization";
 		final var partyId = "partyId";
-		final var title = "title";
 
 		final var bean = Signatory.create()
 			.withEmail(email)
-			.withLanguage(language)
 			.withName(name)
 			.withNotificationMessage(notificationMessage)
 			.withOrganization(organization)
-			.withPartyId(partyId)
-			.withTitle(title);
+			.withPartyId(partyId);
 
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getEmail()).isEqualTo(email);
-		assertThat(bean.getLanguage()).isEqualTo(language);
 		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getNotificationMessage()).isEqualTo(notificationMessage);
 		assertThat(bean.getOrganization()).isEqualTo(organization);
 		assertThat(bean.getPartyId()).isEqualTo(partyId);
-		assertThat(bean.getTitle()).isEqualTo(title);
 	}
 
 	@Test

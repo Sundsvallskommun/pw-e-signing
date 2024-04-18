@@ -7,7 +7,7 @@
 camunda:
   bpm:
     client:
-      base-url: base-url
+      base-url: base.url
       disable-auto-fetching: true
     deployment:
       autoDeployEnabled: false
@@ -29,5 +29,15 @@ camunda:
 # Integration settings
 #----------------------------------------
 config:
+  common:
+    client-id: client-id
+    client-secret: client-secret
+    token-uri: token.url
   camunda:
     base-url: camunda.url
+  comfactfacade:
+    client-id: ${config.common.client-id}
+    client-secret: ${config.common.client-secret}
+    base-url: comfactfacade.url
+    token-uri: ${config.common.token-uri}
+    

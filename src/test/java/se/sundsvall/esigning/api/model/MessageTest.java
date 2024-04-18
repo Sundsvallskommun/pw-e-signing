@@ -11,11 +11,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class NotificationMessageTest {
+class MessageTest {
 
 	@Test
 	void testBean() {
-		assertThat(NotificationMessage.class, allOf(
+		assertThat(Message.class, allOf(
 			hasValidBeanConstructor(),
 			hasValidGettersAndSetters(),
 			hasValidBeanHashCode(),
@@ -26,23 +26,20 @@ class NotificationMessageTest {
 	@Test
 	void testBuilderMethods() {
 		final var body = "body";
-		final var language = "language";
 		final var subject = "subject";
 
-		final var bean = NotificationMessage.create()
+		final var bean = Message.create()
 			.withBody(body)
-			.withLanguage(language)
 			.withSubject(subject);
 
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getBody()).isEqualTo(body);
-		assertThat(bean.getLanguage()).isEqualTo(language);
 		assertThat(bean.getSubject()).isEqualTo(subject);
 	}
 
 	@Test
 	void testNoDirtOnCreatedBean() {
-		assertThat(new NotificationMessage()).hasAllNullFieldsOrProperties();
-		assertThat(NotificationMessage.create()).hasAllNullFieldsOrProperties();
+		assertThat(new Message()).hasAllNullFieldsOrProperties();
+		assertThat(Message.create()).hasAllNullFieldsOrProperties();
 	}
 }

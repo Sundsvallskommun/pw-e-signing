@@ -16,5 +16,17 @@ camunda:
 # Integration settings
 #----------------------------------------
 config:
+  common:
+    token-uri: http://localhost:${wiremock.server.port}/api-gateway/token
+    client-id: the-client-id
+    client-secret: the-client-secret
   camunda:
     base-url: http://localhost:${wiremock.server.port}/api-camunda/engine-rest
+  comfactfacade:
+    client-id: ${config.common.client-id}
+    client-secret: ${config.common.client-secret}
+    base-url: http://localhost:${wiremock.server.port}/api-comfactfacade
+    token-uri: ${config.common.token-uri}
+    
+    
+    

@@ -1,6 +1,6 @@
 package se.sundsvall.esigning.integration.camunda.configuration;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.esigning.integration.camunda.configuration.CamundaConfiguration.CLIENT_ID;

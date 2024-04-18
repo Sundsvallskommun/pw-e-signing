@@ -26,27 +26,21 @@ class InitiatorTest {
 	@Test
 	void testBuilderMethods() {
 		final var email = "email";
-		final var language = "language";
 		final var name = "name";
 		final var organization = "organization";
 		final var partyId = "partyId";
-		final var title = "title";
 
 		final var bean = Initiator.create()
 			.withEmail(email)
-			.withLanguage(language)
 			.withName(name)
 			.withOrganization(organization)
-			.withPartyId(partyId)
-			.withTitle(title);
+			.withPartyId(partyId);
 
 		assertThat(bean).isNotNull().hasNoNullFieldsOrProperties();
 		assertThat(bean.getEmail()).isEqualTo(email);
-		assertThat(bean.getLanguage()).isEqualTo(language);
 		assertThat(bean.getName()).isEqualTo(name);
 		assertThat(bean.getOrganization()).isEqualTo(organization);
 		assertThat(bean.getPartyId()).isEqualTo(partyId);
-		assertThat(bean.getTitle()).isEqualTo(title);
 	}
 
 	@Test

@@ -23,7 +23,8 @@ import org.zalando.problem.violations.Violation;
 
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.Initiator;
-import se.sundsvall.esigning.api.model.NotificationMessage;
+import se.sundsvall.esigning.api.model.Message;
+import se.sundsvall.esigning.api.model.Reminder;
 import se.sundsvall.esigning.api.model.Signatory;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.service.ProcessService;
@@ -96,7 +97,7 @@ class ProcessResourceFailuresTest {
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(new SigningRequest()
 				.withInitiator(Initiator.create())
-				.withNotificationMessage(NotificationMessage.create())
+				.withNotificationMessage(Message.create())
 				.withSignatories(List.of(Signatory.create())))
 			.exchange()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -115,7 +116,6 @@ class ProcessResourceFailuresTest {
 			tuple("initiator.email", "must not be null"),
 			tuple("initiator.partyId", "not a valid UUID"),
 			tuple("notificationMessage.body", "must not be blank"),
-			tuple("notificationMessage.language", "The provided language is missing or not valid. Valid values are [sv, en, da, fr, de, nb, ru, zh, fi, uk]."),
 			tuple("notificationMessage.subject", "must not be blank"),
 			tuple("registrationNumber", "must not be blank"),
 			tuple("signatories[0].email", "must not be null"),
@@ -133,16 +133,16 @@ class ProcessResourceFailuresTest {
 				.withCallbackUrl("not_valid")
 				.withFileName(" ")
 				.withRegistrationNumber(" ")
+				.withLanguage("not_valid")
 				.withInitiator(Initiator.create()
-					.withEmail("not_valid")
-					.withLanguage("not_valid_language"))
-				.withNotificationMessage(NotificationMessage.create()
-					.withLanguage("not_valid"))
+					.withEmail("not_valid"))
+				.withReminder(Reminder.create()
+					.withIntervalInHours(0)
+					.withReminderMessage(Message.create()))
+				.withNotificationMessage(Message.create())
 				.withSignatories(List.of(Signatory.create()
 					.withEmail("not_valid")
-					.withLanguage("not_valid")
-					.withNotificationMessage(NotificationMessage.create()
-						.withLanguage("not_valid")))))
+					.withNotificationMessage(Message.create()))))
 			.exchange()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
 			.expectStatus().isBadRequest()
@@ -158,17 +158,18 @@ class ProcessResourceFailuresTest {
 			tuple("callbackUrl", "must be a valid URL"),
 			tuple("expires", "must not be null"),
 			tuple("fileName", "must not be blank"),
+			tuple("language", "The provided language is not valid. Valid values are [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]."),
 			tuple("initiator.email", "must be a well-formed email address"),
-			tuple("initiator.language", "The provided language is not valid. Valid values are [sv, en, da, fr, de, nb, ru, zh, fi, uk]."),
 			tuple("initiator.partyId", "not a valid UUID"),
 			tuple("notificationMessage.body", "must not be blank"),
-			tuple("notificationMessage.language", "The provided language is missing or not valid. Valid values are [sv, en, da, fr, de, nb, ru, zh, fi, uk]."),
 			tuple("notificationMessage.subject", "must not be blank"),
 			tuple("registrationNumber", "must not be blank"),
+			tuple("reminder.intervalInHours", "must be greater than or equal to 1"),
+			tuple("reminder.startDateTime", "must not be null"),
+			tuple("reminder.reminderMessage.subject", "must not be blank"),
+			tuple("reminder.reminderMessage.body", "must not be blank"),
 			tuple("signatories[0].email", "must be a well-formed email address"),
-			tuple("signatories[0].language", "The provided language is not valid. Valid values are [sv, en, da, fr, de, nb, ru, zh, fi, uk]."),
 			tuple("signatories[0].notificationMessage.body", "must not be blank"),
-			tuple("signatories[0].notificationMessage.language", "The provided language is missing or not valid. Valid values are [sv, en, da, fr, de, nb, ru, zh, fi, uk]."),
 			tuple("signatories[0].notificationMessage.subject", "must not be blank"),
 			tuple("signatories[0].partyId", "not a valid UUID"));
 
