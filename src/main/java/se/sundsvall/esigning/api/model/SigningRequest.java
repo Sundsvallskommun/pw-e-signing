@@ -1,16 +1,19 @@
 package se.sundsvall.esigning.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.validator.constraints.URL;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -30,8 +33,10 @@ public class SigningRequest {
 	@Schema(description = "Optional descriptive name for the document that is to be signed.", example = "Employment contract")
 	private String name;
 
-	@Schema(description = "The date and time when the signing request expires. Format is yyyy-MM-dd'T'HH:mm:ss.SSSXXX", example = "2024-01-31T12:30:00.000", requiredMode = REQUIRED)
+	@Schema(description = "The date and time when the signing request expires.", example = "2021-12-31T23:59:59Z", requiredMode = REQUIRED)
 	@NotNull
+	@Future
+	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime expires;
 
 	@Schema(description = "The language used by the signing procedure. Valid values are one of [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]. Swedish will be used If no language is provided.", example = "sv-SE")

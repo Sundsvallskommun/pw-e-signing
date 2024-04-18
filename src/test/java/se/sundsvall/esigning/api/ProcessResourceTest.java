@@ -70,7 +70,7 @@ class ProcessResourceTest {
 		return Stream.of(
 			Arguments.of(
 				SigningRequest.create()
-					.withExpires(OffsetDateTime.now())
+					.withExpires(OffsetDateTime.now().plusDays(2))
 					.withFileName("filename")
 					.withLanguage("en-US")
 					.withInitiator(Initiator.create()
@@ -85,7 +85,7 @@ class ProcessResourceTest {
 						.withPartyId(UUID.randomUUID().toString())))),
 			Arguments.of(SigningRequest.create()
 				.withCallbackUrl("http://valid.url?param1=value1&param2=value2")
-				.withExpires(OffsetDateTime.now())
+				.withExpires(OffsetDateTime.now().plusDays(1))
 				.withFileName("filename")
 				.withInitiator(Initiator.create()
 					.withEmail("valid.email@host.com")

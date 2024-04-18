@@ -13,8 +13,8 @@
 	<properties>
 		<!-- Pipeline properties -->
 		<docker.image.name>ms-pw-e-signing</docker.image.name>
-		<published.container.port.test>XXXX</published.container.port.test>
-		<published.container.port.production>XXXX</published.container.port.production>
+		<published.container.port.test>8793</published.container.port.test>
+		<published.container.port.production>8793</published.container.port.production>
 		<!-- Camunda properties -->
 		<camunda.version>7.21.0</camunda.version>
 		<generated-sources-path>${project.build.directory}/generated-sources</generated-sources-path>
