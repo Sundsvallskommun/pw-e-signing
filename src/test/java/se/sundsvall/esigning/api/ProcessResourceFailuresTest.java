@@ -81,7 +81,6 @@ class ProcessResourceFailuresTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations()).extracting(Violation::getField, Violation::getMessage).containsExactlyInAnyOrder(
-			tuple("expires", "must not be null"),
 			tuple("fileName", "must not be blank"),
 			tuple("initiator", "must not be null"),
 			tuple("notificationMessage", "must not be null"),
@@ -112,7 +111,6 @@ class ProcessResourceFailuresTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations()).extracting(Violation::getField, Violation::getMessage).containsExactlyInAnyOrder(
-			tuple("expires", "must not be null"),
 			tuple("fileName", "must not be blank"),
 			tuple("initiator.email", "must not be null"),
 			tuple("initiator.partyId", "not a valid UUID"),

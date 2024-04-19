@@ -33,13 +33,12 @@ public class SigningRequest {
 	@Schema(description = "Optional descriptive name for the document that is to be signed.", example = "Employment contract")
 	private String name;
 
-	@Schema(description = "The date and time when the signing request expires.", example = "2021-12-31T23:59:59Z", requiredMode = REQUIRED)
-	@NotNull
+	@Schema(description = "Optional date and time when the signing request expires. If no exipre date is provided, expiretime will be set to 30 days from time when request was received.", example = "2021-12-31T23:59:59Z")
 	@Future
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime expires;
 
-	@Schema(description = "The language used by the signing procedure. Valid values are one of [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]. Swedish will be used If no language is provided.", example = "sv-SE")
+	@Schema(description = "The language used by the signing procedure. Valid values are one of [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]. If no language is provided, sv-SE will be used.", example = "sv-SE")
 	@OneOf(value = { "en-US", "sv-SE", "da-DK", "fr-FR", "de-DE", "nb-NO", "ru-RU", "zh-CN", "fi-FI",
 		"uk-UA" }, nullable = true, message = "The provided language is not valid. Valid values are [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA].")
 	private String language;
