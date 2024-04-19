@@ -26,6 +26,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.Initiator;
 import se.sundsvall.esigning.api.model.Message;
+import se.sundsvall.esigning.api.model.Reminder;
 import se.sundsvall.esigning.api.model.Signatory;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.api.model.StartResponse;
@@ -70,7 +71,6 @@ class ProcessResourceTest {
 		return Stream.of(
 			Arguments.of(
 				SigningRequest.create()
-					.withExpires(OffsetDateTime.now())
 					.withFileName("filename")
 					.withLanguage("en-US")
 					.withInitiator(Initiator.create()
@@ -80,12 +80,18 @@ class ProcessResourceTest {
 						.withBody("body")
 						.withSubject("subject"))
 					.withRegistrationNumber("registrationNumber")
+					.withReminder(Reminder.create()
+						.withIntervalInHours(24)
+						.withReminderMessage(Message.create()
+							.withBody("body")
+							.withSubject("subject"))
+						.withStartDateTime(OffsetDateTime.now().plusDays(15)))
 					.withSignatories(List.of(Signatory.create()
 						.withEmail("valid.email@host.com")
 						.withPartyId(UUID.randomUUID().toString())))),
 			Arguments.of(SigningRequest.create()
 				.withCallbackUrl("http://valid.url?param1=value1&param2=value2")
-				.withExpires(OffsetDateTime.now())
+				.withExpires(OffsetDateTime.now().plusDays(1))
 				.withFileName("filename")
 				.withInitiator(Initiator.create()
 					.withEmail("valid.email@host.com")

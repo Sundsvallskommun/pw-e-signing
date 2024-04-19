@@ -9,6 +9,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
 import static org.zalando.problem.Status.BAD_REQUEST;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -80,7 +81,6 @@ class ProcessResourceFailuresTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations()).extracting(Violation::getField, Violation::getMessage).containsExactlyInAnyOrder(
-			tuple("expires", "must not be null"),
 			tuple("fileName", "must not be blank"),
 			tuple("initiator", "must not be null"),
 			tuple("notificationMessage", "must not be null"),
@@ -111,7 +111,6 @@ class ProcessResourceFailuresTest {
 		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations()).extracting(Violation::getField, Violation::getMessage).containsExactlyInAnyOrder(
-			tuple("expires", "must not be null"),
 			tuple("fileName", "must not be blank"),
 			tuple("initiator.email", "must not be null"),
 			tuple("initiator.partyId", "not a valid UUID"),
@@ -131,6 +130,7 @@ class ProcessResourceFailuresTest {
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(new SigningRequest()
 				.withCallbackUrl("not_valid")
+				.withExpires(OffsetDateTime.now().minusSeconds(1))
 				.withFileName(" ")
 				.withRegistrationNumber(" ")
 				.withLanguage("not_valid")
@@ -138,7 +138,8 @@ class ProcessResourceFailuresTest {
 					.withEmail("not_valid"))
 				.withReminder(Reminder.create()
 					.withIntervalInHours(0)
-					.withReminderMessage(Message.create()))
+					.withReminderMessage(Message.create())
+					.withStartDateTime(OffsetDateTime.now().minusSeconds(1)))
 				.withNotificationMessage(Message.create())
 				.withSignatories(List.of(Signatory.create()
 					.withEmail("not_valid")
@@ -156,7 +157,7 @@ class ProcessResourceFailuresTest {
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getViolations()).extracting(Violation::getField, Violation::getMessage).containsExactlyInAnyOrder(
 			tuple("callbackUrl", "must be a valid URL"),
-			tuple("expires", "must not be null"),
+			tuple("expires", "must be a future date"),
 			tuple("fileName", "must not be blank"),
 			tuple("language", "The provided language is not valid. Valid values are [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]."),
 			tuple("initiator.email", "must be a well-formed email address"),
@@ -165,7 +166,7 @@ class ProcessResourceFailuresTest {
 			tuple("notificationMessage.subject", "must not be blank"),
 			tuple("registrationNumber", "must not be blank"),
 			tuple("reminder.intervalInHours", "must be greater than or equal to 1"),
-			tuple("reminder.startDateTime", "must not be null"),
+			tuple("reminder.startDateTime", "must be a future date"),
 			tuple("reminder.reminderMessage.subject", "must not be blank"),
 			tuple("reminder.reminderMessage.body", "must not be blank"),
 			tuple("signatories[0].email", "must be a well-formed email address"),

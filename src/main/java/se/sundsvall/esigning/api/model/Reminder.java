@@ -1,12 +1,16 @@
 package se.sundsvall.esigning.api.model;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,8 +26,10 @@ public class Reminder {
 	@Valid
 	private Message reminderMessage;
 
-	@Schema(description = "The date and time when the first reminder message will be sent. Format is yyyy-MM-dd'T'HH:mm:ss.SSSXXX", example = "2024-01-31T12:30:00.000", requiredMode = REQUIRED)
+	@Schema(description = "The date and time when the first reminder message will be sent.", example = "2021-12-31T23:59:59Z", requiredMode = REQUIRED)
 	@NotNull
+	@Future
+	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime startDateTime;
 
 	public static Reminder create() {
