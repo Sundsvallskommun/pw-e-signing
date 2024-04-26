@@ -27,6 +27,9 @@ config:
     client-secret: ${config.common.client-secret}
     base-url: http://localhost:${wiremock.server.port}/api-comfactfacade
     token-uri: ${config.common.token-uri}
-    
-    
+  document:
+    client-id: ${config.common.client-id}
+    client-secret: ${config.common.client-secret}
+    base-url: http://localhost:${wiremock.server.port}/api-document
+    token-uri: ${config.common.token-uri}
     

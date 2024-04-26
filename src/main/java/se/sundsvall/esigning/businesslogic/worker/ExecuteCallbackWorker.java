@@ -17,7 +17,7 @@ import se.sundsvall.esigning.integration.camunda.CamundaClient;
 @ExternalTaskSubscription("ExecuteCallbackTask")
 public class ExecuteCallbackWorker extends AbstractWorker {
 
-	final RestClient restClient;
+	private final RestClient restClient;
 
 	ExecuteCallbackWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, RestClient restClient) {
 		super(camundaClient, failureHandler, gson);

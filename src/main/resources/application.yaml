@@ -7,12 +7,19 @@ spring:
         provider:
           comfactfacade:
             token-uri: ${config.comfactfacade.token-uri}
+          document:
+            token-uri: ${config.document.token-uri}
         registration:
           comfactfacade:
             authorization-grant-type: client_credentials
             provider: comfactfacade
             client-id: ${config.comfactfacade.client-id}
             client-secret: ${config.comfactfacade.client-secret}
+          document:
+            authorization-grant-type: client_credentials
+            provider: document
+            client-id: ${config.document.client-id}
+            client-secret: ${config.document.client-secret}
 
 #----------------------------------------
 # Open API
@@ -60,4 +67,18 @@ integration:
     connectTimeout: 5
     readTimeout: 20
     url: ${config.comfactfacade.base-url}
+  document:
+    connectTimeout: 5
+    readTimeout: 20
+    url: ${config.document.base-url}
+    
+#----------------------------------------
+# Logbook settings
+#----------------------------------------
+logbook:
+  body-filters:
+    # Exclude file content from logs
+    json-path:
+      - key: '$..content'
+        value: '[binary]'
     

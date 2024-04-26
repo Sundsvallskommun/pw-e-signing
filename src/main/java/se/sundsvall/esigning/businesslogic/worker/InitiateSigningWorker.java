@@ -1,31 +1,41 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static java.util.Objects.isNull;
+import static org.apache.hc.core5.http.ContentType.APPLICATION_PDF;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.integration.camunda.mapper.CamundaMapper.toVariableValueDto;
 import static se.sundsvall.esigning.integration.comfactfacade.mapper.ComfactFacadeMapper.toSigningRequest;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 
 import com.google.gson.Gson;
 
+import generated.se.sundsvall.document.Document;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
-import se.sundsvall.esigning.integration.camunda.mapper.VariableFormat;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
+import se.sundsvall.esigning.integration.document.DocumentClient;
 
 @Component
 @ExternalTaskSubscription("InitiateSigningTask")
 public class InitiateSigningWorker extends AbstractWorker {
 
 	private final ComfactFacadeClient comfactFacadeClient;
+	private final DocumentClient documentClient;
 
-	InitiateSigningWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient) {
+	InitiateSigningWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
 		super(camundaClient, failureHandler, gson);
 		this.comfactFacadeClient = comfactFacadeClient;
+		this.documentClient = documentClient;
 	}
 
 	@Override
@@ -34,16 +44,13 @@ public class InitiateSigningWorker extends AbstractWorker {
 		try {
 			logInfo("Initiating signing of document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
-			// If process doesnt already have started a signing request (which might be the case if error occured when saving
-			// metadata on document in earlier execution) then call facade to initialize signing
-			if (isNull(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID))) {
-				final var response = comfactFacadeClient.createSigngingInstance(toSigningRequest(request));
-				setProcessInstanceVariable(externalTask, CAMUNDA_VARIABLE_COMFACT_SIGNING_ID, toVariableValueDto(VariableFormat.STRING, String.class, response.getSigningId()));
-			}
+			// Fetch file to sign
+			final var documentData = getDocumentData(request.getRegistrationNumber(), request.getFileName());
 
-			// TODO: Save signingId as metadata on document instance when Documents service is in place
+			// Create signing instance
+			final var signingId = comfactFacadeClient.createSigngingInstance(toSigningRequest(request, documentData.getBody(), APPLICATION_PDF.getMimeType())).getSigningId();
 
-			externalTaskService.complete(externalTask);
+			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID, signingId));
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
 			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when initiating signing (%s).".formatted(
@@ -52,5 +59,19 @@ public class InitiateSigningWorker extends AbstractWorker {
 				request.getRegistrationNumber(),
 				exception.getMessage()));
 		}
+	}
+
+	private ResponseEntity<ByteArrayResource> getDocumentData(String registrationNumber, String fileName) {
+		return Stream.of(documentClient.getDocument(registrationNumber))
+			.map(Document::getDocumentData)
+			.flatMap(List::stream)
+			.filter(data -> data.getFileName().equals(fileName))
+			.filter(data -> data.getMimeType().equals(APPLICATION_PDF.getMimeType()))
+			.map(data -> documentClient.getDocumentData(registrationNumber, data.getId()))
+			.findAny()
+			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "File %s of type %s was not found within document with registrationNumber %s".formatted(
+				fileName,
+				APPLICATION_PDF.getMimeType(),
+				registrationNumber)));
 	}
 }

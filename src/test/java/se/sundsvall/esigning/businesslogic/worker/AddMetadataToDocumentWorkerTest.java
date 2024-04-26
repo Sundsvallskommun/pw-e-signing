@@ -2,7 +2,6 @@ package se.sundsvall.esigning.businesslogic.worker;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -13,9 +12,8 @@ import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_I
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,7 @@ import org.zalando.problem.Status;
 
 import com.google.gson.Gson;
 
+import generated.se.sundsvall.comfactfacade.Signatory;
 import generated.se.sundsvall.comfactfacade.SigningInstance;
 import generated.se.sundsvall.document.DocumentMetadata;
 import generated.se.sundsvall.document.DocumentUpdateRequest;
@@ -48,9 +47,8 @@ import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
-
 @ExtendWith(MockitoExtension.class)
-class HandleNotSignedDocumentWorkerTest {
+class AddMetadataToDocumentWorkerTest {
 
 	private static final String REQUEST_ID = "RequestId";
 
@@ -76,7 +74,7 @@ class HandleNotSignedDocumentWorkerTest {
 	private DocumentClient documentClientMock;
 
 	@InjectMocks
-	private HandleNotSignedDocumentWorker worker;
+	private AddMetadataToDocumentWorker worker;
 
 	@Captor
 	private ArgumentCaptor<DocumentUpdateRequest> documentUpdateRequestCaptor;
@@ -85,31 +83,27 @@ class HandleNotSignedDocumentWorkerTest {
 	void verifyAnnotations() {
 		// Assert
 		assertThat(worker.getClass()).hasAnnotations(Component.class, ExternalTaskSubscription.class);
-		assertThat(worker.getClass().getAnnotation(ExternalTaskSubscription.class).value()).isEqualTo("HandleNotSignedDocumentTask");
+		assertThat(worker.getClass().getAnnotation(ExternalTaskSubscription.class).value()).isEqualTo("AddMetadataToDocumentTask");
 	}
 
 	@ParameterizedTest
 	@ValueSource(booleans = { true, false })
-	void execute(boolean callbackPresent) {
+	void execute(boolean callbackPresent) throws Exception {
 		// Arrange
 		final var json = "json";
 		final var registrationNumber = "registrationNumber";
-		final var code = "code";
-		final var message = "message";
-		final var signingId = UUID.randomUUID().toString();
-		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS).value("true")));
 		final var bean = SigningRequest.create()
 			.withRegistrationNumber(registrationNumber)
 			.withCallbackUrl(callbackPresent ? "callbackUrl" : null);
-		final var status = new generated.se.sundsvall.comfactfacade.Status()
-			.code(code)
-			.message(message);
+		final var signingId = UUID.randomUUID().toString();
+		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS).value("true")));
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(new SigningInstance().status(status));
+		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(new SigningInstance()
+			.signatories(List.of(createSignatory("1.name", "1.partyId", "1.email"), createSignatory("2.name", "2.partyId", "2.email"))));
 		when(documentClientMock.getDocument(registrationNumber)).thenReturn(new generated.se.sundsvall.document.Document().metadataList(existingMetadata));
 
 		// Act
@@ -130,11 +124,11 @@ class HandleNotSignedDocumentWorkerTest {
 			assertThat(req.getCreatedBy()).isEqualTo(Constants.DOCUMENT_USER);
 			assertThat(req.getDescription()).isNull();
 			assertThat(req.getMetadataList()).hasSize(3).satisfiesExactlyInAnyOrder(metadata -> {
-				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_STATUS);
-				assertThat(metadata.getValue()).isEqualTo("code");
+				assertThat(metadata.getKey()).isEqualTo("signatory.1");
+				assertThat(metadata.getValue()).isEqualTo("{\"name\":\"1.name\",\"partyId\":\"1.partyId\",\"email\":\"1.email\"}");
 			}, metadata -> {
-				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE);
-				assertThat(metadata.getValue()).isEqualTo("message");
+				assertThat(metadata.getKey()).isEqualTo("signatory.2");
+				assertThat(metadata.getValue()).isEqualTo("{\"name\":\"2.name\",\"partyId\":\"2.partyId\",\"email\":\"2.email\"}");
 			}, metadata -> {
 				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS);
 				assertThat(metadata.getValue()).isEqualTo("true");
@@ -145,20 +139,19 @@ class HandleNotSignedDocumentWorkerTest {
 	@Test
 	void executeThrowsException() {
 		// Arrange
-		final var registrationNumber = "registrationNumber";
-		final var signingId = UUID.randomUUID().toString();
 		final var json = "json";
-		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
+		final var bean = SigningRequest.create()
+			.withExpires(OffsetDateTime.MAX)
+			.withFileName("fileName")
+			.withRegistrationNumber("registrationNumber");
 		final var problem = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
-		final var status = new generated.se.sundsvall.comfactfacade.Status();
+		final var signingId = UUID.randomUUID().toString();
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(new SigningInstance().status(status));
-		when(documentClientMock.getDocument(registrationNumber)).thenReturn(new generated.se.sundsvall.document.Document().metadataList(new ArrayList<>()));
-		when(documentClientMock.updateDocument(any(), any())).thenThrow(problem);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
+		when(comfactFacadeClientMock.getSigningInstance(any())).thenThrow(problem);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
@@ -166,12 +159,19 @@ class HandleNotSignedDocumentWorkerTest {
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(documentClientMock).getDocument(registrationNumber);
-		verify(documentClientMock).updateDocument(eq(registrationNumber), any());
+		verify(comfactFacadeClientMock).getSigningInstance(signingId);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(eq(externalTaskServiceMock), eq(externalTaskMock), anyString());
+		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock, 
+			"DefaultProblem occured for document fileName with registration number registrationNumber when adding signatory metadata to document (I'm a teapot: Big and stout).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
+	}
+
+	private static Signatory createSignatory(String name, String partyId, String email) {
+		return new Signatory()
+			.name(name)
+			.partyId(partyId)
+			.email(email);
 	}
 }

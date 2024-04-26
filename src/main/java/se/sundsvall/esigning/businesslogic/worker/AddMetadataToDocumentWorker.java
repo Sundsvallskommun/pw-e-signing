@@ -3,9 +3,7 @@ package se.sundsvall.esigning.businesslogic.worker;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_CALLBACK_PRESENT;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE;
-import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadata;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadatas;
 import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
 
 import java.util.Map;
@@ -23,13 +21,13 @@ import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
 
 @Component
-@ExternalTaskSubscription("HandleNotSignedDocumentTask")
-public class HandleNotSignedDocumentWorker extends AbstractWorker {
+@ExternalTaskSubscription("AddMetadataToDocumentTask")
+public class AddMetadataToDocumentWorker extends AbstractWorker {
 
 	private final ComfactFacadeClient comfactFacadeClient;
 	private final DocumentClient documentClient;
 
-	HandleNotSignedDocumentWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
+	AddMetadataToDocumentWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
 		super(camundaClient, failureHandler, gson);
 		this.comfactFacadeClient = comfactFacadeClient;
 		this.documentClient = documentClient;
@@ -39,21 +37,20 @@ public class HandleNotSignedDocumentWorker extends AbstractWorker {
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 		final var request = getSigningRequest(externalTask);
 		try {
-			logInfo("Handling signing not completed for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
+			logInfo("Adding metadata regarding signatories for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
 			// Fetch signing instance
 			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
-			// Save expired signing status and errormessage on document instance
+			// Save signatory information as metadata on document
 			final var metaData = documentClient.getDocument(request.getRegistrationNumber()).getMetadataList();
-			metaData.add(toDocumentMetadata(DOCUMENT_METADATA_KEY_SIGNING_STATUS, response.getStatus().getCode()));
-			metaData.add(toDocumentMetadata(DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE, response.getStatus().getMessage()));
+			metaData.addAll(toDocumentMetadatas(response.getSignatories()));
 			documentClient.updateDocument(request.getRegistrationNumber(), toDocumentUpdateRequest(metaData));
 
 			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, isNotBlank(request.getCallbackUrl())));
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when handling not signed document (%s).".formatted(
+			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when adding signatory metadata to document (%s).".formatted(
 				exception.getClass().getSimpleName(),
 				request.getFileName(),
 				request.getRegistrationNumber(),
