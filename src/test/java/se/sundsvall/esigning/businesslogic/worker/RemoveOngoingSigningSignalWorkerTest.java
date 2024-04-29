@@ -4,23 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_CALLBACK_PRESENT;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
 
-import java.time.OffsetDateTime;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,12 +32,17 @@ import org.zalando.problem.Status;
 
 import com.google.gson.Gson;
 
+import generated.se.sundsvall.document.Document;
+import generated.se.sundsvall.document.DocumentMetadata;
+import generated.se.sundsvall.document.DocumentUpdateRequest;
+import se.sundsvall.esigning.Constants;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import se.sundsvall.esigning.integration.document.DocumentClient;
 
 @ExtendWith(MockitoExtension.class)
-class HandleSignedDocumentSigningWorkerTest {
+class RemoveOngoingSigningSignalWorkerTest {
 
 	private static final String REQUEST_ID = "RequestId";
 
@@ -54,27 +61,36 @@ class HandleSignedDocumentSigningWorkerTest {
 	@Mock
 	private Gson gsonMock;
 
+	@Mock
+	private DocumentClient documentClientMock;
+
 	@InjectMocks
-	private HandleSignedDocumentWorker worker;
+	private RemoveOngoingSigningSignalWorker worker;
+
+	@Captor
+	private ArgumentCaptor<DocumentUpdateRequest> documentUpdateRequestCaptor;
 
 	@Test
 	void verifyAnnotations() {
 		// Assert
 		assertThat(worker.getClass()).hasAnnotations(Component.class, ExternalTaskSubscription.class);
-		assertThat(worker.getClass().getAnnotation(ExternalTaskSubscription.class).value()).isEqualTo("HandleSignedDocumentTask");
+		assertThat(worker.getClass().getAnnotation(ExternalTaskSubscription.class).value()).isEqualTo("RemoveOngoingSigningSignalTask");
 	}
 
 	@Test
-	void executeWhenCallbackUrlPresent() {
+	void execute() {
 		// Arrange
 		final var json = "json";
-		final var callbackUrl = "callbackUrl";
-		final var bean = SigningRequest.create()
-			.withCallbackUrl(callbackUrl);
+		final var registrationNumber = "registrationNumber";
+		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
+		final var existingMetadata = new ArrayList<>(List.of(
+			new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS).value("true"),
+			new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNING_ID).value("signingId")));
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
+		when(documentClientMock.getDocument(registrationNumber)).thenReturn(new Document().metadataList(existingMetadata));
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
@@ -82,45 +98,35 @@ class HandleSignedDocumentSigningWorkerTest {
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, true));
-		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock);
+		verify(documentClientMock).getDocument(registrationNumber);
+		verify(documentClientMock).updateDocument(eq(registrationNumber), documentUpdateRequestCaptor.capture());
+
+		verify(externalTaskServiceMock).complete(externalTaskMock);
+		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, documentClientMock);
 		verifyNoInteractions(failureHandlerMock);
-	}
 
-	@Test
-	void executeWhenCallbackUrlNotPresent() {
-		// Arrange
-		final var json = "json";
-		final var bean = SigningRequest.create();
-
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
-		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-
-		// Act
-		worker.execute(externalTaskMock, externalTaskServiceMock);
-
-		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
-		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, false));
-		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock);
-		verifyNoInteractions(failureHandlerMock);
+		assertThat(documentUpdateRequestCaptor.getValue().getArchive()).isNull();
+		assertThat(documentUpdateRequestCaptor.getValue().getCreatedBy()).isEqualTo(Constants.DOCUMENT_USER);
+		assertThat(documentUpdateRequestCaptor.getValue().getDescription()).isNull();
+		assertThat(documentUpdateRequestCaptor.getValue().getMetadataList()).hasSize(1).allSatisfy(metadata -> {
+			assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_ID);
+			assertThat(metadata.getValue()).isEqualTo("signingId");
+		});
 	}
 
 	@Test
 	void executeThrowsException() {
 		// Arrange
 		final var json = "json";
-		final var bean = SigningRequest.create()
-			.withExpires(OffsetDateTime.MAX)
-			.withRegistrationNumber("2024-ACTIVE");
+		final var registrationNumber = "registrationNumber";
+		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
 		final var problem = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		doThrow(problem).when(externalTaskServiceMock).complete(any(), any());
+		when(documentClientMock.getDocument(registrationNumber)).thenReturn(new Document().metadataList(new ArrayList<>()));
+		when(documentClientMock.updateDocument(eq(registrationNumber), any())).thenThrow(problem);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
@@ -128,11 +134,12 @@ class HandleSignedDocumentSigningWorkerTest {
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, false));
+		verify(documentClientMock).getDocument(registrationNumber);
+		verify(documentClientMock).updateDocument(eq(registrationNumber), any());
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(eq(externalTaskServiceMock), eq(externalTaskMock), anyString());
-		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock);
+		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, documentClientMock);
 	}
 }

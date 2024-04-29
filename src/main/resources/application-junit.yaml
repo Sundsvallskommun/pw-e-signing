@@ -40,4 +40,18 @@ config:
     client-secret: ${config.common.client-secret}
     base-url: comfactfacade.url
     token-uri: ${config.common.token-uri}
-    
+  document:
+    client-id: ${config.common.client-id}
+    client-secret: ${config.common.client-secret}
+    base-url: document.url
+    token-uri: ${config.common.token-uri}
+
+integration:
+  comfactfacade:
+    connectTimeout: 1
+    readTimeout: 2
+    url: ${config.comfactfacade.base-url}
+  document:
+    connectTimeout: 3
+    readTimeout: 4
+    url: ${config.document.base-url}

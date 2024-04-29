@@ -1,4 +1,4 @@
-package se.sundsvall.esigning.integration.comfactfacade.configuration;
+package se.sundsvall.esigning.integration.document.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,14 +11,14 @@ import se.sundsvall.esigning.Application;
 
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("junit")
-class ComfactFacadePropertiesTest {
+class DocumentPropertiesTest {
 
 	@Autowired
-	private ComfactFacadeProperties properties;
+	private DocumentProperties properties;
 
 	@Test
 	void testProperties() {
-		assertThat(properties.connectTimeout()).isEqualTo(1);
-		assertThat(properties.readTimeout()).isEqualTo(2);
+		assertThat(properties.connectTimeout()).isEqualTo(3);
+		assertThat(properties.readTimeout()).isEqualTo(4);
 	}
 }

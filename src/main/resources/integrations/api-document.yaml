@@ -1,0 +1,1076 @@
+openapi: 3.0.1
+info:
+  title: document
+  contact: {}
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  version: "2.0"
+servers:
+- url: https://document-af-document.apps.ocp201.sundsvall.se
+  description: Generated server url
+tags:
+- name: Document revisions
+  description: Document revision operations
+- name: Documents
+  description: Document operations
+paths:
+  /documents/{registrationNumber}/files:
+    put:
+      tags:
+      - Documents
+      summary: Add document file data (or replace existing if filename already exists
+        on the document object)
+      operationId: addOrReplaceFile
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - document
+              - documentFile
+              type: object
+              properties:
+                document:
+                  $ref: '#/components/schemas/DocumentDataCreateRequest'
+                documentFile:
+                  type: string
+                  format: binary
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "200":
+          description: Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /documents:
+    get:
+      tags:
+      - Documents
+      summary: Search documents.
+      operationId: search
+      parameters:
+      - name: query
+        in: query
+        description: "Search query. Use asterisk-character [*] as wildcard."
+        required: true
+        schema:
+          type: string
+        example: hello*
+      - name: includeConfidential
+        in: query
+        description: Include confidential records
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: true
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDocumentResponse'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PagedDocumentResponse'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    post:
+      tags:
+      - Documents
+      summary: Create document.
+      operationId: create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - document
+              - documentFiles
+              type: object
+              properties:
+                document:
+                  $ref: '#/components/schemas/DocumentCreateRequest'
+                documentFiles:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        "201":
+          description: Successful operation
+          headers:
+            Location:
+              style: simple
+              schema:
+                type: string
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /documents/{registrationNumber}:
+    get:
+      tags:
+      - Documents
+      summary: Read document (latest revision).
+      operationId: read
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      - name: includeConfidential
+        in: query
+        description: Include confidential records
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: true
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    patch:
+      tags:
+      - Documents
+      summary: Update document.
+      operationId: update
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      - name: includeConfidential
+        in: query
+        description: Include confidential records
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentUpdateRequest'
+        required: true
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /documents/{registrationNumber}/confidentiality:
+    patch:
+      tags:
+      - Documents
+      summary: Update document confidentiality (on all revisions).
+      operationId: updateConfidentiality
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfidentialityUpdateRequest'
+        required: true
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "200":
+          description: Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /documents/{registrationNumber}/revisions:
+    get:
+      tags:
+      - Document revisions
+      summary: Read document revisions.
+      operationId: readRevisions
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      - name: includeConfidential
+        in: query
+        description: Include confidential records
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: true
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedDocumentResponse'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PagedDocumentResponse'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /documents/{registrationNumber}/revisions/{revision}:
+    get:
+      tags:
+      - Document revisions
+      summary: Read document revision.
+      operationId: readRevision
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      - name: revision
+        in: path
+        description: Document revision
+        required: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+        example: 2
+      - name: includeConfidential
+        in: query
+        description: Include confidential records
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: true
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /documents/{registrationNumber}/revisions/{revision}/files/{documentDataId}:
+    get:
+      tags:
+      - Document revisions
+      summary: Read document file revision.
+      operationId: readFileRevision
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      - name: revision
+        in: path
+        description: Document revision
+        required: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+        example: 2
+      - name: documentDataId
+        in: path
+        description: Document data ID
+        required: true
+        schema:
+          type: string
+        example: 082ba08f-03c7-409f-b8a6-940a1397ba38
+      - name: includeConfidential
+        in: query
+        description: Include confidential records
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: true
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "200":
+          description: Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /documents/{registrationNumber}/files/{documentDataId}:
+    get:
+      tags:
+      - Documents
+      summary: Read document file (latest revision).
+      operationId: readFile
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      - name: documentDataId
+        in: path
+        description: Document data ID
+        required: true
+        schema:
+          type: string
+        example: 082ba08f-03c7-409f-b8a6-940a1397ba38
+      - name: includeConfidential
+        in: query
+        description: Include confidential records
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: true
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "200":
+          description: Successful operation
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    delete:
+      tags:
+      - Documents
+      summary: Delete document file.
+      operationId: deleteFile
+      parameters:
+      - name: registrationNumber
+        in: path
+        description: Document registration number
+        required: true
+        schema:
+          type: string
+        example: 2023-2281-1337
+      - name: documentDataId
+        in: path
+        description: Document data ID
+        required: true
+        schema:
+          type: string
+        example: 082ba08f-03c7-409f-b8a6-940a1397ba38
+      responses:
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        "400":
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Problem'
+                - $ref: '#/components/schemas/ConstraintViolationProblem'
+        "204":
+          description: Successful operation
+        "500":
+          description: Internal Server error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api-docs:
+    get:
+      tags:
+      - API
+      summary: OpenAPI
+      operationId: getApiDocs
+      responses:
+        "200":
+          description: OK
+          content:
+            application/yaml:
+              schema:
+                type: string
+      x-auth-type: None
+      x-throttling-tier: Unlimited
+      x-wso2-mutual-ssl: Optional
+components:
+  schemas:
+    DocumentDataCreateRequest:
+      required:
+      - createdBy
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Actor that created this revision
+          example: username123
+      description: Document
+    Problem:
+      type: object
+      properties:
+        instance:
+          type: string
+          format: uri
+        type:
+          type: string
+          format: uri
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          $ref: '#/components/schemas/StatusType'
+        title:
+          type: string
+        detail:
+          type: string
+    StatusType:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+        reasonPhrase:
+          type: string
+    ConstraintViolationProblem:
+      type: object
+      properties:
+        cause:
+          $ref: '#/components/schemas/ThrowableProblem'
+        stackTrace:
+          type: array
+          items:
+            type: object
+            properties:
+              classLoaderName:
+                type: string
+              moduleName:
+                type: string
+              moduleVersion:
+                type: string
+              methodName:
+                type: string
+              fileName:
+                type: string
+              lineNumber:
+                type: integer
+                format: int32
+              className:
+                type: string
+              nativeMethod:
+                type: boolean
+        type:
+          type: string
+          format: uri
+        status:
+          $ref: '#/components/schemas/StatusType'
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Violation'
+        title:
+          type: string
+        message:
+          type: string
+        instance:
+          type: string
+          format: uri
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
+        detail:
+          type: string
+        suppressed:
+          type: array
+          items:
+            type: object
+            properties:
+              stackTrace:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    classLoaderName:
+                      type: string
+                    moduleName:
+                      type: string
+                    moduleVersion:
+                      type: string
+                    methodName:
+                      type: string
+                    fileName:
+                      type: string
+                    lineNumber:
+                      type: integer
+                      format: int32
+                    className:
+                      type: string
+                    nativeMethod:
+                      type: boolean
+              message:
+                type: string
+              localizedMessage:
+                type: string
+        localizedMessage:
+          type: string
+    ThrowableProblem:
+      type: object
+      properties:
+        cause:
+          $ref: '#/components/schemas/ThrowableProblem'
+        stackTrace:
+          type: array
+          items:
+            type: object
+            properties:
+              classLoaderName:
+                type: string
+              moduleName:
+                type: string
+              moduleVersion:
+                type: string
+              methodName:
+                type: string
+              fileName:
+                type: string
+              lineNumber:
+                type: integer
+                format: int32
+              className:
+                type: string
+              nativeMethod:
+                type: boolean
+        message:
+          type: string
+        instance:
+          type: string
+          format: uri
+        type:
+          type: string
+          format: uri
+        parameters:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          $ref: '#/components/schemas/StatusType'
+        title:
+          type: string
+        detail:
+          type: string
+        suppressed:
+          type: array
+          items:
+            type: object
+            properties:
+              stackTrace:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    classLoaderName:
+                      type: string
+                    moduleName:
+                      type: string
+                    moduleVersion:
+                      type: string
+                    methodName:
+                      type: string
+                    fileName:
+                      type: string
+                    lineNumber:
+                      type: integer
+                      format: int32
+                    className:
+                      type: string
+                    nativeMethod:
+                      type: boolean
+              message:
+                type: string
+              localizedMessage:
+                type: string
+        localizedMessage:
+          type: string
+    Violation:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    Confidentiality:
+      type: object
+      properties:
+        confidential:
+          type: boolean
+          description: |
+            A flag that can be set to alert administrative users handling the information that there are some special privacy policies to follow for the person in question.
+            If there are special privacy policies to follow for this record, this flag should be set to 'true', otherwise 'false'.
+          example: true
+        legalCitation:
+          type: string
+          description: Legal citation
+          example: 25 kap. 1 § OSL
+      description: Confidentiality model.
+    DocumentCreateRequest:
+      required:
+      - createdBy
+      - description
+      - metadataList
+      - municipalityId
+      type: object
+      properties:
+        municipalityId:
+          type: string
+          description: Municipality ID
+          example: "2281"
+        createdBy:
+          type: string
+          description: Actor that created this revision (all modifications will create
+            new revisions)
+          example: username123
+        confidentiality:
+          $ref: '#/components/schemas/Confidentiality'
+        archive:
+          type: boolean
+          description: Tells if the document is eligible for archiving
+          example: false
+        description:
+          maxLength: 8192
+          minLength: 0
+          type: string
+          description: Document description
+          example: A brief description of this object. Maximum 8192 characters.
+        metadataList:
+          type: array
+          description: List of DocumentMetadata objects.
+          items:
+            $ref: '#/components/schemas/DocumentMetadata'
+      description: Document
+    DocumentMetadata:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          type: string
+          description: Metadata key
+          example: Some key
+        value:
+          type: string
+          description: Metadata value
+          example: Some value
+      description: DocumentMetadata model
+    DocumentUpdateRequest:
+      required:
+      - createdBy
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Actor that created this revision (all modifications will create
+            new revisions).
+          example: username123
+        description:
+          maxLength: 8192
+          minLength: 0
+          type: string
+          description: Document description
+          example: A brief description of this object. Maximum 8192 characters.
+        archive:
+          type: boolean
+          description: Tells if the document is eligible for archiving
+          example: false
+        metadataList:
+          type: array
+          description: List of DocumentMetadata objects.
+          items:
+            $ref: '#/components/schemas/DocumentMetadata'
+      description: DocumentUpdateRequest model.
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the document.
+          example: 0d64c132-3aea-11ec-8d3d-0242ac130003
+        municipalityId:
+          type: string
+          description: Municipality ID
+          example: "2281"
+        registrationNumber:
+          type: string
+          description: "Registration number on the format [YYYY-nnnn-nnnn]."
+          example: 2023-2281-1337
+        revision:
+          type: integer
+          description: Document revision.
+          format: int32
+          example: 2
+        confidentiality:
+          $ref: '#/components/schemas/Confidentiality'
+        description:
+          type: string
+          description: Document description
+          example: A brief description of this object.
+        created:
+          type: string
+          description: Timestamp when document revision was created.
+          format: date-time
+          example: 2023-08-31T01:30:00+02:00
+        createdBy:
+          type: string
+          description: Actor that created this revision.
+          example: username123
+        archive:
+          type: boolean
+          description: Tells if the document is eligible for archiving
+          example: false
+        metadataList:
+          type: array
+          description: List of DocumentMetadata objects.
+          items:
+            $ref: '#/components/schemas/DocumentMetadata'
+        documentData:
+          type: array
+          description: Document data
+          items:
+            $ref: '#/components/schemas/DocumentData'
+      description: Document model.
+      readOnly: true
+    DocumentData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the document data.
+          example: 082ba08f-03c7-409f-b8a6-940a1397ba38
+        fileName:
+          type: string
+          description: File name.
+          example: my-file.pdf
+        mimeType:
+          type: string
+          description: The mime type of the file.
+          example: application/pdf
+        fileSizeInBytes:
+          type: integer
+          description: File size in bytes
+          format: int64
+          example: 5068
+      description: DocumentData model.
+      readOnly: true
+    ConfidentialityUpdateRequest:
+      required:
+      - changedBy
+      - confidential
+      type: object
+      properties:
+        confidential:
+          type: boolean
+          description: |
+            A flag that can be set to alert administrative users handling the information that there are some special privacy policies to follow for the person in question.
+            If there are special privacy policies to follow for this record, this flag should be set to 'true', otherwise 'false'.
+            Please note: This will affect all revisions, not just the latest revision.
+          example: false
+        legalCitation:
+          type: string
+          description: Legal citation
+          example: 25 kap. 1 § OSL
+        changedBy:
+          type: string
+          description: Actor that performed this change
+          example: username123
+      description: ConfidentialityUpdateRequest model.
+    PagedDocumentResponse:
+      type: object
+      properties:
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        _meta:
+          $ref: '#/components/schemas/PagingMetaData'
+      description: Paged document response model
+      readOnly: true
+    PagingMetaData:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page
+          format: int32
+          readOnly: true
+          example: 5
+        limit:
+          type: integer
+          description: Displayed objects per page
+          format: int32
+          readOnly: true
+          example: 20
+        count:
+          type: integer
+          description: Displayed objects on current page
+          format: int32
+          readOnly: true
+          example: 13
+        totalRecords:
+          type: integer
+          description: Total amount of hits based on provided search parameters
+          format: int64
+          readOnly: true
+          example: 98
+        totalPages:
+          type: integer
+          description: Total amount of pages based on provided search parameters
+          format: int32
+          readOnly: true
+          example: 23
+      description: PagingMetaData model
+  securitySchemes: {}

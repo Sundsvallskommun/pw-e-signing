@@ -6,8 +6,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.hc.core5.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ByteArrayResource;
 
 import generated.se.sundsvall.comfactfacade.Identification;
 import se.sundsvall.esigning.api.model.Initiator;
@@ -43,21 +43,24 @@ class ComfactFacadeMapperTest {
 	void toSigningRequestWithDefinedLanguage() {
 		final var language = "en-US";
 		final var input = createInput(language);
+		final var bytes = "content".getBytes();
+		final var contentType = "contentType";
 
-		final var bean = ComfactFacadeMapper.toSigningRequest(input);
-		assertResult(language, bean);
+		final var bean = ComfactFacadeMapper.toSigningRequest(input, new ByteArrayResource(bytes), contentType);
+		assertResult(language, bean, bytes, contentType);
 	}
 
 	@Test
 	void toSigningRequestWithDefaultLanguage() {
 		final var input = createInput(null);
+		final var bytes = "content".getBytes();
+		final var contentType = "contentType";
 
-		final var bean = ComfactFacadeMapper.toSigningRequest(input);
-		assertResult("se-SE", bean);
-
+		final var bean = ComfactFacadeMapper.toSigningRequest(input, new ByteArrayResource(bytes), contentType);
+		assertResult("sv-SE", bean, bytes, contentType);
 	}
 
-	private static void assertResult(final String language, final generated.se.sundsvall.comfactfacade.SigningRequest bean) {
+	private static void assertResult(final String language, final generated.se.sundsvall.comfactfacade.SigningRequest bean, byte[] bytes, String contentType) {
 		assertThat(bean.getAdditionalDocuments()).isNull();
 		assertThat(bean.getAdditionalParties()).isNull();
 		assertThat(bean.getCustomerReference()).isEqualTo(REGISTRATION_NUMBER + " - " + FILE_NAME);
@@ -65,9 +68,9 @@ class ComfactFacadeMapperTest {
 		assertThat(bean.getLanguage()).isEqualTo(language);
 
 		assertThat(bean.getDocument()).isNotNull();
-		assertThat(bean.getDocument().getContent()).isEqualTo(ComfactFacadeMapper.EXAMPLE_PDF.getBytes());
+		assertThat(bean.getDocument().getContent()).isEqualTo(bytes);
 		assertThat(bean.getDocument().getFileName()).isEqualTo(FILE_NAME);
-		assertThat(bean.getDocument().getMimeType()).isEqualTo(ContentType.APPLICATION_PDF.getMimeType());
+		assertThat(bean.getDocument().getMimeType()).isEqualTo(contentType);
 		assertThat(bean.getDocument().getName()).isEqualTo(DOCUMENT_NAME);
 
 		assertThat(bean.getInitiator()).isNotNull();
