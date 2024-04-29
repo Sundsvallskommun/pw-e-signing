@@ -1,6 +1,7 @@
 package se.sundsvall.esigning.integration.document.configuration;
 
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
+import org.springframework.cloud.openfeign.support.JsonFormWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -21,5 +22,11 @@ public class DocumentConfiguration {
 			.withRequestTimeoutsInSeconds(properties.connectTimeout(), properties.readTimeout())
 			.withRetryableOAuth2InterceptorForClientRegistration(clientRepository.findByRegistrationId(CLIENT_ID))
 			.composeCustomizersToOne();
+	}
+
+	@Bean
+	JsonFormWriter jsonFormWriter() {
+		// Needed for Feign to handle json objects sent as requestpart correctly
+		return new JsonFormWriter();
 	}
 }

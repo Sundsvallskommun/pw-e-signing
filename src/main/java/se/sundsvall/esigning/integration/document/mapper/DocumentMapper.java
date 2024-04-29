@@ -43,8 +43,8 @@ public final class DocumentMapper {
 			.toList();
 	}
 
-	public static String toDocumentDataCreateRequest() {
-		return GSON.toJson(new DocumentDataCreateRequest(DOCUMENT_USER));
+	public static DocumentDataCreateRequest toDocumentDataCreateRequest() {
+		return new DocumentDataCreateRequest(DOCUMENT_USER);
 	}
 
 	public static MultipartFile toMultipartFile(Document document) {

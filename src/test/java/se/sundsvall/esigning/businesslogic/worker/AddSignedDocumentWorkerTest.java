@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 
 import generated.se.sundsvall.comfactfacade.Document;
 import generated.se.sundsvall.comfactfacade.SigningInstance;
+import generated.se.sundsvall.document.DocumentDataCreateRequest;
 import generated.se.sundsvall.document.DocumentUpdateRequest;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
@@ -111,7 +112,7 @@ class AddSignedDocumentWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).getSigningInstance(signingId);
-		verify(documentClientMock).addFileToDocument(eq(registrationNumber), eq("{\"createdBy\":\"E-signing-process\"}"), multiPartFileCaptor.capture());
+		verify(documentClientMock).addFileToDocument(eq(registrationNumber), eq(new DocumentDataCreateRequest("E-signing-process")), multiPartFileCaptor.capture());
 		verify(externalTaskServiceMock).complete(externalTaskMock);
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock, documentClientMock);
 		verifyNoInteractions(failureHandlerMock);

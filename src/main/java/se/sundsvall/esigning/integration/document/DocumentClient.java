@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import generated.se.sundsvall.document.Document;
+import generated.se.sundsvall.document.DocumentDataCreateRequest;
 import generated.se.sundsvall.document.DocumentUpdateRequest;
 import se.sundsvall.esigning.integration.document.configuration.DocumentConfiguration;
 
@@ -30,5 +31,5 @@ public interface DocumentClient {
 	ResponseEntity<ByteArrayResource> getDocumentData(@PathVariable("registrationNumber") String registrationNumber, @PathVariable("documentDataId") String documentDataId);
 
 	@PutMapping(path = "/documents/{registrationNumber}/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	Void addFileToDocument(@PathVariable("registrationNumber") String registrationNumber, @RequestPart("document") String document, @RequestPart("documentFile") MultipartFile documentFile);
+	Void addFileToDocument(@PathVariable("registrationNumber") String registrationNumber, @RequestPart("document") DocumentDataCreateRequest document, @RequestPart("documentFile") MultipartFile documentFile);
 }

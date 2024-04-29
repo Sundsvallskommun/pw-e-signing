@@ -15,7 +15,8 @@ class DocumentMapperTest {
 
 	@Test
 	void toDocumentDataCreateRequest() {
-		assertThat(DocumentMapper.toDocumentDataCreateRequest()).isEqualTo("{\"createdBy\":\"E-signing-process\"}");
+		final var bean = DocumentMapper.toDocumentDataCreateRequest();
+		assertThat(bean.getCreatedBy()).isEqualTo("E-signing-process");
 	}
 
 	@Test

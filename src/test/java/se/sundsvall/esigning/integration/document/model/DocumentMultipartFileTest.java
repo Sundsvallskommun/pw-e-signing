@@ -21,7 +21,7 @@ import wiremock.org.apache.commons.io.FileUtils;
 class DocumentMultipartFileTest {
 
 	@Mock
-	File fileMock;
+	private File fileMock;
 
 	@ParameterizedTest
 	@ValueSource(strings = "")
