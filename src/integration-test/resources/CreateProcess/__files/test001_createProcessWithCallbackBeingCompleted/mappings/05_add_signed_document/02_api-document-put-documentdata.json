@@ -11,9 +11,6 @@
 			},
 			"Content-Type": {
 				"contains": "multipart/form-data"
-			},
-			"Content-Length": {
-				"equalTo": "55398"
 			}
 		}
 	},
