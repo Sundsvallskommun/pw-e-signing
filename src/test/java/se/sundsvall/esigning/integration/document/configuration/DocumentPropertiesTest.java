@@ -18,7 +18,7 @@ class DocumentPropertiesTest {
 
 	@Test
 	void testProperties() {
-		assertThat(properties.connectTimeout()).isEqualTo(3);
-		assertThat(properties.readTimeout()).isEqualTo(4);
+		assertThat(properties.connectTimeout()).isEqualTo(5);
+		assertThat(properties.readTimeout()).isEqualTo(6);
 	}
 }

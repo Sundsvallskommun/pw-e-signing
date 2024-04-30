@@ -1,0 +1,27 @@
+{
+	"id": "a054cf70-907a-49dc-aa42-ef4c6cfa8484",
+	"municipalityId": "1234",
+	"registrationNumber": "2024-1234-3",
+	"revision": 2,
+	"confidentiality": {
+		"confidential": false
+	},
+	"description": "Termination contract",
+	"created": "2024-04-01T13:37:10.000+02:00",
+	"createdBy": "E-signing-process",
+	"archive": false,
+	"metadataList": [
+		{
+			"key": "signingInProgress",
+			"value": "true"
+		}
+	],
+	"documentData": [
+		{
+			"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
+			"fileName": "termination_contract.pdf",
+			"mimeType": "application/pdf",
+			"fileSizeInBytes": 44399
+		}
+	]
+}

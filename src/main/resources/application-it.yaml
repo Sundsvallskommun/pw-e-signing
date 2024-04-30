@@ -9,6 +9,8 @@ camunda:
   bpm:
     client:
       base-url: http://replaced_by_test:8080
+      backoff:
+        maxTime: 5000
   process:
     wait-duration: '* * * ? * *'
   
@@ -32,4 +34,6 @@ config:
     client-secret: ${config.common.client-secret}
     base-url: http://localhost:${wiremock.server.port}/api-document
     token-uri: ${config.common.token-uri}
+  callback:
+    base-url: http://localhost:${wiremock.server.port}/callback-mock
     

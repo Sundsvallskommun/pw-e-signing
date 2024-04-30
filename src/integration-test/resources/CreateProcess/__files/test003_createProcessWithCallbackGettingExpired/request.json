@@ -1,0 +1,24 @@
+{
+  "registrationNumber": "2024-1234-3",
+  "fileName": "termination_contract.pdf",
+  "name": "Termination contract",
+  "expires": "2099-12-31T23:59:59Z",
+  "notificationMessage": {
+    "subject": "Termination contract",
+    "body": "Dear John Connor, please sign the termination contract."
+  },
+  "initiator": {
+    "name": "Cyberdyne Systems Model 101",
+    "partyId": "41b1f8a4-fa77-42be-8534-9480e729c902",
+    "email": "model.101@noreply.com",
+    "organization": "Cyberdyne Systems"
+  },
+  "signatories": [
+    {
+      "name": "John Connor",
+      "partyId": "58253228-246f-44bb-8f97-4ed22bf6aee2",
+      "email": "john.connor@noreply.com"
+    }
+  ],
+  "callbackUrl": "[callback.url]"
+}

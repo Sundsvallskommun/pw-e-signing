@@ -12,6 +12,8 @@ import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_I
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
@@ -30,6 +32,8 @@ import org.zalando.problem.Status;
 
 import com.google.gson.Gson;
 
+import generated.se.sundsvall.document.Document;
+import generated.se.sundsvall.document.DocumentMetadata;
 import generated.se.sundsvall.document.DocumentUpdateRequest;
 import se.sundsvall.esigning.Constants;
 import se.sundsvall.esigning.api.model.SigningRequest;
@@ -60,6 +64,9 @@ class AddSigningIdWorkerTest {
 	@Mock
 	private DocumentClient documentClientMock;
 
+	@Mock
+	private Document documentMock;
+
 	@InjectMocks
 	private AddSigningIdWorker worker;
 
@@ -78,7 +85,7 @@ class AddSigningIdWorkerTest {
 		// Arrange
 		final var registrationNumber = "registrationNumber";
 		final var json = "json";
-
+		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata("someKey", "someValue")));
 		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
 		final var signingId = UUID.randomUUID().toString();
 
@@ -86,6 +93,8 @@ class AddSigningIdWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
+		when(documentClientMock.getDocument(registrationNumber)).thenReturn(documentMock);
+		when(documentMock.getMetadataList()).thenReturn(existingMetadata);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
@@ -102,9 +111,12 @@ class AddSigningIdWorkerTest {
 		assertThat(doucmentUpdateRequestCaptor.getValue().getArchive()).isNull();
 		assertThat(doucmentUpdateRequestCaptor.getValue().getCreatedBy()).isEqualTo(Constants.DOCUMENT_USER);
 		assertThat(doucmentUpdateRequestCaptor.getValue().getDescription()).isNull();
-		assertThat(doucmentUpdateRequestCaptor.getValue().getMetadataList()).hasSize(1).satisfiesExactly(meta -> {
+		assertThat(doucmentUpdateRequestCaptor.getValue().getMetadataList()).hasSize(2).satisfiesExactlyInAnyOrder(meta -> {
 			assertThat(meta.getKey()).isEqualTo(Constants.DOCUMENT_METADATA_KEY_SIGNING_ID);
 			assertThat(meta.getValue()).isEqualTo(signingId);
+		}, meta -> {
+			assertThat(meta.getKey()).isEqualTo("someKey");
+			assertThat(meta.getValue()).isEqualTo("someValue");
 		});
 	}
 
@@ -113,6 +125,7 @@ class AddSigningIdWorkerTest {
 		// Arrange
 		final var registrationNumber = "registrationNumber";
 		final var json = "json";
+		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata("someKey", "someValue")));
 		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
 		final var problem = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
 
@@ -120,6 +133,8 @@ class AddSigningIdWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.updateDocument(any(), any())).thenThrow(problem);
+		when(documentClientMock.getDocument(registrationNumber)).thenReturn(documentMock);
+		when(documentMock.getMetadataList()).thenReturn(existingMetadata);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
