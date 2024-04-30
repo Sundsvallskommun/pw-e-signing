@@ -33,7 +33,9 @@ public final class ComfactFacadeMapper {
 			.language(ofNullable(language).orElse(DEFAULT_LANGUAGE))
 			.initiator(toParty(request.getInitiator(), language))
 			.signatories(toSignatories(request.getSignatories(), language))
-			.notificationMessage(toNotificationMessage(request.getNotificationMessage(), language));
+			.notificationMessage(toNotificationMessage(request.getNotificationMessage(), language))
+			.additionalDocuments(emptyList())
+			.additionalParties(emptyList());
 
 		ofNullable(request.getReminder()).ifPresent(reminder -> signingRequest.reminder(toReminder(reminder, language)));
 
