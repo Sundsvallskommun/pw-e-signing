@@ -61,8 +61,8 @@ class ComfactFacadeMapperTest {
 	}
 
 	private static void assertResult(final String language, final generated.se.sundsvall.comfactfacade.SigningRequest bean, byte[] bytes, String contentType) {
-		assertThat(bean.getAdditionalDocuments()).isNull();
-		assertThat(bean.getAdditionalParties()).isNull();
+		assertThat(bean.getAdditionalDocuments()).isEmpty();
+		assertThat(bean.getAdditionalParties()).isEmpty();
 		assertThat(bean.getCustomerReference()).isEqualTo(REGISTRATION_NUMBER + " - " + FILE_NAME);
 		assertThat(bean.getExpires()).isEqualTo(EXPIRES);
 		assertThat(bean.getLanguage()).isEqualTo(language);
