@@ -1,7 +1,6 @@
 package apptest;
 
 import static generated.se.sundsvall.camunda.HistoricProcessInstanceDto.StateEnum.COMPLETED;
-import static java.nio.file.Files.readString;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,9 +12,7 @@ import static org.awaitility.Awaitility.setDefaultTimeout;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.util.ResourceUtils.getFile;
 
-import java.io.IOException;
 import java.time.Duration;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,18 +47,6 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 			.until(() -> camundaClient.getDeployments("process-e-signing.bpmn", null, null).size(), equalTo(1));
 
 		verifyAllStubs();
-	}
-
-	protected String fromTestFile(final String fileName) {
-		return fromFile(getTestDirectoryPath() + fileName);
-	}
-
-	private String fromFile(final String filePath) {
-		try {
-			return readString(getFile(filePath).toPath());
-		} catch (final IOException e) {
-			return null;
-		}
 	}
 
 	@Test
