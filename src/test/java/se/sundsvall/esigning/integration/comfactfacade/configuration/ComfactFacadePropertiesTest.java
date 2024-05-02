@@ -18,7 +18,7 @@ class ComfactFacadePropertiesTest {
 
 	@Test
 	void testProperties() {
-		assertThat(properties.connectTimeout()).isEqualTo(1);
-		assertThat(properties.readTimeout()).isEqualTo(2);
+		assertThat(properties.connectTimeout()).isEqualTo(3);
+		assertThat(properties.readTimeout()).isEqualTo(4);
 	}
 }

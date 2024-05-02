@@ -59,6 +59,9 @@ camunda:
 # Integration settings
 #----------------------------------------
 integration:
+  callback:
+    connectTimeout: 5
+    readTimeout: 20
   camunda:
     connectTimeout: 5
     readTimeout: 20

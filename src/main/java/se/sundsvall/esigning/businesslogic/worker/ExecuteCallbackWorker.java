@@ -6,22 +6,22 @@ import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
 import com.google.gson.Gson;
 
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
+import se.sundsvall.esigning.integration.callback.CallbackClient;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 
 @Component
 @ExternalTaskSubscription("ExecuteCallbackTask")
 public class ExecuteCallbackWorker extends AbstractWorker {
 
-	private final RestClient restClient;
+	private final CallbackClient callbackClient;
 
-	ExecuteCallbackWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, RestClient restClient) {
+	ExecuteCallbackWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, CallbackClient callbackClient) {
 		super(camundaClient, failureHandler, gson);
-		this.restClient = restClient;
+		this.callbackClient = callbackClient;
 	}
 
 	@Override
@@ -32,10 +32,7 @@ public class ExecuteCallbackWorker extends AbstractWorker {
 			final var uri = addProcessIdParameter(request.getCallbackUrl(), externalTask.getProcessInstanceId());
 			logInfo("Executing callback to {} for document {} with registration number {}", uri, request.getFileName(), request.getRegistrationNumber());
 
-			restClient.get()
-				.uri(uri)
-				.retrieve()
-				.toBodilessEntity();
+			callbackClient.sendRequest(uri);
 
 			externalTaskService.complete(externalTask);
 		} catch (final Exception exception) {

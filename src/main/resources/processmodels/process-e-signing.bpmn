@@ -38,22 +38,22 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
         <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">${waitDuration}</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:sequenceFlow id="Flow_1tgxilt" sourceRef="check_signing_status" targetRef="gateway_signed_or_expired" />
+    <bpmn:sequenceFlow id="Flow_1tgxilt" sourceRef="check_signing_status" targetRef="gateway_signing_status" />
     <bpmn:serviceTask id="check_signing_status" name="Check signing status" camunda:type="external" camunda:topic="CheckSigningStatusTask">
       <bpmn:incoming>Flow_1m0se9l</bpmn:incoming>
       <bpmn:outgoing>Flow_1tgxilt</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="gateway_signed_or_expired" default="Flow_0y2xc0t">
+    <bpmn:exclusiveGateway id="gateway_signing_status" name="Gateway for signing status" default="Flow_0y2xc0t">
       <bpmn:incoming>Flow_1tgxilt</bpmn:incoming>
       <bpmn:outgoing>signing_completed</bpmn:outgoing>
       <bpmn:outgoing>Flow_0y2xc0t</bpmn:outgoing>
       <bpmn:outgoing>signing_expired</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="signing_completed" name="Completed" sourceRef="gateway_signed_or_expired" targetRef="add_signed_document">
+    <bpmn:sequenceFlow id="signing_completed" name="Completed" sourceRef="gateway_signing_status" targetRef="add_signed_document">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${comfactSigningStatus == 'Completed'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0y2xc0t" name="Active" sourceRef="gateway_signed_or_expired" targetRef="wait_timer" />
-    <bpmn:sequenceFlow id="signing_expired" name="Not active or completed" sourceRef="gateway_signed_or_expired" targetRef="handle_unsigned_document_signing">
+    <bpmn:sequenceFlow id="Flow_0y2xc0t" name="Active" sourceRef="gateway_signing_status" targetRef="wait_timer" />
+    <bpmn:sequenceFlow id="signing_expired" name="Not active or completed" sourceRef="gateway_signing_status" targetRef="handle_unsigned_document_signing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${comfactSigningStatus != 'Active' &amp;&amp; comfactSigningStatus != 'Completed'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_00iwjxr" sourceRef="execute_callback" targetRef="remove_ongoing_signing_signal" />
@@ -72,7 +72,7 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
       <bpmn:incoming>signing_expired</bpmn:incoming>
       <bpmn:outgoing>Flow_0now2hs</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="add_signed_document" name="Add signed document " camunda:type="external" camunda:topic="AddSignedDocumentTask">
+    <bpmn:serviceTask id="add_signed_document" name="Add signed document" camunda:type="external" camunda:topic="AddSignedDocumentTask">
       <bpmn:documentation>Saves signed document and updates status on document to 'SIGNED'</bpmn:documentation>
       <bpmn:incoming>signing_completed</bpmn:incoming>
       <bpmn:outgoing>Flow_18a36mu</bpmn:outgoing>
@@ -138,10 +138,10 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
       <bpmndi:BPMNShape id="Activity_1jfc260_di" bpmnElement="check_signing_status">
         <dc:Bounds x="770" y="180" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1hln8ao_di" bpmnElement="gateway_signed_or_expired" isMarkerVisible="true">
+      <bpmndi:BPMNShape id="Gateway_1hln8ao_di" bpmnElement="gateway_signing_status" isMarkerVisible="true">
         <dc:Bounds x="915" y="195" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="889" y="183" width="41" height="14" />
+          <dc:Bounds x="908" y="252" width="68" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1k9ckbn_di" bpmnElement="gateway_callback_present" isMarkerVisible="true">

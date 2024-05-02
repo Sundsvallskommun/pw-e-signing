@@ -1,0 +1,34 @@
+{
+	"scenarioName": "create-process-without-callback-getting-expired",
+	"requiredScenarioState": "add_ongoing_signing_signal-worker---api-document-get-document",
+	"newScenarioState": "add_ongoing_signing_signal-worker---api-document-patch-document",
+	"request": {
+		"urlPath": "/api-document/documents/2024-1234-4",
+		"method": "PATCH",
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
+			}
+		},
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"createdBy": "E-signing-process",
+					"metadataList": [
+						{
+							"key": "signingInProgress",
+							"value": "true"
+						}
+					]
+				}
+			}
+		]
+	},
+	"response": {
+		"headers": {
+			"Content-Type": "application/json"
+		},
+		"status": 200,
+		"bodyFileName": "test004_createProcessWithoutCallbackGettingExpired/responses/01_add_ongoing_signing_signal/api-document-patch-document-response.json"
+	}
+}
