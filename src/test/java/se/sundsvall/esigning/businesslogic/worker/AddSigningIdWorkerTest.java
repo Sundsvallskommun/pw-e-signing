@@ -1,21 +1,9 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+import com.google.gson.Gson;
+import generated.se.sundsvall.document.Document;
+import generated.se.sundsvall.document.DocumentMetadata;
+import generated.se.sundsvall.document.DocumentUpdateRequest;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
@@ -29,17 +17,28 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-
-import com.google.gson.Gson;
-
-import generated.se.sundsvall.document.Document;
-import generated.se.sundsvall.document.DocumentMetadata;
-import generated.se.sundsvall.document.DocumentUpdateRequest;
 import se.sundsvall.esigning.Constants;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class AddSigningIdWorkerTest {
@@ -88,12 +87,14 @@ class AddSigningIdWorkerTest {
 		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata("someKey", "someValue")));
 		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
 		final var signingId = UUID.randomUUID().toString();
+		final var municipalityId = "municipalityId";
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(documentClientMock.getDocument(registrationNumber)).thenReturn(documentMock);
+		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentMock.getMetadataList()).thenReturn(existingMetadata);
 
 		// Act
@@ -102,9 +103,10 @@ class AddSigningIdWorkerTest {
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(externalTaskServiceMock).complete(externalTaskMock);
-		verify(documentClientMock).updateDocument(eq(registrationNumber), doucmentUpdateRequestCaptor.capture());
+		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), doucmentUpdateRequestCaptor.capture());
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, documentClientMock);
 		verifyNoInteractions(failureHandlerMock);
 
@@ -124,6 +126,7 @@ class AddSigningIdWorkerTest {
 	void executeThrowsExceptionOnDocumentClientCall() {
 		// Arrange
 		final var registrationNumber = "registrationNumber";
+		final var municipalityId = "municipalityId";
 		final var json = "json";
 		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata("someKey", "someValue")));
 		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
@@ -131,9 +134,10 @@ class AddSigningIdWorkerTest {
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(documentClientMock.updateDocument(any(), any())).thenThrow(problem);
-		when(documentClientMock.getDocument(registrationNumber)).thenReturn(documentMock);
+		when(documentClientMock.updateDocument(anyString(), any(), any())).thenThrow(problem);
+		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentMock.getMetadataList()).thenReturn(existingMetadata);
 
 		// Act
@@ -142,8 +146,9 @@ class AddSigningIdWorkerTest {
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(documentClientMock).updateDocument(eq(registrationNumber), any());
+		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), any());
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();

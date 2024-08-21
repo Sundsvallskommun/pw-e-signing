@@ -3,7 +3,7 @@
 	"requiredScenarioState": "handle_unsigned_document-worker---api-comfactfacade-get-signinginstance",
 	"newScenarioState": "handle_unsigned_document-worker---api-document-get-document",
 	"request": {
-		"urlPath": "/api-document/documents/2024-1234-3",
+		"urlPath": "/api-document/2281/documents/2024-1234-3",
 		"method": "GET",
 		"headers": {
 			"Authorization": {

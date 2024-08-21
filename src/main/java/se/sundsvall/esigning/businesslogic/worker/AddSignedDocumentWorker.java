@@ -1,20 +1,19 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentDataCreateRequest;
-import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toMultipartFile;
-
+import com.google.gson.Gson;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
-
-import com.google.gson.Gson;
-
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentDataCreateRequest;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toMultipartFile;
 
 @Component
 @ExternalTaskSubscription("AddSignedDocumentTask")
@@ -32,6 +31,8 @@ public class AddSignedDocumentWorker extends AbstractWorker {
 	@Override
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 		final var request = getSigningRequest(externalTask);
+		final String municipalityId = externalTask.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
+
 		try {
 			logInfo("Handling signed document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
@@ -39,7 +40,7 @@ public class AddSignedDocumentWorker extends AbstractWorker {
 			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
 			// Create new revision of document with signed documentdata
-			documentClient.addFileToDocument(request.getRegistrationNumber(),
+			documentClient.addFileToDocument(municipalityId, request.getRegistrationNumber(),
 				toDocumentDataCreateRequest(),
 				toMultipartFile(response.getSignedDocument()));
 

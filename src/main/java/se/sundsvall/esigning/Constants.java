@@ -13,6 +13,7 @@ public final class Constants {
 	public static final String CAMUNDA_VARIABLE_CALLBACK_PRESENT = "callbackPresent";
 	public static final String CAMUNDA_VARIABLE_COMFACT_SIGNING_ID = "comfactSigningId";
 	public static final String CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS = "comfactSigningStatus";
+	public static final String CAMUNDA_VARIABLE_MUNICIPALITY_ID = "municipalityId";
 
 	public static final String DOCUMENT_USER = "E-signing-process";
 	public static final String DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS = "signingInProgress";

@@ -1,17 +1,5 @@
 package se.sundsvall.esigning.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
-import static org.zalando.problem.Status.BAD_REQUEST;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +9,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.zalando.problem.Problem;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import org.zalando.problem.violations.Violation;
-
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.Initiator;
 import se.sundsvall.esigning.api.model.Message;
@@ -30,9 +17,23 @@ import se.sundsvall.esigning.api.model.Signatory;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.service.ProcessService;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON;
+import static org.zalando.problem.Status.BAD_REQUEST;
+
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ProcessResourceFailuresTest {
+
+	private static final String PATH = "/2281/process/start";
 
 	@MockBean
 	private ProcessService processServiceMock;
@@ -44,7 +45,7 @@ class ProcessResourceFailuresTest {
 	void startProcessMissingBody() {
 
 		// Act
-		final var response = webTestClient.post().uri("/process/start")
+		final var response = webTestClient.post().uri(PATH)
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.exchange()
 			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
@@ -58,7 +59,7 @@ class ProcessResourceFailuresTest {
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
 		assertThat(response.getDetail()).isEqualTo("Required request body is missing: public org.springframework.http.ResponseEntity<se.sundsvall.esigning.api.model.StartResponse> "
-			+ "se.sundsvall.esigning.api.ProcessResource.startProcess(se.sundsvall.esigning.api.model.SigningRequest)");
+			+ "se.sundsvall.esigning.api.ProcessResource.startProcess(java.lang.String,se.sundsvall.esigning.api.model.SigningRequest)");
 
 		verifyNoInteractions(processServiceMock);
 	}
@@ -66,7 +67,7 @@ class ProcessResourceFailuresTest {
 	@Test
 	void startProcessEmptyBody() {
 		// Act
-		final var response = webTestClient.post().uri("/process/start")
+		final var response = webTestClient.post().uri(PATH)
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(new SigningRequest())
 			.exchange()
@@ -93,7 +94,7 @@ class ProcessResourceFailuresTest {
 	@Test
 	void startProcessEmptyInitiatorSignatorAndNotificationMessage() {
 		// Act
-		final var response = webTestClient.post().uri("/process/start")
+		final var response = webTestClient.post().uri(PATH)
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(new SigningRequest()
 				.withInitiator(Initiator.create())
@@ -126,7 +127,7 @@ class ProcessResourceFailuresTest {
 	@Test
 	void startProcessInvalidValues() {
 		// Act
-		final var response = webTestClient.post().uri("/process/start")
+		final var response = webTestClient.post().uri(PATH)
 			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 			.bodyValue(new SigningRequest()
 				.withCallbackUrl("not_valid")

@@ -3,7 +3,7 @@
 	"requiredScenarioState": "initiate_signing-worker---api-document-get-document",
 	"newScenarioState": "initiate_signing-worker---api-document-get-documentdata",
 	"request": {
-		"urlPath": "/api-document/documents/2024-1234-3/files/3b706160-96f9-4694-88cf-88aea8430ad0",
+		"urlPath": "/api-document/2281/documents/2024-1234-3/files/3b706160-96f9-4694-88cf-88aea8430ad0",
 		"method": "GET",
 		"headers": {
 			"Authorization": {

@@ -3,7 +3,7 @@
 	"requiredScenarioState": "add_metadata_to_signed_document-worker---api-document-get-document",
 	"newScenarioState": "add_metadata_to_signed_document-worker---api-document-patch-document",
 	"request": {
-		"urlPath": "/api-document/documents/2024-1234-2",
+		"urlPath": "/api-document/2281/documents/2024-1234-2",
 		"method": "PATCH",
 		"headers": {
 			"Authorization": {

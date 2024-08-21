@@ -3,7 +3,7 @@
 	"requiredScenarioState": "initiate_signing-worker---api-comfactfacade-post-signinginstance",
 	"newScenarioState": "add_signing_id-worker---api-document-get-document",
 	"request": {
-		"urlPath": "/api-document/documents/2024-1234-4",
+		"urlPath": "/api-document/2281/documents/2024-1234-4",
 		"method": "GET",
 		"headers": {
 			"Authorization": {

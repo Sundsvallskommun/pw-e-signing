@@ -1,24 +1,23 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_CALLBACK_PRESENT;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadatas;
-import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
-
-import java.util.Map;
-
+import com.google.gson.Gson;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
-
-import com.google.gson.Gson;
-
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+
+import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_CALLBACK_PRESENT;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadatas;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
 
 @Component
 @ExternalTaskSubscription("AddMetadataToDocumentTask")
@@ -36,6 +35,7 @@ public class AddMetadataToDocumentWorker extends AbstractWorker {
 	@Override
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 		final var request = getSigningRequest(externalTask);
+		final String municipalityId = externalTask.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		try {
 			logInfo("Adding metadata regarding signatories for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
@@ -43,9 +43,9 @@ public class AddMetadataToDocumentWorker extends AbstractWorker {
 			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
 			// Save signatory information as metadata on document
-			final var metaData = documentClient.getDocument(request.getRegistrationNumber()).getMetadataList();
+			final var metaData = documentClient.getDocument(municipalityId, request.getRegistrationNumber()).getMetadataList();
 			metaData.addAll(toDocumentMetadatas(response.getSignatories()));
-			documentClient.updateDocument(request.getRegistrationNumber(), toDocumentUpdateRequest(metaData));
+			documentClient.updateDocument(municipalityId, request.getRegistrationNumber(), toDocumentUpdateRequest(metaData));
 
 			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, isNotBlank(request.getCallbackUrl())));
 		} catch (final Exception exception) {
