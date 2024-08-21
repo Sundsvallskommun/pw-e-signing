@@ -3,7 +3,7 @@
 	"requiredScenarioState": "add_signed_document-worker---api-comfactfacade-get-signinginstance",
 	"newScenarioState": "add_signed_document-worker---api-document-put-documentdata",
 	"request": {
-		"urlPath": "/api-document/documents/2024-1234-1/files",
+		"urlPath": "/api-document/2281/documents/2024-1234-1/files",
 		"method": "PUT",
 		"headers": {
 			"Authorization": {

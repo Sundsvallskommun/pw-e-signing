@@ -1,19 +1,10 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
+import com.google.gson.Gson;
+import generated.se.sundsvall.comfactfacade.Document;
+import generated.se.sundsvall.comfactfacade.SigningInstance;
+import generated.se.sundsvall.document.DocumentDataCreateRequest;
+import generated.se.sundsvall.document.DocumentUpdateRequest;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
@@ -28,18 +19,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-
-import com.google.gson.Gson;
-
-import generated.se.sundsvall.comfactfacade.Document;
-import generated.se.sundsvall.comfactfacade.SigningInstance;
-import generated.se.sundsvall.document.DocumentDataCreateRequest;
-import generated.se.sundsvall.document.DocumentUpdateRequest;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 @ExtendWith(MockitoExtension.class)
 class AddSignedDocumentWorkerTest {
 
@@ -97,6 +96,7 @@ class AddSignedDocumentWorkerTest {
 			.fileName(fileName)
 			.name(name)
 			.mimeType(mimeType);
+		final var municipalityId = "municipalityId";
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
@@ -104,15 +104,17 @@ class AddSignedDocumentWorkerTest {
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(new SigningInstance()
 			.signedDocument(document));
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).getSigningInstance(signingId);
-		verify(documentClientMock).addFileToDocument(eq(registrationNumber), eq(new DocumentDataCreateRequest("E-signing-process")), multiPartFileCaptor.capture());
+		verify(documentClientMock).addFileToDocument(eq(municipalityId), eq(registrationNumber), eq(new DocumentDataCreateRequest("E-signing-process")), multiPartFileCaptor.capture());
 		verify(externalTaskServiceMock).complete(externalTaskMock);
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock, documentClientMock);
 		verifyNoInteractions(failureHandlerMock);
@@ -133,9 +135,11 @@ class AddSignedDocumentWorkerTest {
 			.withRegistrationNumber("registrationNumber");
 		final var problem = Problem.valueOf(Status.I_AM_A_TEAPOT, "Big and stout");
 		final var signingId = UUID.randomUUID().toString();
+		final var municipalityId = "municipalityId";
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(comfactFacadeClientMock.getSigningInstance(any())).thenThrow(problem);

@@ -3,7 +3,7 @@
 	"requiredScenarioState": "Started",
 	"newScenarioState": "add_ongoing_signing_signal-worker---api-document-get-document",
 	"request": {
-		"urlPath": "/api-document/documents/2024-1234-2",
+		"urlPath": "/api-document/2281/documents/2024-1234-2",
 		"method": "GET",
 		"headers": {
 			"Authorization": {

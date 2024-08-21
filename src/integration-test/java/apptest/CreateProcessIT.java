@@ -1,5 +1,18 @@
 package apptest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+import se.sundsvall.esigning.Application;
+import se.sundsvall.esigning.api.model.StartResponse;
+import se.sundsvall.esigning.integration.camunda.CamundaClient;
+
+import java.time.Duration;
+
 import static generated.se.sundsvall.camunda.HistoricProcessInstanceDto.StateEnum.COMPLETED;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -13,25 +26,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
-import java.time.Duration;
-
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-import se.sundsvall.esigning.Application;
-import se.sundsvall.esigning.api.model.StartResponse;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
-
 @WireMockAppTestSuite(files = "classpath:/CreateProcess/", classes = Application.class)
 class CreateProcessIT extends AbstractCamundaAppTest {
 	private static final int DEFAULT_TESTCASE_TIMEOUT_IN_SECONDS = 30;
 	private static final String REQUEST_FILE = "request.json";
+	private static final String PATH = "/2281/process/start";
 
 	@Autowired
 	private CamundaClient camundaClient;
@@ -61,7 +60,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 
 		// Start process
 		final var startResponse = call
-			.withServicePath("/process/start")
+			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withRequest(request)
 			.withExpectedResponseStatus(ACCEPTED)
@@ -104,7 +103,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 
 		// Start process
 		final var startResponse = setupCall()
-			.withServicePath("/process/start")
+			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(ACCEPTED)
@@ -153,7 +152,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 
 		// Start process
 		final var startResponse = call
-			.withServicePath("/process/start")
+			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withRequest(request)
 			.withExpectedResponseStatus(ACCEPTED)
@@ -192,7 +191,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 
 		// Start process
 		final var startResponse = setupCall()
-			.withServicePath("/process/start")
+			.withServicePath(PATH)
 			.withHttpMethod(POST)
 			.withRequest(REQUEST_FILE)
 			.withExpectedResponseStatus(ACCEPTED)

@@ -1,19 +1,5 @@
 package se.sundsvall.esigning.api;
 
-import static java.util.UUID.randomUUID;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.Initiator;
 import se.sundsvall.esigning.api.model.Message;
@@ -32,9 +17,27 @@ import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.api.model.StartResponse;
 import se.sundsvall.esigning.service.ProcessService;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+import static java.util.UUID.randomUUID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 @SpringBootTest(classes = Application.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles("junit")
 class ProcessResourceTest {
+
+	private static final String MUNICIPALITY_ID = "2281";
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/process/start";
 
 	@MockBean
 	private ProcessService processServiceMock;
@@ -49,10 +52,10 @@ class ProcessResourceTest {
 		// Arrange
 		final var uuid = randomUUID().toString();
 		
-		when(processServiceMock.startProcess(any())).thenReturn(uuid);
+		when(processServiceMock.startProcess(anyString(), any())).thenReturn(uuid);
 
 		// Act
-		final var response = webTestClient.post().uri("/process/start")
+		final var response = webTestClient.post().uri(PATH)
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isAccepted()
@@ -63,7 +66,7 @@ class ProcessResourceTest {
 
 		// Assert
 		assertThat(response.getProcessId()).isEqualTo(uuid);
-		verify(processServiceMock).startProcess(request);
+		verify(processServiceMock).startProcess(MUNICIPALITY_ID, request);
 		verifyNoMoreInteractions(processServiceMock);
 	}
 
