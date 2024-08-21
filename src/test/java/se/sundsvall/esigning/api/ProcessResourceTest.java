@@ -37,6 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 class ProcessResourceTest {
 
 	private static final String MUNICIPALITY_ID = "2281";
+	private static final String PATH = "/" + MUNICIPALITY_ID + "/process/start";
 
 	@MockBean
 	private ProcessService processServiceMock;
@@ -54,7 +55,7 @@ class ProcessResourceTest {
 		when(processServiceMock.startProcess(anyString(), any())).thenReturn(uuid);
 
 		// Act
-		final var response = webTestClient.post().uri("/" + MUNICIPALITY_ID + "/process/start")
+		final var response = webTestClient.post().uri(PATH)
 			.bodyValue(request)
 			.exchange()
 			.expectStatus().isAccepted()

@@ -54,7 +54,7 @@ public class ProcessResource {
 		@RequestBody @NotNull @Valid SigningRequest request) {
 
 		final var startProcessResponse = new StartResponse(service.startProcess(municipalityId, request));
-		LOGGER.info("Request for start of e-signing process for request {} has been received, resulting in an instance with id {}", request, startProcessResponse.getProcessId());
+		LOGGER.info("Request for start of e-signing process for municipalityId {} and request {} has been received, resulting in an instance with id {}", municipalityId, request, startProcessResponse.getProcessId());
 
 		return accepted().body(startProcessResponse);
 	}

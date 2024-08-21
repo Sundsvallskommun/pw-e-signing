@@ -19,6 +19,7 @@ import se.sundsvall.esigning.service.ProcessService;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -174,6 +175,47 @@ class ProcessResourceFailuresTest {
 			tuple("signatories[0].notificationMessage.body", "must not be blank"),
 			tuple("signatories[0].notificationMessage.subject", "must not be blank"),
 			tuple("signatories[0].partyId", "not a valid UUID"));
+
+		verifyNoInteractions(processServiceMock);
+	}
+
+	@Test
+	void startProcessInvalidMunicipalityId() {
+		// Act
+		final var response = webTestClient.post().uri("/not-valid/process/start")
+			.header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+			.bodyValue(SigningRequest.create()
+				.withFileName("filename")
+				.withLanguage("en-US")
+				.withInitiator(Initiator.create()
+					.withEmail("valid.email@host.com")
+					.withPartyId(UUID.randomUUID().toString()))
+				.withNotificationMessage(Message.create()
+					.withBody("body")
+					.withSubject("subject"))
+				.withRegistrationNumber("registrationNumber")
+				.withReminder(Reminder.create()
+					.withIntervalInHours(24)
+					.withReminderMessage(Message.create()
+						.withBody("body")
+						.withSubject("subject"))
+					.withStartDateTime(OffsetDateTime.now().plusDays(15)))
+				.withSignatories(List.of(Signatory.create()
+					.withEmail("valid.email@host.com")
+					.withPartyId(UUID.randomUUID().toString()))))
+			.exchange()
+			.expectHeader().contentType(APPLICATION_PROBLEM_JSON)
+			.expectStatus().isBadRequest()
+			.expectBody(ConstraintViolationProblem.class)
+			.returnResult()
+			.getResponseBody();
+
+		// Assert
+		assertThat(response).isNotNull();
+		assertThat(response.getTitle()).isEqualTo("Constraint Violation");
+		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
+		assertThat(response.getViolations()).extracting(Violation::getField, Violation::getMessage).containsExactlyInAnyOrder(
+			tuple("startProcess.municipalityId", "not a valid municipality ID"));
 
 		verifyNoInteractions(processServiceMock);
 	}
