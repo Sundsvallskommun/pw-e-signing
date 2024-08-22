@@ -1,22 +1,21 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS;
-
-import java.util.Map;
-
+import com.google.gson.Gson;
+import generated.se.sundsvall.comfactfacade.Status;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
-
-import com.google.gson.Gson;
-
-import generated.se.sundsvall.comfactfacade.Status;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
+
+import java.util.Map;
+
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 
 @Component
 @ExternalTaskSubscription("CheckSigningStatusTask")
@@ -35,7 +34,7 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 		try {
 			logInfo("Checking signing status for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
-			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
+			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID), externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 			String status = ofNullable(response.getStatus())
 				.map(Status::getCode)
 				.orElse("Notpresent");

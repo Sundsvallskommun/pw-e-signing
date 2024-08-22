@@ -40,7 +40,7 @@ public class AddMetadataToDocumentWorker extends AbstractWorker {
 			logInfo("Adding metadata regarding signatories for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
 			// Fetch signing instance
-			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
+			final var response = comfactFacadeClient.getSigningInstance(municipalityId, externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
 			// Save signatory information as metadata on document
 			final var metaData = documentClient.getDocument(municipalityId, request.getRegistrationNumber()).getMetadataList();

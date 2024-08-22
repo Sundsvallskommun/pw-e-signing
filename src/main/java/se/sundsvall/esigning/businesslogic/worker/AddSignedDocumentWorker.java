@@ -37,7 +37,7 @@ public class AddSignedDocumentWorker extends AbstractWorker {
 			logInfo("Handling signed document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
 			// Fetch signing instance
-			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
+			final var response = comfactFacadeClient.getSigningInstance(municipalityId, externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
 			// Create new revision of document with signed documentdata
 			documentClient.addFileToDocument(municipalityId, request.getRegistrationNumber(),
