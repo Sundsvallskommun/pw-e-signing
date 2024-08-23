@@ -1,19 +1,16 @@
 openapi: 3.0.1
 info:
-  title: api-comfact-facade
-  contact: { }
+  title: comfact-facade
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "1.0"
-servers:
-  - url: http://localhost:58723
-    description: Generated server url
+  version: "2.0"
 tags:
   - name: Signings
     description: Signing operations
 paths:
-  /signings:
+  /{municipalityId}/signings:
     get:
       tags:
         - Signings
@@ -26,11 +23,18 @@ paths:
         \ a size of 10 if not set."
       operationId: getSigningRequests
       parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
         - name: pageable
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/Pageable'
+            $ref: "#/components/schemas/Pageable"
       responses:
         "400":
           description: Bad request
@@ -38,45 +42,53 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SigningsResponse'
+                $ref: "#/components/schemas/SigningsResponse"
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/SigningsResponse'
-        "404":
-          description: Not found
+                $ref: "#/components/schemas/SigningsResponse"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     post:
       tags:
         - Signings
       summary: Create Signing instance.
       operationId: createSigningRequest
+      parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SigningRequest'
+              $ref: "#/components/schemas/SigningRequest"
         required: true
       responses:
         "400":
@@ -85,36 +97,43 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateSigningResponse'
+                $ref: "#/components/schemas/CreateSigningResponse"
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/CreateSigningResponse'
+                $ref: "#/components/schemas/CreateSigningResponse"
+        "502":
+          description: Bad Gateway
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-  /signings/{signingId}:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/signings/{signingId}:
     get:
       tags:
         - Signings
       summary: Get a signing request.
       operationId: getSigningRequest
       parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
         - name: signingId
           in: path
           required: true
@@ -127,41 +146,48 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SigningInstance'
+                $ref: "#/components/schemas/SigningInstance"
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/SigningInstance'
-        "404":
-          description: Not found
+                $ref: "#/components/schemas/SigningInstance"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     delete:
       tags:
         - Signings
       summary: Annul a signing instance.
       operationId: cancelSigningRequest
       parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
         - name: signingId
           in: path
           required: true
@@ -174,34 +200,41 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        "204":
-          description: Successful operation
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
     patch:
       tags:
         - Signings
       summary: Update a signing instance.
       operationId: updateSigningRequest
       parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
         - name: signingId
           in: path
           required: true
@@ -211,7 +244,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SigningRequest'
+              $ref: "#/components/schemas/SigningRequest"
         required: true
       responses:
         "400":
@@ -220,35 +253,42 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "502":
           description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
+        "204":
+          description: Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        "204":
-          description: Successful operation
-  /signings/{signingId}/signatory/{partyId}:
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+  /{municipalityId}/signings/{signingId}/signatory/{partyId}:
     get:
       tags:
         - Signings
       summary: Get information about the current signatory
       operationId: getSignatory
       parameters:
+        - name: municipalityId
+          in: path
+          description: Municipality id
+          required: true
+          schema:
+            type: string
+          example: 2281
         - name: signingId
           in: path
           required: true
@@ -266,35 +306,35 @@ paths:
             application/problem+json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/Problem'
-                  - $ref: '#/components/schemas/ConstraintViolationProblem'
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/Problem'
+                  - $ref: "#/components/schemas/Problem"
+                  - $ref: "#/components/schemas/ConstraintViolationProblem"
         "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Signatory'
+                $ref: "#/components/schemas/Signatory"
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Signatory'
-        "404":
-          description: Not found
+                $ref: "#/components/schemas/Signatory"
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
   /api-docs:
     get:
       tags:
@@ -381,7 +421,7 @@ components:
           description: The party id
           example: 550e8400-e29b-41d4-a716-446655440000
         notificationMessage:
-          $ref: '#/components/schemas/NotificationMessage'
+          $ref: "#/components/schemas/NotificationMessage"
         title:
           type: string
           description: The party title
@@ -411,7 +451,7 @@ components:
       type: object
       properties:
         message:
-          $ref: '#/components/schemas/NotificationMessage'
+          $ref: "#/components/schemas/NotificationMessage"
         enabled:
           type: boolean
           description: If the reminder is enabled
@@ -442,7 +482,7 @@ components:
           description: The party id
           example: 550e8400-e29b-41d4-a716-446655440000
         notificationMessage:
-          $ref: '#/components/schemas/NotificationMessage'
+          $ref: "#/components/schemas/NotificationMessage"
         title:
           type: string
           description: The party title
@@ -467,7 +507,7 @@ components:
         identifications:
           type: array
           items:
-            $ref: '#/components/schemas/Identification'
+            $ref: "#/components/schemas/Identification"
       description: A Signatory related to the signing process.
     SigningRequest:
       required:
@@ -479,7 +519,7 @@ components:
         additionalDocuments:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
         language:
           type: string
           description: The language of the signing process.
@@ -494,24 +534,24 @@ components:
           format: date-time
           example: 2021-12-31T23:59:59Z
         notificationMessage:
-          $ref: '#/components/schemas/NotificationMessage'
+          $ref: "#/components/schemas/NotificationMessage"
         reminder:
-          $ref: '#/components/schemas/Reminder'
+          $ref: "#/components/schemas/Reminder"
         initiator:
-          $ref: '#/components/schemas/Party'
+          $ref: "#/components/schemas/Party"
         additionalParties:
           type: array
           description: A party that is not part of the signing process but will get
             a copy of the signed document when the signing instance is completed.
           items:
-            $ref: '#/components/schemas/Party'
+            $ref: "#/components/schemas/Party"
         signatories:
           type: array
           description: The parties that will sign the documents.
           items:
-            $ref: '#/components/schemas/Signatory'
+            $ref: "#/components/schemas/Signatory"
         document:
-          $ref: '#/components/schemas/Document'
+          $ref: "#/components/schemas/Document"
       description: The signing request.
     Problem:
       type: object
@@ -527,7 +567,7 @@ components:
           additionalProperties:
             type: object
         status:
-          $ref: '#/components/schemas/StatusType'
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
@@ -544,7 +584,7 @@ components:
       type: object
       properties:
         cause:
-          $ref: '#/components/schemas/ThrowableProblem'
+          $ref: "#/components/schemas/ThrowableProblem"
         stackTrace:
           type: array
           items:
@@ -571,11 +611,11 @@ components:
           type: string
           format: uri
         status:
-          $ref: '#/components/schemas/StatusType'
+          $ref: "#/components/schemas/StatusType"
         violations:
           type: array
           items:
-            $ref: '#/components/schemas/Violation'
+            $ref: "#/components/schemas/Violation"
         title:
           type: string
         message:
@@ -626,7 +666,7 @@ components:
       type: object
       properties:
         cause:
-          $ref: '#/components/schemas/ThrowableProblem'
+          $ref: "#/components/schemas/ThrowableProblem"
         stackTrace:
           type: array
           items:
@@ -662,7 +702,7 @@ components:
           additionalProperties:
             type: object
         status:
-          $ref: '#/components/schemas/StatusType'
+          $ref: "#/components/schemas/StatusType"
         title:
           type: string
         detail:
@@ -780,7 +820,7 @@ components:
             readOnly: true
             example: property
         sortDirection:
-          $ref: '#/components/schemas/Direction'
+          $ref: "#/components/schemas/Direction"
       description: PagingAndSortingMetaData model
       readOnly: true
     SigningInstance:
@@ -793,22 +833,22 @@ components:
           type: array
           description: Custom message for the signature request emails.
           items:
-            $ref: '#/components/schemas/NotificationMessage'
+            $ref: "#/components/schemas/NotificationMessage"
         initiator:
-          $ref: '#/components/schemas/Party'
+          $ref: "#/components/schemas/Party"
         additionalParties:
           type: array
           description: A party that is not part of the signing process but will get
             a copy of the signed document when the signing instance is completed.
           items:
-            $ref: '#/components/schemas/Party'
+            $ref: "#/components/schemas/Party"
         signatories:
           type: array
           description: The parties that will sign the documents.
           items:
-            $ref: '#/components/schemas/Signatory'
+            $ref: "#/components/schemas/Signatory"
         status:
-          $ref: '#/components/schemas/Status'
+          $ref: "#/components/schemas/Status"
         customerReference:
           type: string
           description: The customer reference
@@ -829,13 +869,13 @@ components:
           format: date-time
           example: 2021-12-31T23:59:59Z
         document:
-          $ref: '#/components/schemas/Document'
+          $ref: "#/components/schemas/Document"
         signedDocument:
-          $ref: '#/components/schemas/Document'
+          $ref: "#/components/schemas/Document"
         additionalDocuments:
           type: array
           items:
-            $ref: '#/components/schemas/Document'
+            $ref: "#/components/schemas/Document"
         signingId:
           type: string
           description: The signing instance id.
@@ -848,9 +888,9 @@ components:
           type: array
           description: The signing instances.
           items:
-            $ref: '#/components/schemas/SigningInstance'
+            $ref: "#/components/schemas/SigningInstance"
         _meta:
-          $ref: '#/components/schemas/PagingAndSortingMetaData'
+          $ref: "#/components/schemas/PagingAndSortingMetaData"
       description: Signing response.
     Status:
       type: object
@@ -864,4 +904,4 @@ components:
           description: The status message
           example: The signing instance is halted.
       description: Status of the signing request.
-  securitySchemes: { }
+  securitySchemes: {}

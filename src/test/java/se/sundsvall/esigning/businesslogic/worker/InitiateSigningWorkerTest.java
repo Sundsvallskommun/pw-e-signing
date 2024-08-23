@@ -31,6 +31,7 @@ import java.util.UUID;
 import static org.apache.hc.core5.http.ContentType.APPLICATION_PDF;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -109,7 +110,7 @@ class InitiateSigningWorkerTest {
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentClientMock.getDocumentData(municipalityId, registrationNumber, documentDataId)).thenReturn(byteArrayResourceMock);
-		when(comfactFacadeClientMock.createSigngingInstance(any())).thenReturn(new CreateSigningResponse().signingId(signingId));
+		when(comfactFacadeClientMock.createSigngingInstance(anyString(), any())).thenReturn(new CreateSigningResponse().signingId(signingId));
 		when(documentMock.getDocumentData()).thenReturn(List.of(documentDataMock));
 		when(documentDataMock.getFileName()).thenReturn(fileName);
 		when(documentDataMock.getId()).thenReturn(documentDataId);
@@ -123,7 +124,7 @@ class InitiateSigningWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(comfactFacadeClientMock).createSigngingInstance(signingRequestCaptor.capture());
+		verify(comfactFacadeClientMock).createSigngingInstance(eq(municipalityId), signingRequestCaptor.capture());
 		verify(externalTaskServiceMock).complete(eq(externalTaskMock), variableValueDtoCaptor.capture());
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock, documentClientMock);
 		verifyNoInteractions(failureHandlerMock);
@@ -213,7 +214,7 @@ class InitiateSigningWorkerTest {
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentClientMock.getDocumentData(municipalityId, registrationNumber, documentDataId)).thenReturn(byteArrayResourceMock);
-		when(comfactFacadeClientMock.createSigngingInstance(any())).thenThrow(problem);
+		when(comfactFacadeClientMock.createSigngingInstance(anyString(), any())).thenThrow(problem);
 		when(documentMock.getDocumentData()).thenReturn(List.of(documentDataMock));
 		when(documentDataMock.getFileName()).thenReturn(fileName);
 		when(documentDataMock.getId()).thenReturn(documentDataId);
@@ -229,7 +230,7 @@ class InitiateSigningWorkerTest {
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(documentClientMock).getDocumentData(municipalityId, registrationNumber, documentDataId);
-		verify(comfactFacadeClientMock).createSigngingInstance(any());
+		verify(comfactFacadeClientMock).createSigngingInstance(eq(municipalityId), signingRequestCaptor.capture());
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,

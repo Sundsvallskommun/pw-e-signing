@@ -3,7 +3,7 @@
 	"requiredScenarioState": "initiate_signing-worker---api-document-get-documentdata",
 	"newScenarioState": "initiate_signing-worker---api-comfactfacade-post-signinginstance",
 	"request": {
-		"urlPath": "/api-comfactfacade/signings",
+		"urlPath": "/api-comfactfacade/2281/signings",
 		"method": "POST",
 		"headers": {
 			"Authorization": {

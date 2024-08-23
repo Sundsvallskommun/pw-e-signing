@@ -35,6 +35,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -103,7 +104,7 @@ class AddMetadataToDocumentWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(new SigningInstance()
+		when(comfactFacadeClientMock.getSigningInstance(municipalityId, signingId)).thenReturn(new SigningInstance()
 			.signatories(List.of(createSignatory("1.name", "1.partyId", "1.email"), createSignatory("2.name", "2.partyId", "2.email"))));
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(new generated.se.sundsvall.document.Document().metadataList(existingMetadata));
 
@@ -113,7 +114,7 @@ class AddMetadataToDocumentWorkerTest {
 		// Assert and verify
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(comfactFacadeClientMock).getSigningInstance(signingId);
+		verify(comfactFacadeClientMock).getSigningInstance(municipalityId, signingId);
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), documentUpdateRequestCaptor.capture());
 		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, callbackPresent));
@@ -154,7 +155,7 @@ class AddMetadataToDocumentWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
-		when(comfactFacadeClientMock.getSigningInstance(any())).thenThrow(problem);
+		when(comfactFacadeClientMock.getSigningInstance(anyString(), any())).thenThrow(problem);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
@@ -163,7 +164,7 @@ class AddMetadataToDocumentWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(comfactFacadeClientMock).getSigningInstance(signingId);
+		verify(comfactFacadeClientMock).getSigningInstance(municipalityId, signingId);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();

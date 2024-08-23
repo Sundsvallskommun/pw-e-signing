@@ -110,7 +110,7 @@ class HandleNotSignedDocumentWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(new SigningInstance().status(status));
+		when(comfactFacadeClientMock.getSigningInstance(municipalityId, signingId)).thenReturn(new SigningInstance().status(status));
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(new generated.se.sundsvall.document.Document().metadataList(existingMetadata));
 
 		// Act
@@ -120,7 +120,7 @@ class HandleNotSignedDocumentWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(comfactFacadeClientMock).getSigningInstance(signingId);
+		verify(comfactFacadeClientMock).getSigningInstance(municipalityId, signingId);
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), documentUpdateRequestCaptor.capture());
 		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, callbackPresent));
@@ -160,7 +160,7 @@ class HandleNotSignedDocumentWorkerTest {
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(comfactFacadeClientMock.getSigningInstance(signingId)).thenReturn(new SigningInstance().status(status));
+		when(comfactFacadeClientMock.getSigningInstance(municipalityId, signingId)).thenReturn(new SigningInstance().status(status));
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(new generated.se.sundsvall.document.Document().metadataList(new ArrayList<>()));
 		when(documentClientMock.updateDocument(anyString(), any(), any())).thenThrow(problem);
 
