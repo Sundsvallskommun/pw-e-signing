@@ -1,21 +1,15 @@
 {
-	"scenarioName": "create-process-with-callback-being-completed",
-	"requiredScenarioState": "initiate_signing-worker---api-comfactfacade-post-signinginstance",
-	"newScenarioState": "add_signing_id-worker---api-document-get-document",
 	"request": {
-		"urlPath": "/api-document/2281/documents/2024-1234-1",
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"}},
 		"method": "GET",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
-			}
-		}
+		"urlPath": "/api-document/2281/documents/2024-1234-1"
 	},
+	"newScenarioState": "add_signing_id-worker---api-document-get-document",
 	"response": {
-		"headers": {
-			"Content-Type": "application/json"
-		},
-		"status": 200,
-		"bodyFileName": "test001_createProcessWithCallbackBeingCompleted/responses/03_add_signing_id/api-document-get-document-response.json"
-	}
+		"headers": {"Content-Type": "application/json"},
+		"bodyFileName": "test001_createProcessWithCallbackBeingCompleted/responses/03_add_signing_id/api-document-get-document-response.json",
+		"status": 200
+	},
+	"requiredScenarioState": "initiate_signing-worker---api-comfactfacade-post-signinginstance",
+	"scenarioName": "create-process-with-callback-being-completed"
 }

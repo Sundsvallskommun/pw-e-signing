@@ -1,46 +1,36 @@
 {
-	"scenarioName": "create-process-without-callback-getting-expired",
-	"requiredScenarioState": "handle_unsigned_document-worker---api-document-get-document",
-	"newScenarioState": "handle_unsigned_document-worker---api-document-patch-document",
 	"request": {
-		"urlPath": "/api-document/2281/documents/2024-1234-4",
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"}},
 		"method": "PATCH",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
-			}
-		},
-		"bodyPatterns": [
-			{
-				"equalToJson": {
-					"createdBy": "E-signing-process",
-					"metadataList": [
-						{
-							"key": "signingInProgress",
-							"value": "true"
-						},
-						{
-							"key":"signingId",
-							"value":"0c14a3d7a0fb4f7a86ca31640b109b35"
-						},
-						{
-							"key" : "signingStatus",
-							"value" : "Expired"
-						},
-						{
-							"key": "signingStatusMessage",
-							"value": "The signing instance has expired."
-						}
-					]
+		"bodyPatterns": [{"equalToJson": {
+			"createdBy": "E-signing-process",
+			"metadataList": [
+				{
+					"value": "true",
+					"key": "signingInProgress"
+				},
+				{
+					"value": "0c14a3d7a0fb4f7a86ca31640b109b35",
+					"key": "signingId"
+				},
+				{
+					"value": "Expired",
+					"key": "signingStatus"
+				},
+				{
+					"value": "The signing instance has expired.",
+					"key": "signingStatusMessage"
 				}
-			}
-		]
+			]
+		}}],
+		"urlPath": "/api-document/2281/documents/2024-1234-4"
 	},
+	"newScenarioState": "handle_unsigned_document-worker---api-document-patch-document",
 	"response": {
-		"headers": {
-			"Content-Type": "application/json"
-		},
-		"status": 200,
-		"bodyFileName": "test004_createProcessWithoutCallbackGettingExpired/responses/05_handle_unsigned_document/api-document-patch-document-response.json"
-	}
+		"headers": {"Content-Type": "application/json"},
+		"bodyFileName": "test004_createProcessWithoutCallbackGettingExpired/responses/05_handle_unsigned_document/api-document-patch-document-response.json",
+		"status": 200
+	},
+	"requiredScenarioState": "handle_unsigned_document-worker---api-document-get-document",
+	"scenarioName": "create-process-without-callback-getting-expired"
 }

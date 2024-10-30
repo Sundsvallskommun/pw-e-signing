@@ -136,7 +136,9 @@ class AbstractWorkerTest {
 
 			// Assert and verify
 			loggerFactoryMock.verify(() -> LoggerFactory.getLogger(Worker.class));
-			verify(loggerMock).info("message with parameters {} {}", new Object[] { "parameter1", "parameter2" });
+			verify(loggerMock).info("message with parameters {} {}", new Object[] {
+				"parameter1", "parameter2"
+			});
 			verifyNoInteractions(camundaClientMock, failureHandlerMock, externalTaskServiceMock, externalTaskMock, gsonMock);
 		}
 	}

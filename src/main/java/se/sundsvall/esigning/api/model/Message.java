@@ -16,7 +16,6 @@ public class Message {
 	@NotBlank
 	private String body;
 
-
 	public static Message create() {
 		return new Message();
 	}

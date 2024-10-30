@@ -88,7 +88,9 @@ class HandleNotSignedDocumentWorkerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {
+		true, false
+	})
 	void execute(boolean callbackPresent) {
 		// Arrange
 		final var json = "json";

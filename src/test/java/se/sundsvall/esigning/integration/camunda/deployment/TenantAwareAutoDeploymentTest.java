@@ -34,7 +34,6 @@ import se.sundsvall.esigning.integration.camunda.deployment.DeploymentProperties
 @ExtendWith(MockitoExtension.class)
 class TenantAwareAutoDeploymentTest {
 
-
 	private static final String PROCESSMODEL_PATH = "processmodels/";
 	private static final String PROCESSMODEL_FILE = "process-e-signing.bpmn";
 
@@ -57,7 +56,7 @@ class TenantAwareAutoDeploymentTest {
 
 	@Mock
 	private Resource resourceMock;
-	
+
 	@InjectMocks
 	private TenantAwareAutoDeployment tenantAwareAutoDeployment;
 
@@ -149,7 +148,9 @@ class TenantAwareAutoDeploymentTest {
 		when(deploymentPropertiesMock.getProcesses()).thenReturn(List.of(processArchiveMock));
 		when(processArchiveMock.tenant()).thenReturn(tenant);
 		when(processArchiveMock.name()).thenReturn(name);
-		when(resourcePatternResolverMock.getResources(DEFAULT_PATTERN_PREFIX + FILETYPE_BPMN)).thenReturn(new Resource[] { resourceMock });
+		when(resourcePatternResolverMock.getResources(DEFAULT_PATTERN_PREFIX + FILETYPE_BPMN)).thenReturn(new Resource[] {
+			resourceMock
+		});
 		when(resourceMock.getFilename()).thenReturn(PROCESSMODEL_FILE);
 		when(resourceMock.getInputStream()).thenReturn(processFile.getInputStream());
 
@@ -189,7 +190,9 @@ class TenantAwareAutoDeploymentTest {
 		when(deploymentPropertiesMock.getProcesses()).thenReturn(List.of(processArchiveMock));
 		when(processArchiveMock.name()).thenReturn(name);
 		when(deploymentApiMock.deploy(any(), any(), anyBoolean(), anyBoolean(), any(), any(), any())).thenThrow(originException);
-		when(resourcePatternResolverMock.getResources(DEFAULT_PATTERN_PREFIX + FILETYPE_BPMN)).thenReturn(new Resource[] { resourceMock });
+		when(resourcePatternResolverMock.getResources(DEFAULT_PATTERN_PREFIX + FILETYPE_BPMN)).thenReturn(new Resource[] {
+			resourceMock
+		});
 		when(resourceMock.getFilename()).thenReturn(PROCESSMODEL_FILE);
 		when(resourceMock.getInputStream()).thenReturn(new ClassPathResource(PROCESSMODEL_PATH + PROCESSMODEL_FILE).getInputStream());
 

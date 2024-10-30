@@ -47,6 +47,7 @@ import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
+
 @ExtendWith(MockitoExtension.class)
 class AddMetadataToDocumentWorkerTest {
 
@@ -87,7 +88,9 @@ class AddMetadataToDocumentWorkerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(booleans = { true, false })
+	@ValueSource(booleans = {
+		true, false
+	})
 	void execute(boolean callbackPresent) throws Exception {
 		// Arrange
 		final var json = "json";
@@ -168,7 +171,7 @@ class AddMetadataToDocumentWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock, 
+		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
 			"DefaultProblem occured for document fileName with registration number registrationNumber when adding signatory metadata to document (I'm a teapot: Big and stout).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}

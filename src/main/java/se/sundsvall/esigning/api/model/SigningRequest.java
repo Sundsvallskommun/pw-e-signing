@@ -39,8 +39,10 @@ public class SigningRequest {
 	private OffsetDateTime expires;
 
 	@Schema(description = "The language used by the signing procedure. Valid values are one of [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]. If no language is provided, sv-SE will be used.", example = "sv-SE")
-	@OneOf(value = { "en-US", "sv-SE", "da-DK", "fr-FR", "de-DE", "nb-NO", "ru-RU", "zh-CN", "fi-FI",
-		"uk-UA" }, nullable = true, message = "The provided language is not valid. Valid values are [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA].")
+	@OneOf(value = {
+		"en-US", "sv-SE", "da-DK", "fr-FR", "de-DE", "nb-NO", "ru-RU", "zh-CN", "fi-FI",
+		"uk-UA"
+	}, nullable = true, message = "The provided language is not valid. Valid values are [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA].")
 	private String language;
 
 	@Schema(description = "Notification message to send to signatories of the document.", requiredMode = REQUIRED)

@@ -40,6 +40,7 @@ import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_I
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+
 @ExtendWith(MockitoExtension.class)
 class AddSignedDocumentWorkerTest {
 
@@ -155,7 +156,7 @@ class AddSignedDocumentWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock, 
+		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
 			"DefaultProblem occured for document fileName with registration number registrationNumber when adding signed document (I'm a teapot: Big and stout).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}

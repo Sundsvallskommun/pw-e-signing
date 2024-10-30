@@ -57,7 +57,7 @@ public final class DocumentMapper {
 			.withName(signatory.getName())
 			.withPartyId(signatory.getPartyId());
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static class SignatoryMetaData {
 
