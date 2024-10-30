@@ -51,7 +51,7 @@ class ProcessResourceTest {
 
 		// Arrange
 		final var uuid = randomUUID().toString();
-		
+
 		when(processServiceMock.startProcess(anyString(), any())).thenReturn(uuid);
 
 		// Act

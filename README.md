@@ -12,6 +12,7 @@
 </ul>
 
 ## Status
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_pw-e-signing&metric=alert_status)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_pw-e-signing)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_pw-e-signing&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_pw-e-signing)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_pw-e-signing&metric=security_rating)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_pw-e-signing)
@@ -20,4 +21,5 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Sundsvallskommun_pw-e-signing&metric=bugs)](https://sonarcloud.io/summary/overall?id=Sundsvallskommun_pw-e-signing)
 
 ## 
+
 Copyright &copy; 2024 Sundsvalls kommun

@@ -1,42 +1,32 @@
 {
-	"scenarioName": "create-process-without-callback-getting-expired",
-	"requiredScenarioState": "remove_ongoing_signing_signal-worker---api-document-get-document",
-	"newScenarioState": "remove_ongoing_signing_signal-worker---api-document-patch-document",
 	"request": {
-		"urlPath": "/api-document/2281/documents/2024-1234-4",
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"}},
 		"method": "PATCH",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
-			}
-		},
-		"bodyPatterns": [
-			{
-				"equalToJson": {
-					"createdBy": "E-signing-process",
-					"metadataList": [
-						{
-							"key":"signingId",
-							"value":"0c14a3d7a0fb4f7a86ca31640b109b35"
-						},
-						{
-							"key" : "signingStatus",
-							"value" : "Expired"
-						},
-						{
-							"key": "signingStatusMessage",
-							"value": "The signing instance has expired."
-						}
-					]
+		"bodyPatterns": [{"equalToJson": {
+			"createdBy": "E-signing-process",
+			"metadataList": [
+				{
+					"value": "0c14a3d7a0fb4f7a86ca31640b109b35",
+					"key": "signingId"
+				},
+				{
+					"value": "Expired",
+					"key": "signingStatus"
+				},
+				{
+					"value": "The signing instance has expired.",
+					"key": "signingStatusMessage"
 				}
-			}
-		]
+			]
+		}}],
+		"urlPath": "/api-document/2281/documents/2024-1234-4"
 	},
+	"newScenarioState": "remove_ongoing_signing_signal-worker---api-document-patch-document",
 	"response": {
-		"headers": {
-			"Content-Type": "application/json"
-		},
-		"status": 200,
-		"bodyFileName": "test004_createProcessWithoutCallbackGettingExpired/responses/06_remove_ongoing_signing_signal/api-document-patch-document-response.json"
-	}
+		"headers": {"Content-Type": "application/json"},
+		"bodyFileName": "test004_createProcessWithoutCallbackGettingExpired/responses/06_remove_ongoing_signing_signal/api-document-patch-document-response.json",
+		"status": 200
+	},
+	"requiredScenarioState": "remove_ongoing_signing_signal-worker---api-document-get-document",
+	"scenarioName": "create-process-without-callback-getting-expired"
 }

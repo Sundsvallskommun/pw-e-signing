@@ -30,5 +30,6 @@ public interface DocumentClient {
 	ResponseEntity<ByteArrayResource> getDocumentData(@PathVariable("municipalityId") String municipalityId, @PathVariable("registrationNumber") String registrationNumber, @PathVariable("documentDataId") String documentDataId);
 
 	@PutMapping(path = "/{municipalityId}/documents/{registrationNumber}/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	Void addFileToDocument(@PathVariable("municipalityId") String municipalityId, @PathVariable("registrationNumber") String registrationNumber, @RequestPart("document") DocumentDataCreateRequest document, @RequestPart("documentFile") MultipartFile documentFile);
+	Void addFileToDocument(@PathVariable("municipalityId") String municipalityId, @PathVariable("registrationNumber") String registrationNumber, @RequestPart("document") DocumentDataCreateRequest document,
+		@RequestPart("documentFile") MultipartFile documentFile);
 }

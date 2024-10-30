@@ -1,22 +1,18 @@
 {
-	"id": "a054cf70-907a-49dc-aa42-ef4c6cfa8484",
 	"municipalityId": "1234",
-	"registrationNumber": "2024-1234-1",
-	"revision": 1,
-	"confidentiality": {
-		"confidential": false
-	},
-	"description": "Termination contract",
-	"created": "2024-04-01T13:37:00.000+02:00",
 	"createdBy": "Cyberdyne Systems Model 101",
+	"registrationNumber": "2024-1234-1",
+	"created": "2024-04-01T13:37:00.000+02:00",
+	"confidentiality": {"confidential": false},
+	"description": "Termination contract",
 	"archive": false,
-	"metadataList": [],
-	"documentData": [
-		{
-			"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
-			"fileName": "termination_contract.pdf",
-			"mimeType": "application/pdf",
-			"fileSizeInBytes": 44399
-		}
-	]
+	"id": "a054cf70-907a-49dc-aa42-ef4c6cfa8484",
+	"documentData": [{
+		"fileName": "termination_contract.pdf",
+		"fileSizeInBytes": 44399,
+		"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
+		"mimeType": "application/pdf"
+	}],
+	"revision": 1,
+	"metadataList": []
 }

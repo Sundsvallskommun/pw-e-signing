@@ -1,21 +1,15 @@
 {
-	"scenarioName": "create-process-without-callback-getting-expired",
-	"requiredScenarioState": "add_signing_id-worker---api-document-patch-document",
-	"newScenarioState": "check_signing_status-worker---api-comfactfacade-get-signinginstance-expired",
 	"request": {
-		"urlPath": "/api-comfactfacade/2281/signings/0c14a3d7a0fb4f7a86ca31640b109b35",
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"}},
 		"method": "GET",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
-			}
-		}
+		"urlPath": "/api-comfactfacade/2281/signings/0c14a3d7a0fb4f7a86ca31640b109b35"
 	},
+	"newScenarioState": "check_signing_status-worker---api-comfactfacade-get-signinginstance-expired",
 	"response": {
-		"headers": {
-			"Content-Type": "application/json"
-		},
-		"status": 200,
-		"bodyFileName": "test004_createProcessWithoutCallbackGettingExpired/responses/04_check_signing_status/api-comfactfacade-get-signinginstance-expired-response.json"
-	}
+		"headers": {"Content-Type": "application/json"},
+		"bodyFileName": "test004_createProcessWithoutCallbackGettingExpired/responses/04_check_signing_status/api-comfactfacade-get-signinginstance-expired-response.json",
+		"status": 200
+	},
+	"requiredScenarioState": "add_signing_id-worker---api-document-patch-document",
+	"scenarioName": "create-process-without-callback-getting-expired"
 }

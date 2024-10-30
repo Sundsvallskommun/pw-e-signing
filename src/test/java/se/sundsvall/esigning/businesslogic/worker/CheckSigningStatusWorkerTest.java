@@ -71,7 +71,9 @@ class CheckSigningStatusWorkerTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "Created", "Active", "Halted", "Faulty", "Completed", "Approved", "Declined", "Withdrawn", "Expired" })
+	@ValueSource(strings = {
+		"Created", "Active", "Halted", "Faulty", "Completed", "Approved", "Declined", "Withdrawn", "Expired"
+	})
 	@NullSource
 	void execute(String statusCode) {
 		// Arrange

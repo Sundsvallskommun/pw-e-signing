@@ -1,38 +1,28 @@
 {
-	"scenarioName": "create-process-without-callback-being-completed",
-	"requiredScenarioState": "add_signing_id-worker---api-document-get-document",
-	"newScenarioState": "add_signing_id-worker---api-document-patch-document",
 	"request": {
-		"urlPath": "/api-document/2281/documents/2024-1234-2",
+		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"}},
 		"method": "PATCH",
-		"headers": {
-			"Authorization": {
-				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
-			}
-		},
-		"bodyPatterns": [
-			{
-				"equalToJson": {
-					"createdBy": "E-signing-process",
-					"metadataList": [
-						{
-							"key": "signingInProgress",
-							"value": "true"
-						},
-						{
-							"key":"signingId",
-							"value":"0c14a3d7a0fb4f7a86ca31640b109b35"
-						}
-					]
+		"bodyPatterns": [{"equalToJson": {
+			"createdBy": "E-signing-process",
+			"metadataList": [
+				{
+					"value": "true",
+					"key": "signingInProgress"
+				},
+				{
+					"value": "0c14a3d7a0fb4f7a86ca31640b109b35",
+					"key": "signingId"
 				}
-			}
-		]
+			]
+		}}],
+		"urlPath": "/api-document/2281/documents/2024-1234-2"
 	},
+	"newScenarioState": "add_signing_id-worker---api-document-patch-document",
 	"response": {
-		"headers": {
-			"Content-Type": "application/json"
-		},
-		"status": 200,
-		"bodyFileName": "test002_createProcessWithoutCallbackBeingCompleted/responses/03_add_signing_id/api-document-patch-document-response.json"
-	}
+		"headers": {"Content-Type": "application/json"},
+		"bodyFileName": "test002_createProcessWithoutCallbackBeingCompleted/responses/03_add_signing_id/api-document-patch-document-response.json",
+		"status": 200
+	},
+	"requiredScenarioState": "add_signing_id-worker---api-document-get-document",
+	"scenarioName": "create-process-without-callback-being-completed"
 }

@@ -53,7 +53,7 @@ public interface CamundaClient {
 		@PathVariable("deploy-changed-only") Boolean deployChangedOnly,
 		@PathVariable("enable-duplicate-filtering") Boolean enableDuplicateFiltering,
 		@PathVariable("deployment-name") String deploymentName,
-		@PathVariable("deployment-activation-time")OffsetDateTime deploymentActivationTime,
+		@PathVariable("deployment-activation-time") OffsetDateTime deploymentActivationTime,
 		@PathVariable("data") File data);
 
 	@GetMapping(path = "deployment", produces = APPLICATION_JSON_VALUE, consumes = MULTIPART_FORM_DATA_VALUE)
@@ -68,7 +68,7 @@ public interface CamundaClient {
 	@GetMapping(path = "process-instance/{id}/variables", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	Map<String, VariableValueDto> getProcessInstanceVariables(@PathVariable("id") String id);
 
-	@GetMapping(path =  "history/external-task-log", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+	@GetMapping(path = "history/external-task-log", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 	List<HistoricExternalTaskLogDto> getHistoricExternalTaskLog(
 		@RequestParam("processInstanceId") String processInstanceId,
 		@RequestParam("activityIdIn") String activityIdIn,

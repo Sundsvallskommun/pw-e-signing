@@ -1,37 +1,35 @@
 {
-	"id": "a054cf70-907a-49dc-aa42-ef4c6cfa8484",
 	"municipalityId": "1234",
-	"registrationNumber": "2024-1234-2",
-	"revision": 4,
-	"confidentiality": {
-		"confidential": false
-	},
-	"description": "Termination contract",
-	"created": "2024-04-01T13:37:30.000+02:00",
 	"createdBy": "E-signing-process",
+	"registrationNumber": "2024-1234-2",
+	"created": "2024-04-01T13:37:30.000+02:00",
+	"confidentiality": {"confidential": false},
+	"description": "Termination contract",
 	"archive": false,
-	"metadataList": [
-		{
-			"key": "signingInProgress",
-			"value": "true"
-		},
-		{
-			"key":"signingId",
-			"value":"0c14a3d7a0fb4f7a86ca31640b109b35"
-		}
-	],
+	"id": "a054cf70-907a-49dc-aa42-ef4c6cfa8484",
 	"documentData": [
 		{
-			"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
 			"fileName": "termination_contract.pdf",
-			"mimeType": "application/pdf",
-			"fileSizeInBytes": 44399
+			"fileSizeInBytes": 44399,
+			"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
+			"mimeType": "application/pdf"
 		},
 		{
-			"id": "713f7c03-a5b3-40fa-a11e-8b2476db526d",
 			"fileName": "termination_contract signed.pdf",
-			"mimeType": "application/pdf",
-			"fileSizeInBytes": 55384
+			"fileSizeInBytes": 55384,
+			"id": "713f7c03-a5b3-40fa-a11e-8b2476db526d",
+			"mimeType": "application/pdf"
+		}
+	],
+	"revision": 4,
+	"metadataList": [
+		{
+			"value": "true",
+			"key": "signingInProgress"
+		},
+		{
+			"value": "0c14a3d7a0fb4f7a86ca31640b109b35",
+			"key": "signingId"
 		}
 	]
 }
