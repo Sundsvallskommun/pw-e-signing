@@ -1,13 +1,19 @@
 {
 	"request": {
-		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"}},
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
+			}
+		},
 		"method": "GET",
 		"urlPath": "/api-document/2281/documents/2024-1234-4/files/3b706160-96f9-4694-88cf-88aea8430ad0"
 	},
 	"newScenarioState": "initiate_signing-worker---api-document-get-documentdata",
 	"response": {
 		"headers": {
-			"content-disposition": ["attachment; filename=\"original.pdf\""],
+			"content-disposition": [
+				"attachment; filename=\"original.pdf\""
+			],
 			"Content-Type": "application/pdf"
 		},
 		"bodyFileName": "common/responses/api-document-get-documentdata-response.pdf",

@@ -1,4 +1,6 @@
 {
-	"signatoryUrls": {"65911785-28e2-4630-bca3-20abcf571fed": "https://fake.com/signingwebsite?id=123456"},
+	"signatoryUrls": {
+		"65911785-28e2-4630-bca3-20abcf571fed": "https://fake.com/signingwebsite?id=123456"
+	},
 	"signingId": "0c14a3d7a0fb4f7a86ca31640b109b35"
 }

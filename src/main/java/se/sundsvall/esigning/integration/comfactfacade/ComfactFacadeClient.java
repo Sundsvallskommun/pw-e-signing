@@ -1,5 +1,8 @@
 package se.sundsvall.esigning.integration.comfactfacade;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static se.sundsvall.esigning.integration.comfactfacade.configuration.ComfactFacadeConfiguration.CLIENT_ID;
+
 import generated.se.sundsvall.comfactfacade.CreateSigningResponse;
 import generated.se.sundsvall.comfactfacade.SigningInstance;
 import generated.se.sundsvall.comfactfacade.SigningRequest;
@@ -9,9 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import se.sundsvall.esigning.integration.comfactfacade.configuration.ComfactFacadeConfiguration;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static se.sundsvall.esigning.integration.comfactfacade.configuration.ComfactFacadeConfiguration.CLIENT_ID;
 
 @FeignClient(name = CLIENT_ID, url = "${integration.comfactfacade.url}", configuration = ComfactFacadeConfiguration.class)
 public interface ComfactFacadeClient {

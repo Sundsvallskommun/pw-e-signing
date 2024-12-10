@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
 import org.assertj.core.api.FileAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
-
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.camunda.deployment.DeploymentProperties.ProcessArchive;
 

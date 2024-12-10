@@ -9,8 +9,9 @@ import static org.mockito.Mockito.when;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
+import com.google.gson.Gson;
+import generated.se.sundsvall.camunda.VariableValueDto;
 import java.util.UUID;
-
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.camunda.bpm.engine.variable.type.ValueType;
@@ -23,10 +24,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
-
-import generated.se.sundsvall.camunda.VariableValueDto;
 import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;

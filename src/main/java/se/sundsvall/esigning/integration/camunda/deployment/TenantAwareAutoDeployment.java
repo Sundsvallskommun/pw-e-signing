@@ -6,20 +6,18 @@ import static java.util.Optional.ofNullable;
 import static org.springframework.util.DigestUtils.md5DigestAsHex;
 import static se.sundsvall.dept44.util.ResourceUtils.requireNotBlank;
 
+import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
-
-import jakarta.annotation.PostConstruct;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.camunda.deployment.DeploymentProperties.ProcessArchive;
 

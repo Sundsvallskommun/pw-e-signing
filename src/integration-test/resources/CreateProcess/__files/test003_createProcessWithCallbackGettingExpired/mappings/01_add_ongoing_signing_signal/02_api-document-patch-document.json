@@ -1,19 +1,31 @@
 {
 	"request": {
-		"headers": {"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"}},
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
+			}
+		},
 		"method": "PATCH",
-		"bodyPatterns": [{"equalToJson": {
-			"createdBy": "E-signing-process",
-			"metadataList": [{
-				"value": "true",
-				"key": "signingInProgress"
-			}]
-		}}],
+		"bodyPatterns": [
+			{
+				"equalToJson": {
+					"createdBy": "E-signing-process",
+					"metadataList": [
+						{
+							"value": "true",
+							"key": "signingInProgress"
+						}
+					]
+				}
+			}
+		],
 		"urlPath": "/api-document/2281/documents/2024-1234-3"
 	},
 	"newScenarioState": "add_ongoing_signing_signal-worker---api-document-patch-document",
 	"response": {
-		"headers": {"Content-Type": "application/json"},
+		"headers": {
+			"Content-Type": "application/json"
+		},
 		"bodyFileName": "test003_createProcessWithCallbackGettingExpired/responses/01_add_ongoing_signing_signal/api-document-patch-document-response.json",
 		"status": 200
 	},

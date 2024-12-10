@@ -3,11 +3,6 @@ package se.sundsvall.esigning.integration.comfactfacade.mapper;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.springframework.core.io.ByteArrayResource;
-
 import generated.se.sundsvall.comfactfacade.Document;
 import generated.se.sundsvall.comfactfacade.Identification;
 import generated.se.sundsvall.comfactfacade.NotificationMessage;
@@ -15,6 +10,9 @@ import generated.se.sundsvall.comfactfacade.Party;
 import generated.se.sundsvall.comfactfacade.Reminder;
 import generated.se.sundsvall.comfactfacade.Signatory;
 import generated.se.sundsvall.comfactfacade.SigningRequest;
+import java.util.List;
+import java.util.Objects;
+import org.springframework.core.io.ByteArrayResource;
 import se.sundsvall.esigning.api.model.Initiator;
 import se.sundsvall.esigning.api.model.Message;
 

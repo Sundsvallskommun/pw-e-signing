@@ -1,7 +1,16 @@
 package se.sundsvall.esigning.integration.camunda.mapper;
 
+import static java.util.Map.entry;
+import static org.assertj.core.api.Assertions.assertThat;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_WAIT_DURATION;
+
 import com.google.gson.Gson;
 import generated.se.sundsvall.camunda.VariableValueDto;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,16 +21,6 @@ import se.sundsvall.esigning.api.model.Initiator;
 import se.sundsvall.esigning.api.model.Message;
 import se.sundsvall.esigning.api.model.Signatory;
 import se.sundsvall.esigning.api.model.SigningRequest;
-
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Map.entry;
-import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_WAIT_DURATION;
 
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("junit")

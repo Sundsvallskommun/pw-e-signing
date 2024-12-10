@@ -1,9 +1,11 @@
 {
-	"signatories": [{
-		"name": "John Connor",
-		"partyId": "58253228-246f-44bb-8f97-4ed22bf6aee2",
-		"email": "john.connor@noreply.com"
-	}],
+	"signatories": [
+		{
+			"name": "John Connor",
+			"partyId": "58253228-246f-44bb-8f97-4ed22bf6aee2",
+			"email": "john.connor@noreply.com"
+		}
+	],
 	"fileName": "termination_contract.pdf",
 	"expires": "2099-12-31T23:59:59Z",
 	"registrationNumber": "2024-1234-1",
