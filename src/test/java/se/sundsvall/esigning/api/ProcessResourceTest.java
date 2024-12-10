@@ -19,8 +19,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.Initiator;
@@ -38,7 +38,7 @@ class ProcessResourceTest {
 	private static final String MUNICIPALITY_ID = "2281";
 	private static final String PATH = "/" + MUNICIPALITY_ID + "/process/start";
 
-	@MockBean
+	@MockitoBean
 	private ProcessService processServiceMock;
 
 	@Autowired
