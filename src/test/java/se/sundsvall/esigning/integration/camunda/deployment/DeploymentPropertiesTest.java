@@ -5,13 +5,11 @@ import static org.assertj.core.groups.Tuple.tuple;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
 import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.integration.camunda.deployment.DeploymentProperties.ProcessArchive;
 

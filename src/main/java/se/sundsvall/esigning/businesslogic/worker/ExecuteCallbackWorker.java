@@ -2,13 +2,11 @@ package se.sundsvall.esigning.businesslogic.worker;
 
 import static se.sundsvall.esigning.businesslogic.util.UriUtility.addProcessIdParameter;
 
+import com.google.gson.Gson;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
-
-import com.google.gson.Gson;
-
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.callback.CallbackClient;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;

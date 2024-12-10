@@ -1,5 +1,10 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadata;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
+
 import com.google.gson.Gson;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
@@ -8,11 +13,6 @@ import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
-
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
-import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadata;
-import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
 
 @Component
 @ExternalTaskSubscription("AddOngoingSigningSignalTask")

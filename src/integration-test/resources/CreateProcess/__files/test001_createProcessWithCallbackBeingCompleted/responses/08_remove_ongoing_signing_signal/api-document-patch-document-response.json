@@ -3,7 +3,9 @@
 	"createdBy": "E-signing-process",
 	"registrationNumber": "2024-1234-1",
 	"created": "2024-04-01T13:37:50.000+02:00",
-	"confidentiality": {"confidential": false},
+	"confidentiality": {
+		"confidential": false
+	},
 	"description": "Termination contract",
 	"archive": false,
 	"id": "a054cf70-907a-49dc-aa42-ef4c6cfa8484",

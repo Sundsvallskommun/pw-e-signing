@@ -4,12 +4,10 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import generated.se.sundsvall.comfactfacade.Document;
 import generated.se.sundsvall.comfactfacade.Signatory;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 class DocumentMapperTest {
 

@@ -1,10 +1,25 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+
 import com.google.gson.Gson;
 import generated.se.sundsvall.comfactfacade.Document;
 import generated.se.sundsvall.comfactfacade.SigningInstance;
 import generated.se.sundsvall.document.DocumentDataCreateRequest;
 import generated.se.sundsvall.document.DocumentUpdateRequest;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
@@ -24,22 +39,6 @@ import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class AddSignedDocumentWorkerTest {

@@ -5,15 +5,13 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
+import generated.se.sundsvall.comfactfacade.Document;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.springframework.web.multipart.MultipartFile;
-
-import generated.se.sundsvall.comfactfacade.Document;
 
 public class DocumentMultipartFile implements MultipartFile {
 

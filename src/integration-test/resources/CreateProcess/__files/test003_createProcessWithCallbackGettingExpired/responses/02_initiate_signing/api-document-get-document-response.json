@@ -3,19 +3,25 @@
 	"createdBy": "E-signing-process",
 	"registrationNumber": "2024-1234-3",
 	"created": "2024-04-01T13:37:10.000+02:00",
-	"confidentiality": {"confidential": false},
+	"confidentiality": {
+		"confidential": false
+	},
 	"description": "Termination contract",
 	"archive": false,
 	"id": "a054cf70-907a-49dc-aa42-ef4c6cfa8484",
-	"documentData": [{
-		"fileName": "termination_contract.pdf",
-		"fileSizeInBytes": 44399,
-		"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
-		"mimeType": "application/pdf"
-	}],
+	"documentData": [
+		{
+			"fileName": "termination_contract.pdf",
+			"fileSizeInBytes": 44399,
+			"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
+			"mimeType": "application/pdf"
+		}
+	],
 	"revision": 2,
-	"metadataList": [{
-		"value": "true",
-		"key": "signingInProgress"
-	}]
+	"metadataList": [
+		{
+			"value": "true",
+			"key": "signingInProgress"
+		}
+	]
 }

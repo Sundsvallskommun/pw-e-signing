@@ -12,10 +12,10 @@ import static org.mockito.Mockito.when;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
+import com.google.gson.Gson;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-
 import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
@@ -29,9 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
-
-import com.google.gson.Gson;
-
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.callback.CallbackClient;

@@ -1,14 +1,20 @@
 {
 	"request": {
 		"headers": {
-			"Authorization": {"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"},
-			"Content-Type": {"contains": "multipart/form-data"}
+			"Authorization": {
+				"equalTo": "Bearer MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3"
+			},
+			"Content-Type": {
+				"contains": "multipart/form-data"
+			}
 		},
 		"method": "PUT",
 		"urlPath": "/api-document/2281/documents/2024-1234-2/files"
 	},
 	"newScenarioState": "add_signed_document-worker---api-document-put-documentdata",
-	"response": {"status": 204},
+	"response": {
+		"status": 204
+	},
 	"requiredScenarioState": "add_signed_document-worker---api-comfactfacade-get-signinginstance",
 	"scenarioName": "create-process-without-callback-being-completed"
 }

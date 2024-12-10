@@ -2,14 +2,12 @@ package se.sundsvall.esigning.integration.comfactfacade.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import generated.se.sundsvall.comfactfacade.Identification;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Random;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ByteArrayResource;
-
-import generated.se.sundsvall.comfactfacade.Identification;
 import se.sundsvall.esigning.api.model.Initiator;
 import se.sundsvall.esigning.api.model.Message;
 import se.sundsvall.esigning.api.model.Reminder;

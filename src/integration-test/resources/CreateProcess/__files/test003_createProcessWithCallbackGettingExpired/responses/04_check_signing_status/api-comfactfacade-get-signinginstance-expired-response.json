@@ -1,17 +1,25 @@
 {
-	"signatories": [{
-		"name": "John Connor",
-		"language": "sv-SE",
-		"partyId": "58253228-246f-44bb-8f97-4ed22bf6aee2",
-		"email": "john.connor@noreply.com",
-		"identifications": [{"alias": "SvensktEId"}]
-	}],
+	"signatories": [
+		{
+			"name": "John Connor",
+			"language": "sv-SE",
+			"partyId": "58253228-246f-44bb-8f97-4ed22bf6aee2",
+			"email": "john.connor@noreply.com",
+			"identifications": [
+				{
+					"alias": "SvensktEId"
+				}
+			]
+		}
+	],
 	"expires": "2099-12-31T23:59:59.999+02:00",
-	"notificationMessages": [{
-		"subject": "Please sign the document",
-		"language": "sv-SE",
-		"body": "Dear John Connor, please sign the document of termination."
-	}],
+	"notificationMessages": [
+		{
+			"subject": "Please sign the document",
+			"language": "sv-SE",
+			"body": "Dear John Connor, please sign the document of termination."
+		}
+	],
 	"additionalDocuments": [],
 	"additionalParties": [],
 	"created": "2024-04-26T15:40:25.271+02:00",
