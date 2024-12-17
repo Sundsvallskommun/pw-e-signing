@@ -5,6 +5,7 @@ import static se.sundsvall.esigning.integration.document.configuration.DocumentC
 import generated.se.sundsvall.document.Document;
 import generated.se.sundsvall.document.DocumentDataCreateRequest;
 import generated.se.sundsvall.document.DocumentUpdateRequest;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.esigning.integration.document.configuration.DocumentConfiguration;
 
 @FeignClient(name = CLIENT_ID, url = "${integration.document.url}", configuration = DocumentConfiguration.class)
+@CircuitBreaker(name = CLIENT_ID)
 public interface DocumentClient {
 
 	@GetMapping(path = "/{municipalityId}/documents/{registrationNumber}")
