@@ -47,7 +47,7 @@ public class GsonConfiguration {
 
 	@Bean
 	@Primary
-	public Gson gson() {
+	Gson gson() {
 		return new GsonBuilder()
 			.setPrettyPrinting()
 			.registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeDeserializer())

@@ -29,10 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import se.sundsvall.esigning.integration.camunda.configuration.CamundaConfiguration;
-import se.sundsvall.esigning.integration.document.configuration.DocumentConfiguration;
 
 @FeignClient(name = CLIENT_ID, url = "${integration.camunda.url}", configuration = CamundaConfiguration.class)
-@CircuitBreaker(name = DocumentConfiguration.CLIENT_ID)
+@CircuitBreaker(name = CLIENT_ID)
 public interface CamundaClient {
 
 	@PostMapping(path = "process-definition/key/{key}/start", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)

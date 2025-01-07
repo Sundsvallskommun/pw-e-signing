@@ -128,8 +128,8 @@ class AbstractWorkerTest {
 			loggerFactoryMock.when(() -> LoggerFactory.getLogger(Worker.class)).thenReturn(loggerMock);
 
 			// Act
-			final var worker = new AbstractWorkerTest.Worker(null, null, null);
-			worker.logInfo("message with parameters {} {}", "parameter1", "parameter2");
+			final var theWorker = new AbstractWorkerTest.Worker(null, null, null);
+			theWorker.logInfo("message with parameters {} {}", "parameter1", "parameter2");
 
 			// Assert and verify
 			loggerFactoryMock.verify(() -> LoggerFactory.getLogger(Worker.class));
@@ -154,9 +154,9 @@ class AbstractWorkerTest {
 			loggerFactoryMock.when(() -> LoggerFactory.getLogger(Worker.class)).thenReturn(loggerMock);
 
 			// Act
-			final var worker = new AbstractWorkerTest.Worker(null, null, null);
+			final var theWorker = new AbstractWorkerTest.Worker(null, null, null);
 			final var exception = new Exception("testexception");
-			worker.logException(externalTaskMock, exception);
+			theWorker.logException(externalTaskMock, exception);
 
 			// Assert and verify
 			loggerFactoryMock.verify(() -> LoggerFactory.getLogger(Worker.class));
@@ -166,5 +166,4 @@ class AbstractWorkerTest {
 			verifyNoInteractions(camundaClientMock, failureHandlerMock, gsonMock);
 		}
 	}
-
 }
