@@ -58,8 +58,8 @@ class ProcessResourceFailuresTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getTitle()).isEqualTo("Bad Request");
 		assertThat(response.getStatus()).isEqualTo(BAD_REQUEST);
-		assertThat(response.getDetail()).isEqualTo("Required request body is missing: public org.springframework.http.ResponseEntity<se.sundsvall.esigning.api.model.StartResponse> "
-			+ "se.sundsvall.esigning.api.ProcessResource.startProcess(java.lang.String,se.sundsvall.esigning.api.model.SigningRequest)");
+		assertThat(response.getDetail()).isEqualTo(
+			"Required request body is missing: org.springframework.http.ResponseEntity<se.sundsvall.esigning.api.model.StartResponse> se.sundsvall.esigning.api.ProcessResource.startProcess(java.lang.String,se.sundsvall.esigning.api.model.SigningRequest)");
 
 		verifyNoInteractions(processServiceMock);
 	}

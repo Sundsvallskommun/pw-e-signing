@@ -32,28 +32,27 @@ import se.sundsvall.esigning.service.ProcessService;
 @RestController
 @RequestMapping("/{municipalityId}/process")
 @Tag(name = "E-signing process endpoints", description = "Endpoints for managing e-signing processes")
-public class ProcessResource {
+class ProcessResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessResource.class);
 
 	private final ProcessService service;
 
-	public ProcessResource(ProcessService service) {
+	ProcessResource(ProcessService service) {
 		this.service = service;
 	}
 
-	@PostMapping(path = "start", consumes = APPLICATION_JSON_VALUE, produces = {
-		APPLICATION_JSON_VALUE, APPLICATION_PROBLEM_JSON_VALUE
+	@PostMapping(path = "start", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+	@Operation(description = "Start a new e-signing process instance", responses = {
+		@ApiResponse(responseCode = "202", description = "Accepted", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
+			Problem.class, ConstraintViolationProblem.class
+		}))),
+		@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
+		@ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class))),
+		@ApiResponse(responseCode = "502", description = "Bad Gateway", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
 	})
-	@Operation(description = "Start a new e-signing process instance")
-	@ApiResponse(responseCode = "202", description = "Accepted", useReturnTypeSchema = true)
-	@ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(oneOf = {
-		Problem.class, ConstraintViolationProblem.class
-	})))
-	@ApiResponse(responseCode = "404", description = "Not found", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-	@ApiResponse(responseCode = "500", description = "Internal Server error", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-	@ApiResponse(responseCode = "502", description = "Bad Gateway", content = @Content(mediaType = APPLICATION_PROBLEM_JSON_VALUE, schema = @Schema(implementation = Problem.class)))
-	public ResponseEntity<StartResponse> startProcess(
+	ResponseEntity<StartResponse> startProcess(
 		@Parameter(name = "municipalityId", description = "Municipality ID", example = "2281") @ValidMunicipalityId @PathVariable final String municipalityId,
 		@RequestBody @NotNull @Valid SigningRequest request) {
 

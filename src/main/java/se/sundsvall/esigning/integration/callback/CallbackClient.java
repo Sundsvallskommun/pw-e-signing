@@ -7,10 +7,9 @@ import java.net.URI;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import se.sundsvall.esigning.integration.callback.configuration.CallbackConfiguration;
-import se.sundsvall.esigning.integration.document.configuration.DocumentConfiguration;
 
 @FeignClient(name = CLIENT_ID, url = "http://placeholder.url", configuration = CallbackConfiguration.class, dismiss404 = true)
-@CircuitBreaker(name = DocumentConfiguration.CLIENT_ID)
+@CircuitBreaker(name = CLIENT_ID)
 public interface CallbackClient {
 
 	@GetMapping
