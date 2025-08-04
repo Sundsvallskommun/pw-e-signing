@@ -19,9 +19,10 @@ class BackoffConfigurationTest {
 
 	@Test
 	void testConfiguration() {
-		assertThat(backoffStrategy).isInstanceOf(ExponentialBackoffStrategy.class);
-		assertThat(backoffStrategy).hasFieldOrPropertyWithValue("initTime", 500L);
-		assertThat(backoffStrategy).hasFieldOrPropertyWithValue("factor", 2F);
-		assertThat(backoffStrategy).hasFieldOrPropertyWithValue("maxTime", 15000L);
+		assertThat(backoffStrategy)
+			.isInstanceOf(ExponentialBackoffStrategy.class)
+			.hasFieldOrPropertyWithValue("initTime", 500L)
+			.hasFieldOrPropertyWithValue("factor", 2F)
+			.hasFieldOrPropertyWithValue("maxTime", 15000L);
 	}
 }

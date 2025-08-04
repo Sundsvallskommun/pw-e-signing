@@ -39,7 +39,7 @@ class AbstractWorkerTest {
 		}
 
 		@Override
-		protected void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {}
+		protected void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) { /* Not implemented */}
 	} // Test class extending the abstract class
 
 	@Mock

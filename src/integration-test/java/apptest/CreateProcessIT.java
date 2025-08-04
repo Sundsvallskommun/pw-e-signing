@@ -1,18 +1,5 @@
 package apptest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-import se.sundsvall.esigning.Application;
-import se.sundsvall.esigning.api.model.StartResponse;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
-
-import java.time.Duration;
-
 import static generated.se.sundsvall.camunda.HistoricProcessInstanceDto.StateEnum.COMPLETED;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -25,6 +12,18 @@ import static org.awaitility.Awaitility.setDefaultTimeout;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.ACCEPTED;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
+import java.time.Duration;
+import org.apache.commons.lang3.Strings;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+import se.sundsvall.esigning.Application;
+import se.sundsvall.esigning.api.model.StartResponse;
+import se.sundsvall.esigning.integration.camunda.CamundaClient;
 
 @WireMockAppTestSuite(files = "classpath:/CreateProcess/", classes = Application.class)
 class CreateProcessIT extends AbstractCamundaAppTest {
@@ -56,7 +55,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 
 		// Setup call and modify incoming callback to point to a mock
 		final var call = setupCall();
-		final var request = StringUtils.replace(fromTestFile(REQUEST_FILE), "[callback.url]", callbackUrl);
+		final var request = Strings.CS.replace(fromTestFile(REQUEST_FILE), "[callback.url]", callbackUrl);
 
 		// Start process
 		final var startResponse = call
@@ -148,7 +147,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 
 		// Setup call and modify incoming callback to point to a mock
 		final var call = setupCall();
-		final var request = StringUtils.replace(fromTestFile(REQUEST_FILE), "[callback.url]", callbackUrl);
+		final var request = Strings.CS.replace(fromTestFile(REQUEST_FILE), "[callback.url]", callbackUrl);
 
 		// Start process
 		final var startResponse = call

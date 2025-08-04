@@ -13,7 +13,7 @@ class UriUtilityTest {
 	@ParameterizedTest
 	@MethodSource("testArgumentsProvider")
 	void test(String url, String processId, String expected) {
-		assertThat(UriUtility.addProcessIdParameter(url, processId).toString()).isEqualTo(expected);
+		assertThat(UriUtility.addProcessIdParameter(url, processId)).hasToString(expected);
 	}
 
 	private static Stream<Arguments> testArgumentsProvider() {
