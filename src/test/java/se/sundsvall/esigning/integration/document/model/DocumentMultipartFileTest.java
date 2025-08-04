@@ -6,6 +6,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import generated.se.sundsvall.comfactfacade.Document;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -85,7 +87,7 @@ class DocumentMultipartFileTest {
 			.content(content);
 		final var multipartFile = DocumentMultipartFile.create(document);
 
-		final var file = File.createTempFile("test_", null);
+		final var file = Files.createTempFile("test_", null).toFile();
 		multipartFile.transferTo(file);
 
 		assertThat(file).exists();
