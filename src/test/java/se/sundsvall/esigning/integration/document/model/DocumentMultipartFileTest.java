@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import generated.se.sundsvall.comfactfacade.Document;
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
