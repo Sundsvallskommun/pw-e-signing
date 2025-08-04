@@ -61,7 +61,7 @@ class ExecuteCallbackWorkerTest {
 	private ExecuteCallbackWorker worker;
 
 	@Captor
-	private ArgumentCaptor<URI> URICaptor;
+	private ArgumentCaptor<URI> uriCaptor;
 
 	@Test
 	void verifyAnnotations() {
@@ -94,14 +94,14 @@ class ExecuteCallbackWorkerTest {
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
 		verify(externalTaskMock).getProcessInstanceId();
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(callbackClientMock).sendRequest(URICaptor.capture());
+		verify(callbackClientMock).sendRequest(uriCaptor.capture());
 		verify(externalTaskServiceMock).complete(externalTaskMock);
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, callbackClientMock, gsonMock);
 		verifyNoInteractions(failureHandlerMock);
 
-		assertThat(URICaptor.getValue().getScheme()).isEqualTo(protocol);
-		assertThat(URICaptor.getValue().getHost()).isEqualTo(callbackUrl);
-		assertThat(URICaptor.getValue().getQuery()).matches("processId=[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}");
+		assertThat(uriCaptor.getValue().getScheme()).isEqualTo(protocol);
+		assertThat(uriCaptor.getValue().getHost()).isEqualTo(callbackUrl);
+		assertThat(uriCaptor.getValue().getQuery()).matches("processId=[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}");
 	}
 
 	@Test
