@@ -433,7 +433,7 @@ components:
         phoneNumber:
           type: string
           description: The party phone number
-          example: "0701234567"
+          example: "0701740605"
         organization:
           type: string
           description: The organization of the party.
@@ -494,7 +494,7 @@ components:
         phoneNumber:
           type: string
           description: The party phone number
-          example: "0701234567"
+          example: "0701740605"
         organization:
           type: string
           description: The organization of the party.
