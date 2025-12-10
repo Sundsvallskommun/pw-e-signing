@@ -15,7 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Schema(description = "Reminder message model for the signature request.")
 public class Reminder {
 
-	@Schema(description = "The interval in hours between each reminder message.", example = "24", requiredMode = REQUIRED)
+	@Schema(description = "The interval in hours between each reminder message.", examples = "24", requiredMode = REQUIRED)
 	@Min(1)
 	private int intervalInHours;
 
@@ -24,7 +24,7 @@ public class Reminder {
 	@Valid
 	private Message reminderMessage;
 
-	@Schema(description = "The date and time when the first reminder message will be sent.", example = "2021-12-31T23:59:59Z", requiredMode = REQUIRED)
+	@Schema(description = "The date and time when the first reminder message will be sent.", examples = "2021-12-31T23:59:59Z", requiredMode = REQUIRED)
 	@NotNull
 	@Future
 	@DateTimeFormat(iso = DATE_TIME)
