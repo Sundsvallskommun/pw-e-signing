@@ -7,11 +7,11 @@ import java.util.Objects;
 @Schema(description = "Message model for signature request emails.")
 public class Message {
 
-	@Schema(description = "The subject of the message.", example = "Please sign the document")
+	@Schema(description = "The subject of the message.", examples = "Please sign the document")
 	@NotBlank
 	private String subject;
 
-	@Schema(description = "The body of the message.", example = "Dear John Doe, please sign the document.")
+	@Schema(description = "The body of the message.", examples = "Dear John Doe, please sign the document.")
 	@NotBlank
 	private String body;
 

@@ -11,19 +11,19 @@ import se.sundsvall.dept44.common.validators.annotation.ValidUuid;
 @Schema(description = "A party assigned as initiator to the signing process.")
 public class Initiator {
 
-	@Schema(description = "The name of the party.", example = "John Doe")
+	@Schema(description = "The name of the party.", examples = "John Doe")
 	private String name;
 
-	@Schema(description = "The uuid of the party.", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = REQUIRED)
+	@Schema(description = "The uuid of the party.", examples = "550e8400-e29b-41d4-a716-446655440000", requiredMode = REQUIRED)
 	@ValidUuid
 	private String partyId;
 
-	@Schema(description = "The email for the party.", example = "john.doe@sundsvall.se", requiredMode = REQUIRED)
+	@Schema(description = "The email for the party.", examples = "john.doe@sundsvall.se", requiredMode = REQUIRED)
 	@Email
 	@NotNull
 	private String email;
 
-	@Schema(description = "The organization for the party.", example = "Sundsvalls kommun")
+	@Schema(description = "The organization for the party.", examples = "Sundsvalls kommun")
 	private String organization;
 
 	public static Initiator create() {

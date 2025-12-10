@@ -20,23 +20,23 @@ import se.sundsvall.dept44.common.validators.annotation.OneOf;
 @Schema(description = "Request model for starting a new e-signing process")
 public class SigningRequest {
 
-	@Schema(description = "Registration number for the document instance that owns the documentdata to be signed", example = "2024-1234", requiredMode = REQUIRED)
+	@Schema(description = "Registration number for the document instance that owns the documentdata to be signed", examples = "2024-1234", requiredMode = REQUIRED)
 	@NotBlank
 	private String registrationNumber;
 
-	@Schema(description = "Filename for the documentdata instance that is to be signed. Needs to be valid pdf format.", example = "contract.pdf", requiredMode = REQUIRED)
+	@Schema(description = "Filename for the documentdata instance that is to be signed. Needs to be valid pdf format.", examples = "contract.pdf", requiredMode = REQUIRED)
 	@NotBlank
 	private String fileName;
 
-	@Schema(description = "Optional descriptive name for the document that is to be signed.", example = "Employment contract")
+	@Schema(description = "Optional descriptive name for the document that is to be signed.", examples = "Employment contract")
 	private String name;
 
-	@Schema(description = "Optional date and time when the signing request expires. If no exipre date is provided, expiretime will be set to 30 days from time when request was received.", example = "2021-12-31T23:59:59Z")
+	@Schema(description = "Optional date and time when the signing request expires. If no exipre date is provided, expiretime will be set to 30 days from time when request was received.", examples = "2021-12-31T23:59:59Z")
 	@Future
 	@DateTimeFormat(iso = DATE_TIME)
 	private OffsetDateTime expires;
 
-	@Schema(description = "The language used by the signing procedure. Valid values are one of [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]. If no language is provided, sv-SE will be used.", example = "sv-SE")
+	@Schema(description = "The language used by the signing procedure. Valid values are one of [en-US, sv-SE, da-DK, fr-FR, de-DE, nb-NO, ru-RU, zh-CN, fi-FI, uk-UA]. If no language is provided, sv-SE will be used.", examples = "sv-SE")
 	@OneOf(value = {
 		"en-US", "sv-SE", "da-DK", "fr-FR", "de-DE", "nb-NO", "ru-RU", "zh-CN", "fi-FI",
 		"uk-UA"
@@ -66,7 +66,7 @@ public class SigningRequest {
 
 		- the url must handle requests with the get method, as this is the method used when the url is called
 		- it must be possible to call the url without authorization, i.e. it should not be secured
-		""", example = "https://callback.url")
+		""", examples = "https://callback.url")
 	@URL
 	private String callbackUrl;
 
