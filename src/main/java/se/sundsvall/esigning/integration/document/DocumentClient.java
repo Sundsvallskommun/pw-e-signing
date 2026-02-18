@@ -1,7 +1,5 @@
 package se.sundsvall.esigning.integration.document;
 
-import static se.sundsvall.esigning.integration.document.configuration.DocumentConfiguration.CLIENT_ID;
-
 import generated.se.sundsvall.document.Document;
 import generated.se.sundsvall.document.DocumentDataCreateRequest;
 import generated.se.sundsvall.document.DocumentUpdateRequest;
@@ -17,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.esigning.integration.document.configuration.DocumentConfiguration;
+
+import static se.sundsvall.esigning.integration.document.configuration.DocumentConfiguration.CLIENT_ID;
 
 @FeignClient(name = CLIENT_ID, url = "${integration.document.url}", configuration = DocumentConfiguration.class)
 @CircuitBreaker(name = CLIENT_ID)

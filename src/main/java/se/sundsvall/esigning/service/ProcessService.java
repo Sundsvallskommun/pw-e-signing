@@ -1,12 +1,12 @@
 package se.sundsvall.esigning.service;
 
-import static se.sundsvall.esigning.Constants.PROCESS_KEY;
-import static se.sundsvall.esigning.Constants.TENANTID;
-
 import org.springframework.stereotype.Service;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.camunda.mapper.CamundaMapper;
+
+import static se.sundsvall.esigning.Constants.PROCESS_KEY;
+import static se.sundsvall.esigning.Constants.TENANTID;
 
 @Service
 public class ProcessService {

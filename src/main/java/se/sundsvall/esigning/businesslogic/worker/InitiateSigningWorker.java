@@ -1,10 +1,5 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static org.apache.hc.core5.http.ContentType.APPLICATION_PDF;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
-import static se.sundsvall.esigning.integration.comfactfacade.mapper.ComfactFacadeMapper.toSigningRequest;
-
 import com.google.gson.Gson;
 import generated.se.sundsvall.document.Document;
 import java.util.List;
@@ -22,6 +17,11 @@ import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+
+import static org.apache.hc.core5.http.ContentType.APPLICATION_PDF;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.integration.comfactfacade.mapper.ComfactFacadeMapper.toSigningRequest;
 
 @Component
 @ExternalTaskSubscription("InitiateSigningTask")

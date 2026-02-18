@@ -1,7 +1,5 @@
 package se.sundsvall.esigning.integration.comfactfacade.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import generated.se.sundsvall.comfactfacade.Identification;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,6 +11,8 @@ import se.sundsvall.esigning.api.model.Message;
 import se.sundsvall.esigning.api.model.Reminder;
 import se.sundsvall.esigning.api.model.Signatory;
 import se.sundsvall.esigning.api.model.SigningRequest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ComfactFacadeMapperTest {
 

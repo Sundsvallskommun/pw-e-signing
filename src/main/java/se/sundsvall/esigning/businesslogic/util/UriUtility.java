@@ -1,9 +1,9 @@
 package se.sundsvall.esigning.businesslogic.util;
 
-import static java.util.Collections.emptyMap;
-
 import java.net.URI;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+
+import static java.util.Collections.emptyMap;
 
 public final class UriUtility {
 	private UriUtility() {}

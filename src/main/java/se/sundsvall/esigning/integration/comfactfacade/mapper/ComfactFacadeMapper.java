@@ -1,8 +1,5 @@
 package se.sundsvall.esigning.integration.comfactfacade.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-
 import generated.se.sundsvall.comfactfacade.Document;
 import generated.se.sundsvall.comfactfacade.Identification;
 import generated.se.sundsvall.comfactfacade.NotificationMessage;
@@ -15,6 +12,9 @@ import java.util.Objects;
 import org.springframework.core.io.ByteArrayResource;
 import se.sundsvall.esigning.api.model.Initiator;
 import se.sundsvall.esigning.api.model.Message;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 
 public final class ComfactFacadeMapper {
 	private ComfactFacadeMapper() {}

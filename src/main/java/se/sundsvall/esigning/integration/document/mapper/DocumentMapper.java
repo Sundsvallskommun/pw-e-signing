@@ -1,10 +1,5 @@
 package se.sundsvall.esigning.integration.document.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNATORY;
-import static se.sundsvall.esigning.Constants.DOCUMENT_USER;
-
 import com.google.gson.Gson;
 import generated.se.sundsvall.comfactfacade.Document;
 import generated.se.sundsvall.comfactfacade.Signatory;
@@ -15,6 +10,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.web.multipart.MultipartFile;
 import se.sundsvall.esigning.integration.document.model.DocumentMultipartFile;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNATORY;
+import static se.sundsvall.esigning.Constants.DOCUMENT_USER;
 
 public final class DocumentMapper {
 	private static final Gson GSON = new Gson();
