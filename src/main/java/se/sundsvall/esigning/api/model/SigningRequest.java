@@ -1,8 +1,5 @@
 package se.sundsvall.esigning.api.model;
 
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
-
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -16,6 +13,9 @@ import java.util.Objects;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.format.annotation.DateTimeFormat;
 import se.sundsvall.dept44.common.validators.annotation.OneOf;
+
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
 @Schema(description = "Request model for starting a new e-signing process")
 public class SigningRequest {

@@ -1,9 +1,5 @@
 package se.sundsvall.esigning.integration.document.model;
 
-import static java.util.Objects.isNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyNoInteractions;
-
 import generated.se.sundsvall.comfactfacade.Document;
 import java.io.File;
 import java.nio.file.Files;
@@ -15,6 +11,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wiremock.org.apache.commons.io.FileUtils;
+
+import static java.util.Objects.isNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class DocumentMultipartFileTest {

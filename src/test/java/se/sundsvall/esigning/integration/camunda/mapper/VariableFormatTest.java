@@ -1,11 +1,11 @@
 package se.sundsvall.esigning.integration.camunda.mapper;
 
+import org.camunda.bpm.engine.variable.value.SerializationDataFormat;
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static se.sundsvall.esigning.integration.camunda.mapper.VariableFormat.JSON;
 import static se.sundsvall.esigning.integration.camunda.mapper.VariableFormat.STRING;
-
-import org.camunda.bpm.engine.variable.value.SerializationDataFormat;
-import org.junit.jupiter.api.Test;
 
 class VariableFormatTest {
 

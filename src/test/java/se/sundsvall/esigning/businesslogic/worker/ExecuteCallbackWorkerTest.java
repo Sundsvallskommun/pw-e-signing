@@ -1,17 +1,5 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
-
 import com.google.gson.Gson;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -33,6 +21,18 @@ import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.callback.CallbackClient;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class ExecuteCallbackWorkerTest {

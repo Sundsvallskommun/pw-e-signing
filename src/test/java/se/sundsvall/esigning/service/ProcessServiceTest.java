@@ -1,12 +1,5 @@
 package se.sundsvall.esigning.service;
 
-import static java.util.UUID.randomUUID;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 import generated.se.sundsvall.camunda.ProcessInstanceWithVariablesDto;
 import generated.se.sundsvall.camunda.StartProcessInstanceDto;
 import org.junit.jupiter.api.Test;
@@ -19,6 +12,13 @@ import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.camunda.mapper.CamundaMapper;
+
+import static java.util.UUID.randomUUID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessServiceTest {

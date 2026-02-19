@@ -1,14 +1,5 @@
 package se.sundsvall.esigning.businesslogic.worker;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
-
 import com.google.gson.Gson;
 import generated.se.sundsvall.camunda.VariableValueDto;
 import java.util.UUID;
@@ -28,6 +19,15 @@ import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class AbstractWorkerTest {
