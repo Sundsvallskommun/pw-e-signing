@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
 import java.time.Duration;
 import org.apache.commons.lang3.Strings;
@@ -48,7 +48,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 	}
 
 	@Test
-	void test001_createProcessWithCallbackBeingCompleted() throws JsonProcessingException, ClassNotFoundException {
+	void test001_createProcessWithCallbackBeingCompleted() throws JacksonException, ClassNotFoundException {
 
 		// Callback mock address
 		final var callbackUrl = "http://localhost:%s/callback-mock".formatted(wiremock.port());
@@ -98,7 +98,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 	}
 
 	@Test
-	void test002_createProcessWithoutCallbackBeingCompleted() throws JsonProcessingException, ClassNotFoundException {
+	void test002_createProcessWithoutCallbackBeingCompleted() throws JacksonException, ClassNotFoundException {
 
 		// Start process
 		final var startResponse = setupCall()
@@ -140,7 +140,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 	}
 
 	@Test
-	void test003_createProcessWithCallbackGettingExpired() throws JsonProcessingException, ClassNotFoundException {
+	void test003_createProcessWithCallbackGettingExpired() throws JacksonException, ClassNotFoundException {
 
 		// Callback mock address
 		final var callbackUrl = "http://localhost:%s/callback-mock".formatted(wiremock.port());
@@ -186,7 +186,7 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 	}
 
 	@Test
-	void test004_createProcessWithoutCallbackGettingExpired() throws JsonProcessingException, ClassNotFoundException {
+	void test004_createProcessWithoutCallbackGettingExpired() throws JacksonException, ClassNotFoundException {
 
 		// Start process
 		final var startResponse = setupCall()

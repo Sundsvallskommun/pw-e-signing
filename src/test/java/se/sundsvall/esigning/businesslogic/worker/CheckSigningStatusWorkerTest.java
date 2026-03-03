@@ -17,7 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
-import org.zalando.problem.Problem;
+import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
@@ -106,7 +106,7 @@ class CheckSigningStatusWorkerTest {
 	@Test
 	void executeThrowsExceptionOnFacadeCall() {
 		// Arrange
-		final var problem = Problem.valueOf(org.zalando.problem.Status.I_AM_A_TEAPOT, "Big and stout");
+		final var problem = Problem.valueOf(org.springframework.http.HttpStatus.I_AM_A_TEAPOT, "Big and stout");
 		final var requestId = UUID.randomUUID().toString();
 		final var municipalityId = "municipalityId";
 		final var json = "json";

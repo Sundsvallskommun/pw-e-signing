@@ -9,10 +9,10 @@ import org.camunda.bpm.client.spring.annotation.ExternalTaskSubscription;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
+import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
@@ -69,7 +69,7 @@ public class InitiateSigningWorker extends AbstractWorker {
 			.filter(data -> data.getMimeType().equals(APPLICATION_PDF.getMimeType()))
 			.map(data -> documentClient.getDocumentData(municipalityId, registrationNumber, data.getId()))
 			.findAny()
-			.orElseThrow(() -> Problem.valueOf(Status.NOT_FOUND, "File %s of type %s was not found within document with registrationNumber %s".formatted(
+			.orElseThrow(() -> Problem.valueOf(HttpStatus.NOT_FOUND, "File %s of type %s was not found within document with registrationNumber %s".formatted(
 				fileName,
 				APPLICATION_PDF.getMimeType(),
 				registrationNumber)));
