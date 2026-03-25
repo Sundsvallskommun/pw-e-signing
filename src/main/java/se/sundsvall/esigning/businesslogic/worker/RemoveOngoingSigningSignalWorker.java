@@ -31,7 +31,7 @@ public class RemoveOngoingSigningSignalWorker extends AbstractWorker {
 		try {
 			logInfo("Removing metadata entry flagging document {} with registration number {} as part of an ongoing signing process", request.getFileName(), request.getRegistrationNumber());
 
-			// Remove metadata about ongoing signing process
+			// Remove metadata about an ongoing signing process
 			final var metaData = documentClient.getDocument(municipalityId, request.getRegistrationNumber()).getMetadataList();
 			metaData.removeIf(item -> item.getKey().equals(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS));
 			documentClient.updateDocument(municipalityId, request.getRegistrationNumber(), toDocumentUpdateRequest(metaData));
@@ -39,7 +39,7 @@ public class RemoveOngoingSigningSignalWorker extends AbstractWorker {
 			externalTaskService.complete(externalTask);
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when removing signal for ongoing signing process (%s).".formatted(
+			failureHandler.handleException(externalTaskService, externalTask, "%s occurred for document %s with registration number %s when removing signal for ongoing signing process (%s).".formatted(
 				exception.getClass().getSimpleName(),
 				request.getFileName(),
 				request.getRegistrationNumber(),

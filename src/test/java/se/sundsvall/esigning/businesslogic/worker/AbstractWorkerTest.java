@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +39,7 @@ class AbstractWorkerTest {
 		}
 
 		@Override
-		protected void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) { /* Not implemented */}
+		protected void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {}
 	} // Test class extending the abstract class
 
 	@Mock
@@ -109,13 +109,13 @@ class AbstractWorkerTest {
 		final var json = "json";
 		final var bean = SigningRequest.create();
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 
 		final var signingRequest = worker.getSigningRequest(externalTaskMock);
 
 		assertThat(signingRequest).isEqualTo(bean);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verifyNoMoreInteractions(externalTaskMock, gsonMock);
 		verifyNoInteractions(camundaClientMock, externalTaskServiceMock, failureHandlerMock);

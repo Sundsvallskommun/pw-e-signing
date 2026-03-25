@@ -41,7 +41,7 @@ public class AddMetadataToDocumentWorker extends AbstractWorker {
 			// Fetch signing instance
 			final var response = comfactFacadeClient.getSigningInstance(municipalityId, externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
-			// Save signatory information as metadata on document
+			// Save signatory information as metadata on a document
 			final var metaData = documentClient.getDocument(municipalityId, request.getRegistrationNumber()).getMetadataList();
 			metaData.addAll(toDocumentMetadatas(response.getSignatories()));
 			documentClient.updateDocument(municipalityId, request.getRegistrationNumber(), toDocumentUpdateRequest(metaData));
@@ -49,7 +49,7 @@ public class AddMetadataToDocumentWorker extends AbstractWorker {
 			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, isNotBlank(request.getCallbackUrl())));
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when adding signatory metadata to document (%s).".formatted(
+			failureHandler.handleException(externalTaskService, externalTask, "%s occurred for document %s with registration number %s when adding signatory metadata to document (%s).".formatted(
 				exception.getClass().getSimpleName(),
 				request.getFileName(),
 				request.getRegistrationNumber(),

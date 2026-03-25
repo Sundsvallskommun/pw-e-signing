@@ -6,7 +6,7 @@ import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.camunda.mapper.CamundaMapper;
 
 import static se.sundsvall.esigning.Constants.PROCESS_KEY;
-import static se.sundsvall.esigning.Constants.TENANTID;
+import static se.sundsvall.esigning.Constants.TENANT_ID;
 
 @Service
 public class ProcessService {
@@ -20,6 +20,6 @@ public class ProcessService {
 	}
 
 	public String startProcess(String municipalityId, SigningRequest request) {
-		return camundaClient.startProcessWithTenant(PROCESS_KEY, TENANTID, camundaMapper.toStartProcessInstanceDto(municipalityId, request)).getId();
+		return camundaClient.startProcessWithTenant(PROCESS_KEY, TENANT_ID, camundaMapper.toStartProcessInstanceDto(municipalityId, request)).getId();
 	}
 }

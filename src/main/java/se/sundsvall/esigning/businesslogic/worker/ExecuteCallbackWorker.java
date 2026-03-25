@@ -35,7 +35,7 @@ public class ExecuteCallbackWorker extends AbstractWorker {
 			externalTaskService.complete(externalTask);
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when callback to url %s was executed (%s).".formatted(
+			failureHandler.handleException(externalTaskService, externalTask, "%s occurred for document %s with registration number %s when callback to url %s was executed (%s).".formatted(
 				exception.getClass().getSimpleName(),
 				request.getFileName(),
 				request.getRegistrationNumber(),

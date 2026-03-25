@@ -19,8 +19,8 @@ import static se.sundsvall.esigning.integration.comfactfacade.configuration.Comf
 public interface ComfactFacadeClient {
 
 	@PostMapping(path = "/{municipalityId}/signings", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-	CreateSigningResponse createSigngingInstance(@PathVariable("municipalityId") String municipalityId, @RequestBody SigningRequest signingRequest);
+	CreateSigningResponse createSigningInstance(@PathVariable String municipalityId, @RequestBody SigningRequest signingRequest);
 
 	@GetMapping(path = "/{municipalityId}/signings/{signingId}")
-	SigningInstance getSigningInstance(@PathVariable("municipalityId") String municipalityId, @PathVariable("signingId") String signingId);
+	SigningInstance getSigningInstance(@PathVariable String municipalityId, @PathVariable String signingId);
 }

@@ -23,15 +23,15 @@ import static se.sundsvall.esigning.integration.document.configuration.DocumentC
 public interface DocumentClient {
 
 	@GetMapping(path = "/{municipalityId}/documents/{registrationNumber}")
-	Document getDocument(@PathVariable("municipalityId") String municipalityId, @PathVariable("registrationNumber") String registrationNumber);
+	Document getDocument(@PathVariable String municipalityId, @PathVariable String registrationNumber);
 
 	@PatchMapping(path = "/{municipalityId}/documents/{registrationNumber}")
-	Document updateDocument(@PathVariable("municipalityId") String municipalityId, @PathVariable("registrationNumber") String registrationNumber, DocumentUpdateRequest body);
+	Document updateDocument(@PathVariable String municipalityId, @PathVariable String registrationNumber, DocumentUpdateRequest body);
 
 	@GetMapping(path = "/{municipalityId}/documents/{registrationNumber}/files/{documentDataId}")
-	ResponseEntity<ByteArrayResource> getDocumentData(@PathVariable("municipalityId") String municipalityId, @PathVariable("registrationNumber") String registrationNumber, @PathVariable("documentDataId") String documentDataId);
+	ResponseEntity<ByteArrayResource> getDocumentData(@PathVariable String municipalityId, @PathVariable String registrationNumber, @PathVariable String documentDataId);
 
 	@PutMapping(path = "/{municipalityId}/documents/{registrationNumber}/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	Void addFileToDocument(@PathVariable("municipalityId") String municipalityId, @PathVariable("registrationNumber") String registrationNumber, @RequestPart("document") DocumentDataCreateRequest document,
+	Void addFileToDocument(@PathVariable String municipalityId, @PathVariable String registrationNumber, @RequestPart("document") DocumentDataCreateRequest document,
 		@RequestPart("documentFile") MultipartFile documentFile);
 }

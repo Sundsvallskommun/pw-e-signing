@@ -11,7 +11,7 @@ import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.configuration.ProcessProperties;
 
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_WAIT_DURATION;
@@ -32,7 +32,7 @@ public class CamundaMapper {
 			.businessKey(request.getRegistrationNumber())
 			.variables(Map.of(
 				CAMUNDA_VARIABLE_MUNICIPALITY_ID, toVariableValueDto(VariableFormat.STRING, String.class, municipalityId),
-				CAMUNDA_VARIABLE_ESIGNING_REQUEST, toVariableValueDto(VariableFormat.JSON, request.getClass(), gson.toJson(request)),
+				CAMUNDA_VARIABLE_E_SIGNING_REQUEST, toVariableValueDto(VariableFormat.JSON, request.getClass(), gson.toJson(request)),
 				CAMUNDA_VARIABLE_REQUEST_ID, toVariableValueDto(VariableFormat.STRING, String.class, RequestId.get()),
 				CAMUNDA_VARIABLE_WAIT_DURATION, toVariableValueDto(VariableFormat.STRING, String.class, processProperties.waitDuration())));
 	}

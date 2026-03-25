@@ -44,7 +44,8 @@
 						"language": "sv-SE",
 						"body": "Dear John Connor, please sign the termination contract."
 					},
-					"language": "sv-SE"
+					"language": "sv-SE",
+					"flowType": "Parallel"
 				}
 			}
 		],
