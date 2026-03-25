@@ -12,7 +12,7 @@ import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
 abstract class AbstractWorker implements ExternalTaskHandler {
@@ -34,7 +34,7 @@ abstract class AbstractWorker implements ExternalTaskHandler {
 	}
 
 	protected SigningRequest getSigningRequest(ExternalTask externalTask) {
-		return fromJson(externalTask.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST), SigningRequest.class);
+		return fromJson(externalTask.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST), SigningRequest.class);
 	}
 
 	protected <T> T fromJson(String json, Class<T> clazz) {

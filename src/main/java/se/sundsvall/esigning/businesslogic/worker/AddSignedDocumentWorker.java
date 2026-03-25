@@ -39,7 +39,7 @@ public class AddSignedDocumentWorker extends AbstractWorker {
 			// Fetch signing instance
 			final var response = comfactFacadeClient.getSigningInstance(municipalityId, externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
-			// Create new revision of document with signed documentdata
+			// Create a new revision of a document with signed documentdata
 			documentClient.addFileToDocument(municipalityId, request.getRegistrationNumber(),
 				toDocumentDataCreateRequest(),
 				toMultipartFile(response.getSignedDocument()));
@@ -47,7 +47,7 @@ public class AddSignedDocumentWorker extends AbstractWorker {
 			externalTaskService.complete(externalTask);
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when adding signed document (%s).".formatted(
+			failureHandler.handleException(externalTaskService, externalTask, "%s occurred for document %s with registration number %s when adding signed document (%s).".formatted(
 				exception.getClass().getSimpleName(),
 				request.getFileName(),
 				request.getRegistrationNumber(),

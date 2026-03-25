@@ -42,7 +42,7 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when signing status check was performed (%s).".formatted(
+			failureHandler.handleException(externalTaskService, externalTask, "%s occurred for document %s with registration number %s when signing status check was performed (%s).".formatted(
 				exception.getClass().getSimpleName(),
 				request.getFileName(),
 				request.getRegistrationNumber(),

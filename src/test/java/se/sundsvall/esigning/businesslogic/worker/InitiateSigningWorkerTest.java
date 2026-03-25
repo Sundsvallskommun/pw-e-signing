@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 
@@ -105,11 +105,11 @@ class InitiateSigningWorkerTest {
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentClientMock.getDocumentData(municipalityId, registrationNumber, documentDataId)).thenReturn(byteArrayResourceMock);
-		when(comfactFacadeClientMock.createSigngingInstance(anyString(), any())).thenReturn(new CreateSigningResponse().signingId(signingId));
+		when(comfactFacadeClientMock.createSigningInstance(anyString(), any())).thenReturn(new CreateSigningResponse().signingId(signingId));
 		when(documentMock.getDocumentData()).thenReturn(List.of(documentDataMock));
 		when(documentDataMock.getFileName()).thenReturn(fileName);
 		when(documentDataMock.getId()).thenReturn(documentDataId);
@@ -120,14 +120,15 @@ class InitiateSigningWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
-		verify(comfactFacadeClientMock).createSigngingInstance(eq(municipalityId), signingRequestCaptor.capture());
+		verify(comfactFacadeClientMock).createSigningInstance(eq(municipalityId), signingRequestCaptor.capture());
 		verify(externalTaskServiceMock).complete(eq(externalTaskMock), variableValueDtoCaptor.capture());
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock, documentClientMock);
 		verifyNoInteractions(failureHandlerMock);
 
+		assertThat(signingRequestCaptor.getValue().getFlowType()).isEqualTo("Parallel");
 		assertThat(variableValueDtoCaptor.getValue()).hasSize(1)
 			.containsEntry(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID, signingId);
 	}
@@ -143,7 +144,7 @@ class InitiateSigningWorkerTest {
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentMock.getDocumentData()).thenReturn(List.of(documentDataMock));
@@ -154,14 +155,14 @@ class InitiateSigningWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
-			"ThrowableProblem occured for document fileName with registration number registrationNumber when initiating signing (Not Found: File fileName of type application/pdf was not found within document with registrationNumber registrationNumber).");
+			"ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Not Found: File fileName of type application/pdf was not found within document with registrationNumber registrationNumber).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}
 
@@ -173,11 +174,11 @@ class InitiateSigningWorkerTest {
 		final var fileName = "fileName";
 		final var json = "json";
 		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber).withFileName(fileName);
-		final var problem = Problem.valueOf(HttpStatus.I_AM_A_TEAPOT, "Big and stout");
+		final var problem = Problem.valueOf(HttpStatus.BAD_REQUEST, "Big and stout");
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenThrow(problem);
 
@@ -185,14 +186,14 @@ class InitiateSigningWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
-			"ThrowableProblem occured for document fileName with registration number registrationNumber when initiating signing (I'm a teapot: Big and stout).");
+			"ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Bad Request: Big and stout).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}
 
@@ -205,15 +206,15 @@ class InitiateSigningWorkerTest {
 		final var json = "json";
 		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber).withFileName(fileName);
 		final var documentDataId = UUID.randomUUID().toString();
-		final var problem = Problem.valueOf(HttpStatus.I_AM_A_TEAPOT, "Big and stout");
+		final var problem = Problem.valueOf(HttpStatus.BAD_REQUEST, "Big and stout");
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentClientMock.getDocumentData(municipalityId, registrationNumber, documentDataId)).thenReturn(byteArrayResourceMock);
-		when(comfactFacadeClientMock.createSigngingInstance(anyString(), any())).thenThrow(problem);
+		when(comfactFacadeClientMock.createSigningInstance(anyString(), any())).thenThrow(problem);
 		when(documentMock.getDocumentData()).thenReturn(List.of(documentDataMock));
 		when(documentDataMock.getFileName()).thenReturn(fileName);
 		when(documentDataMock.getId()).thenReturn(documentDataId);
@@ -224,16 +225,16 @@ class InitiateSigningWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_ESIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
 		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(documentClientMock).getDocumentData(municipalityId, registrationNumber, documentDataId);
-		verify(comfactFacadeClientMock).createSigngingInstance(eq(municipalityId), signingRequestCaptor.capture());
+		verify(comfactFacadeClientMock).createSigningInstance(eq(municipalityId), signingRequestCaptor.capture());
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
-			"ThrowableProblem occured for document fileName with registration number registrationNumber when initiating signing (I'm a teapot: Big and stout).");
+			"ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Bad Request: Big and stout).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}
 }

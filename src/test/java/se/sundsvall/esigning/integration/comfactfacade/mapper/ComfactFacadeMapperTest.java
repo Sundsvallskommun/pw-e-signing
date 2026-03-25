@@ -64,6 +64,7 @@ class ComfactFacadeMapperTest {
 		assertThat(bean.getCustomerReference()).isEqualTo(REGISTRATION_NUMBER + " - " + FILE_NAME);
 		assertThat(bean.getExpires()).isEqualTo(EXPIRES);
 		assertThat(bean.getLanguage()).isEqualTo(language);
+		assertThat(bean.getFlowType()).isEqualTo("Parallel");
 
 		assertThat(bean.getDocument()).isNotNull();
 		assertThat(bean.getDocument().getContent()).isEqualTo(bytes);

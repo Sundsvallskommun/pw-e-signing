@@ -47,13 +47,13 @@ public class InitiateSigningWorker extends AbstractWorker {
 			// Fetch file to sign
 			final var documentData = getDocumentData(municipalityId, request.getRegistrationNumber(), request.getFileName());
 
-			// Create signing instance
-			final var signingId = comfactFacadeClient.createSigngingInstance(municipalityId, toSigningRequest(request, documentData.getBody(), APPLICATION_PDF.getMimeType())).getSigningId();
+			// Create a signing instance
+			final var signingId = comfactFacadeClient.createSigningInstance(municipalityId, toSigningRequest(request, documentData.getBody(), APPLICATION_PDF.getMimeType())).getSigningId();
 
 			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID, signingId));
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
-			failureHandler.handleException(externalTaskService, externalTask, "%s occured for document %s with registration number %s when initiating signing (%s).".formatted(
+			failureHandler.handleException(externalTaskService, externalTask, "%s occurred for document %s with registration number %s when initiating signing (%s).".formatted(
 				exception.getClass().getSimpleName(),
 				request.getFileName(),
 				request.getRegistrationNumber(),

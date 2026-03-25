@@ -53,12 +53,12 @@ public class DocumentMultipartFile implements MultipartFile {
 	}
 
 	@Override
-	public byte[] getBytes() throws IOException {
+	public byte[] getBytes() {
 		return document.getContent();
 	}
 
 	@Override
-	public InputStream getInputStream() throws IOException {
+	public InputStream getInputStream() {
 		return isNull(document.getContent()) ? nullInputStream() : new ByteArrayInputStream(document.getContent());
 	}
 

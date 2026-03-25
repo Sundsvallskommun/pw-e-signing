@@ -25,7 +25,7 @@ public class DocumentConfiguration {
 
 	@Bean
 	JsonFormWriter jsonFormWriter() {
-		// Needed for Feign to handle json objects sent as requestpart correctly
+		// Needed for Feign to handle JSON objects sent as requestpart correctly
 		return new JsonFormWriter();
 	}
 }

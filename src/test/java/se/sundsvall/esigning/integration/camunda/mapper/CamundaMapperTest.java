@@ -17,7 +17,7 @@ import se.sundsvall.esigning.api.model.SigningRequest;
 
 import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_ESIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_WAIT_DURATION;
@@ -46,7 +46,7 @@ class CamundaMapperTest {
 
 		assertThat(dto.getBusinessKey()).isEqualTo(registrationNumber);
 		assertThat(dto.getVariables().entrySet()).containsExactlyInAnyOrder(
-			entry(CAMUNDA_VARIABLE_ESIGNING_REQUEST, new VariableValueDto()
+			entry(CAMUNDA_VARIABLE_E_SIGNING_REQUEST, new VariableValueDto()
 				.type(VariableFormat.JSON.getName())
 				.value(gson.toJson(request))
 				.valueInfo(Map.of(

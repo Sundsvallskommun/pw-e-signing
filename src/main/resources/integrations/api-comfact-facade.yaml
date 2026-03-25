@@ -1,11 +1,14 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
-  title: comfact-facade
-  contact: {}
+  title: api-comfact-facade
+  contact: { }
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "2.0"
+  version: "2.1"
+servers:
+  - url: http://localhost:64389
+    description: Generated server url
 tags:
   - name: Signings
     description: Signing operations
@@ -36,6 +39,18 @@ paths:
           schema:
             $ref: "#/components/schemas/Pageable"
       responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SigningsResponse"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -44,29 +59,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SigningsResponse"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/SigningsResponse"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -91,6 +91,12 @@ paths:
               $ref: "#/components/schemas/SigningRequest"
         required: true
       responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSigningResponse"
         "400":
           description: Bad request
           content:
@@ -99,23 +105,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CreateSigningResponse"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/CreateSigningResponse"
-        "502":
-          description: Bad Gateway
+        "500":
+          description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server error
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -140,6 +137,18 @@ paths:
           schema:
             type: string
       responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SigningInstance"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -148,29 +157,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SigningInstance"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/SigningInstance"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -194,6 +188,14 @@ paths:
           schema:
             type: string
       responses:
+        "204":
+          description: Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -202,22 +204,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -247,6 +241,14 @@ paths:
               $ref: "#/components/schemas/SigningRequest"
         required: true
       responses:
+        "204":
+          description: Successful operation
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -255,22 +257,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "204":
-          description: Successful operation
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -300,6 +294,18 @@ paths:
           schema:
             type: string
       responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Signatory"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -308,29 +314,14 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Signatory"
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Signatory"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        "404":
-          description: Not found
+        "502":
+          description: Bad Gateway
           content:
             application/problem+json:
               schema:
@@ -354,31 +345,35 @@ paths:
 components:
   schemas:
     Document:
-      required:
-        - fileName
       type: object
       properties:
         name:
           type: string
           description: The Document Name visible to the user in the signing process.
-          nullable: true
-          example: Business Contract
+          examples:
+            - Business Contract
         fileName:
           type: string
           description: "The document file name including extension,"
-          example: document.pdf
+          examples:
+            - document.pdf
+          minLength: 1
         mimeType:
           type: string
           description: The documents mimetype. Must be application/pdf
-          example: application/pdf
+          examples:
+            - application/pdf
         content:
           type: string
-          description: Base64-encoded file (plain text)
           format: byte
-          example: ZEdWemRBPT0=
-      description: Information about the main document to sign.
+          description: Base64-encoded file (plain text)
+          examples:
+            - dGVzdA==
+      required:
+        - fileName
     Identification:
       type: object
+      description: The means of identification to use to identify the signatories.
       properties:
         alias:
           type: string
@@ -387,158 +382,189 @@ components:
             • SmsCode – One Time Password via SMS
             • EmailCode – One Time Password via Email
             • SvensktEId – Swedish e-identification (Swedish BankID)
-          example: SmsCode
-      description: The means of identification to use to identify the signatories.
+          examples:
+            - SmsCode
     NotificationMessage:
-      required:
-        - language
       type: object
+      description: Custom message for the signature request emails.
       properties:
         subject:
           type: string
           description: The subject of the notification message
-          example: Please sign the document
+          examples:
+            - Please sign the document
         body:
           type: string
           description: The body of the notification message
-          example: "Dear John Doe, please sign the document."
+          examples:
+            - "Dear John Doe, please sign the document."
         language:
           type: string
           description: The language of the notification message.
-          example: sv-SE
-      description: Custom message for the signature request emails.
-    Party:
+          examples:
+            - sv-SE
+          minLength: 1
       required:
-        - email
+        - language
+    Party:
       type: object
+      description: A party related to the signing process.
       properties:
         name:
           type: string
           description: The name of the party
-          example: John Doe
+          examples:
+            - John Doe
         partyId:
           type: string
           description: The party id
-          example: 550e8400-e29b-41d4-a716-446655440000
+          examples:
+            - 550e8400-e29b-41d4-a716-446655440000
         notificationMessage:
           $ref: "#/components/schemas/NotificationMessage"
+          description: Custom message for the signature request emails for the specific
+            party. Overwrites the message in the Signing Request.
         title:
           type: string
           description: The party title
-          example: CEO
+          examples:
+            - CEO
         email:
           type: string
           description: The party email
-          example: john.doe@sundsvall.se
+          examples:
+            - john.doe@sundsvall.se
         phoneNumber:
           type: string
           description: The party phone number
-          example: "0701740605"
+          examples:
+            - "0701740605"
         organization:
           type: string
           description: The organization of the party.
-          example: Sundsvall Municipality
+          examples:
+            - Sundsvall Municipality
         language:
           type: string
           description: Language parameter that overwrites the language of the Signing
             Instance for the current party.
-          example: sv
-      description: A party related to the signing process.
-    Reminder:
+          examples:
+            - sv
       required:
-        - enabled
-        - intervalInHours
+        - email
+    Reminder:
       type: object
+      description: A reminder for a signature request.
       properties:
         message:
           $ref: "#/components/schemas/NotificationMessage"
+          description: The message of the reminder
         enabled:
           type: boolean
           description: If the reminder is enabled
-          example: true
+          examples:
+            - "true"
         intervalInHours:
           type: integer
-          description: The interval in hours between each reminder
           format: int32
-          example: 24
+          description: The interval in hours between each reminder
+          examples:
+            - "24"
         startDateTime:
           type: string
-          description: The date and time when the first reminder should be sent.
           format: date-time
-          example: 2021-12-31T23:59:59Z
-      description: A reminder for a signature request.
-    Signatory:
+          description: The date and time when the first reminder should be sent.
+          examples:
+            - 2021-12-31T23:59:59Z
       required:
-        - email
-        - identifications
+        - enabled
+        - intervalInHours
+    Signatory:
       type: object
+      description: A Signatory related to the signing process.
       properties:
         name:
           type: string
           description: The name of the party
-          example: John Doe
+          examples:
+            - John Doe
         partyId:
           type: string
           description: The party id
-          example: 550e8400-e29b-41d4-a716-446655440000
+          examples:
+            - 550e8400-e29b-41d4-a716-446655440000
         notificationMessage:
           $ref: "#/components/schemas/NotificationMessage"
+          description: Custom message for the signature request emails for the specific
+            party. Overwrites the message in the Signing Request.
         title:
           type: string
           description: The party title
-          example: CEO
+          examples:
+            - CEO
         email:
           type: string
           description: The party email
-          example: john.doe@sundsvall.se
+          examples:
+            - john.doe@sundsvall.se
         phoneNumber:
           type: string
           description: The party phone number
-          example: "0701740605"
+          examples:
+            - "0701740605"
         organization:
           type: string
           description: The organization of the party.
-          example: Sundsvall Municipality
+          examples:
+            - Sundsvall Municipality
         language:
           type: string
           description: Language parameter that overwrites the language of the Signing
             Instance for the current party.
-          example: sv
+          examples:
+            - sv
         identifications:
           type: array
           items:
             $ref: "#/components/schemas/Identification"
-      description: A Signatory related to the signing process.
-    SigningRequest:
+          minItems: 1
       required:
-        - document
-        - initiator
-        - signatories
+        - email
+        - identifications
+    SigningRequest:
       type: object
+      description: The signing request.
       properties:
         additionalDocuments:
           type: array
           items:
             $ref: "#/components/schemas/Document"
+            description: Additional documents to sign.
         language:
           type: string
           description: The language of the signing process.
-          example: sv-SE
+          examples:
+            - sv-SE
         customerReference:
           type: string
           description: The customer reference
-          example: "1234567890"
+          examples:
+            - "1234567890"
         expires:
           type: string
-          description: The date and time when the signing request expires.
           format: date-time
-          example: 2021-12-31T23:59:59Z
+          description: The date and time when the signing request expires.
+          examples:
+            - 2021-12-31T23:59:59Z
         notificationMessage:
           $ref: "#/components/schemas/NotificationMessage"
+          description: Custom message for the signature request emails.
         reminder:
           $ref: "#/components/schemas/Reminder"
+          description: A reminder for a signature request.
         initiator:
           $ref: "#/components/schemas/Party"
+          description: The initiator of the signing request.
         additionalParties:
           type: array
           description: A party that is not part of the signing process but will get
@@ -550,9 +576,19 @@ components:
           description: The parties that will sign the documents.
           items:
             $ref: "#/components/schemas/Signatory"
+          minItems: 1
         document:
           $ref: "#/components/schemas/Document"
-      description: The signing request.
+          description: Information about the main document to sign.
+        flowType:
+          type: string
+          description: The flow type of the signing process.
+          examples:
+            - Sequential
+      required:
+        - document
+        - initiator
+        - signatories
     Problem:
       type: object
       properties:
@@ -562,184 +598,52 @@ components:
         type:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties:
-            type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
         detail:
           type: string
-    StatusType:
-      type: object
-      properties:
-        statusCode:
+        title:
+          type: string
+        status:
           type: integer
           format: int32
-        reasonPhrase:
-          type: string
     ConstraintViolationProblem:
       type: object
       properties:
-        cause:
-          $ref: "#/components/schemas/ThrowableProblem"
-        stackTrace:
-          type: array
-          items:
-            type: object
-            properties:
-              classLoaderName:
-                type: string
-              moduleName:
-                type: string
-              moduleVersion:
-                type: string
-              methodName:
-                type: string
-              fileName:
-                type: string
-              lineNumber:
-                type: integer
-                format: int32
-              className:
-                type: string
-              nativeMethod:
-                type: boolean
         type:
           type: string
           format: uri
         status:
-          $ref: "#/components/schemas/StatusType"
+          type: integer
+          format: int32
         violations:
           type: array
           items:
             $ref: "#/components/schemas/Violation"
         title:
           type: string
-        message:
-          type: string
         instance:
           type: string
           format: uri
-        parameters:
-          type: object
-          additionalProperties:
-            type: object
         detail:
           type: string
-        suppressed:
-          type: array
-          items:
-            type: object
-            properties:
-              stackTrace:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    classLoaderName:
-                      type: string
-                    moduleName:
-                      type: string
-                    moduleVersion:
-                      type: string
-                    methodName:
-                      type: string
-                    fileName:
-                      type: string
-                    lineNumber:
-                      type: integer
-                      format: int32
-                    className:
-                      type: string
-                    nativeMethod:
-                      type: boolean
-              message:
-                type: string
-              localizedMessage:
-                type: string
-        localizedMessage:
-          type: string
+        causeAsProblem:
+          $ref: "#/components/schemas/ThrowableProblem"
     ThrowableProblem:
       type: object
       properties:
-        cause:
-          $ref: "#/components/schemas/ThrowableProblem"
-        stackTrace:
-          type: array
-          items:
-            type: object
-            properties:
-              classLoaderName:
-                type: string
-              moduleName:
-                type: string
-              moduleVersion:
-                type: string
-              methodName:
-                type: string
-              fileName:
-                type: string
-              lineNumber:
-                type: integer
-                format: int32
-              className:
-                type: string
-              nativeMethod:
-                type: boolean
-        message:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
           type: string
         instance:
           type: string
           format: uri
-        type:
-          type: string
-          format: uri
-        parameters:
-          type: object
-          additionalProperties:
-            type: object
-        status:
-          $ref: "#/components/schemas/StatusType"
-        title:
-          type: string
-        detail:
-          type: string
-        suppressed:
-          type: array
-          items:
-            type: object
-            properties:
-              stackTrace:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    classLoaderName:
-                      type: string
-                    moduleName:
-                      type: string
-                    moduleVersion:
-                      type: string
-                    methodName:
-                      type: string
-                    fileName:
-                      type: string
-                    lineNumber:
-                      type: integer
-                      format: int32
-                    className:
-                      type: string
-                    nativeMethod:
-                      type: boolean
-              message:
-                type: string
-              localizedMessage:
-                type: string
-        localizedMessage:
-          type: string
+        causeAsProblem: { }
     Violation:
       type: object
       properties:
@@ -760,74 +664,77 @@ components:
       type: object
       properties:
         page:
+          type: integer
+          format: int32
           minimum: 0
-          type: integer
-          format: int32
         size:
-          minimum: 1
           type: integer
           format: int32
+          minimum: 1
         sort:
           type: array
           items:
             type: string
     Direction:
       type: string
-      description: The sort order direction
-      example: ASC
       enum:
         - ASC
         - DESC
     PagingAndSortingMetaData:
       type: object
+      description: PagingAndSortingMetaData model
       properties:
         page:
           type: integer
-          description: Current page
           format: int32
+          description: Current page
+          examples:
+            - "5"
           readOnly: true
-          example: 5
         limit:
           type: integer
-          description: Displayed objects per page
           format: int32
+          description: Displayed objects per page
+          examples:
+            - "20"
           readOnly: true
-          example: 20
         count:
           type: integer
-          description: Displayed objects on current page
           format: int32
+          description: Displayed objects on current page
+          examples:
+            - "13"
           readOnly: true
-          example: 13
         totalRecords:
           type: integer
-          description: Total amount of hits based on provided search parameters
           format: int64
+          description: Total amount of hits based on provided search parameters
+          examples:
+            - "98"
           readOnly: true
-          example: 98
         totalPages:
           type: integer
-          description: Total amount of pages based on provided search parameters
           format: int32
+          description: Total amount of pages based on provided search parameters
+          examples:
+            - "23"
           readOnly: true
-          example: 23
         sortBy:
           type: array
-          readOnly: true
           items:
             type: string
             description: The properties to sort by
+            examples:
+              - property
             readOnly: true
-            example: property
         sortDirection:
           $ref: "#/components/schemas/Direction"
-      description: PagingAndSortingMetaData model
-      readOnly: true
+          description: The sort order direction
+          examples:
+            - ASC
     SigningInstance:
-      required:
-        - initiator
-        - signatories
       type: object
+      description: The signing instance.
       properties:
         notificationMessages:
           type: array
@@ -836,6 +743,7 @@ components:
             $ref: "#/components/schemas/NotificationMessage"
         initiator:
           $ref: "#/components/schemas/Party"
+          description: The initiator of the signing request.
         additionalParties:
           type: array
           description: A party that is not part of the signing process but will get
@@ -847,42 +755,55 @@ components:
           description: The parties that will sign the documents.
           items:
             $ref: "#/components/schemas/Signatory"
+          minItems: 1
         status:
           $ref: "#/components/schemas/Status"
+          description: Status of the signing request.
         customerReference:
           type: string
           description: The customer reference
-          example: "1234567890"
+          examples:
+            - "1234567890"
         created:
           type: string
-          description: The date and time when the signing instance was created.
           format: date-time
-          example: 2021-12-31T23:59:59Z
+          description: The date and time when the signing instance was created.
+          examples:
+            - 2021-12-31T23:59:59Z
         changed:
           type: string
-          description: The date and time when the signing instance was last changed.
           format: date-time
-          example: 2021-12-31T23:59:59Z
+          description: The date and time when the signing instance was last changed.
+          examples:
+            - 2021-12-31T23:59:59Z
         expires:
           type: string
-          description: The date and time when the signing instance expires
           format: date-time
-          example: 2021-12-31T23:59:59Z
+          description: The date and time when the signing instance expires
+          examples:
+            - 2021-12-31T23:59:59Z
         document:
           $ref: "#/components/schemas/Document"
+          description: Information about the main document to sign.
         signedDocument:
           $ref: "#/components/schemas/Document"
+          description: Information about the signed document
         additionalDocuments:
           type: array
           items:
             $ref: "#/components/schemas/Document"
+            description: Additional documents to sign.
         signingId:
           type: string
           description: The signing instance id.
-          example: "1234567890"
-      description: The signing instance.
+          examples:
+            - "1234567890"
+      required:
+        - initiator
+        - signatories
     SigningsResponse:
       type: object
+      description: Signing response.
       properties:
         signingInstances:
           type: array
@@ -891,17 +812,18 @@ components:
             $ref: "#/components/schemas/SigningInstance"
         _meta:
           $ref: "#/components/schemas/PagingAndSortingMetaData"
-      description: Signing response.
+          readOnly: true
     Status:
       type: object
       properties:
         code:
           type: string
           description: The status code
-          example: Created
+          examples:
+            - Created
         message:
           type: string
           description: The status message
-          example: The signing instance is halted.
-      description: Status of the signing request.
-  securitySchemes: {}
+          examples:
+            - The signing instance is halted.
+  securitySchemes: { }

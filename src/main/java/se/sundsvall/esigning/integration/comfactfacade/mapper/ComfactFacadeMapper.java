@@ -17,14 +17,17 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
 public final class ComfactFacadeMapper {
+
 	private ComfactFacadeMapper() {}
 
 	private static final String DEFAULT_LANGUAGE = "sv-SE";
 	private static final String E_IDENTIFICATION = "SvensktEId";
+	private static final String FLOW_TYPE = "Parallel";
 
 	public static SigningRequest toSigningRequest(se.sundsvall.esigning.api.model.SigningRequest request, ByteArrayResource documentData, String contentType) {
 		final var language = request.getLanguage();
 		final var signingRequest = new SigningRequest()
+			.flowType(FLOW_TYPE)
 			.customerReference(request.getRegistrationNumber() + " - " + request.getFileName())
 			.document(toDocument(request, documentData, contentType))
 			.expires(request.getExpires())
