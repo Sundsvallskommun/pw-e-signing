@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
-  title: api-comfact-facade
-  contact: { }
+  title: comfact-facade
+  contact: {}
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
-  version: "2.1"
+  version: "3.0"
 servers:
-  - url: http://localhost:64389
+  - url: https://comfact-facade-af-comfactfacade.apps.ocp101.sundsvall.se
     description: Generated server url
 tags:
   - name: Signings
@@ -169,53 +169,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
-    delete:
-      tags:
-        - Signings
-      summary: Annul a signing instance.
-      operationId: cancelSigningRequest
-      parameters:
-        - name: municipalityId
-          in: path
-          description: Municipality id
-          required: true
-          schema:
-            type: string
-          example: 2281
-        - name: signingId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "204":
-          description: Successful operation
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "400":
-          description: Bad request
-          content:
-            application/problem+json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/Problem"
-                  - $ref: "#/components/schemas/ConstraintViolationProblem"
-        "500":
-          description: Internal Server error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "502":
-          description: Bad Gateway
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
     patch:
       tags:
         - Signings
@@ -238,17 +191,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SigningRequest"
+              $ref: "#/components/schemas/UpdateSigningRequest"
         required: true
       responses:
         "204":
           description: Successful operation
-        "404":
-          description: Not found
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
         "400":
           description: Bad request
           content:
@@ -257,6 +204,18 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Problem"
                   - $ref: "#/components/schemas/ConstraintViolationProblem"
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "409":
+          description: Conflict
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server error
           content:
@@ -475,7 +434,7 @@ components:
           format: date-time
           description: The date and time when the first reminder should be sent.
           examples:
-            - 2021-12-31T23:59:59Z
+            - 2026-11-22T15:30:00+02:00
       required:
         - enabled
         - intervalInHours
@@ -555,7 +514,7 @@ components:
           format: date-time
           description: The date and time when the signing request expires.
           examples:
-            - 2021-12-31T23:59:59Z
+            - 2026-11-22T15:30:00+02:00
         notificationMessage:
           $ref: "#/components/schemas/NotificationMessage"
           description: Custom message for the signature request emails.
@@ -598,9 +557,9 @@ components:
         type:
           type: string
           format: uri
-        detail:
-          type: string
         title:
+          type: string
+        detail:
           type: string
         status:
           type: integer
@@ -643,7 +602,7 @@ components:
         instance:
           type: string
           format: uri
-        causeAsProblem: { }
+        causeAsProblem: {}
     Violation:
       type: object
       properties:
@@ -660,6 +619,22 @@ components:
           type: object
           additionalProperties:
             type: string
+    UpdateSigningRequest:
+      type: object
+      description: Request for updating a signing instance.
+      properties:
+        expires:
+          type: string
+          format: date-time
+          description: The date and time when the signing request expires.
+          examples:
+            - 2026-11-22T15:30:00+02:00
+        status:
+          type: string
+          description: The status of the signing instance.
+          examples:
+            - active
+            - withdrawn
     Pageable:
       type: object
       properties:
@@ -769,19 +744,19 @@ components:
           format: date-time
           description: The date and time when the signing instance was created.
           examples:
-            - 2021-12-31T23:59:59Z
+            - 2026-04-02T11:20:00+02:00
         changed:
           type: string
           format: date-time
           description: The date and time when the signing instance was last changed.
           examples:
-            - 2021-12-31T23:59:59Z
+            - 2026-04-02T11:20:00+02:00
         expires:
           type: string
           format: date-time
           description: The date and time when the signing instance expires
           examples:
-            - 2021-12-31T23:59:59Z
+            - 2026-11-22T15:30:00+02:00
         document:
           $ref: "#/components/schemas/Document"
           description: Information about the main document to sign.
@@ -826,4 +801,4 @@ components:
           description: The status message
           examples:
             - The signing instance is halted.
-  securitySchemes: { }
+  securitySchemes: {}
