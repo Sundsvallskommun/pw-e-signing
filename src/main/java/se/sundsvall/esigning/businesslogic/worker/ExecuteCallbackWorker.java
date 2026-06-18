@@ -7,7 +7,7 @@ import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.callback.CallbackClient;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static se.sundsvall.esigning.businesslogic.util.UriUtility.addProcessIdParameter;
 
@@ -17,8 +17,8 @@ public class ExecuteCallbackWorker extends AbstractWorker {
 
 	private final CallbackClient callbackClient;
 
-	ExecuteCallbackWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, CallbackClient callbackClient) {
-		super(camundaClient, failureHandler, gson);
+	ExecuteCallbackWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, CallbackClient callbackClient) {
+		super(engineClient, failureHandler, gson);
 		this.callbackClient = callbackClient;
 	}
 

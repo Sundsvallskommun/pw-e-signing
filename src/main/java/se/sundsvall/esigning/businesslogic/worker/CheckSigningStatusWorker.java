@@ -8,8 +8,8 @@ import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
@@ -22,8 +22,8 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 
 	private final ComfactFacadeClient comfactFacadeClient;
 
-	CheckSigningStatusWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient) {
-		super(camundaClient, failureHandler, gson);
+	CheckSigningStatusWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient) {
+		super(engineClient, failureHandler, gson);
 		this.comfactFacadeClient = comfactFacadeClient;
 	}
 

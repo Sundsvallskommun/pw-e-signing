@@ -6,8 +6,8 @@ import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
@@ -19,8 +19,8 @@ public class RemoveOngoingSigningSignalWorker extends AbstractWorker {
 
 	private final DocumentClient documentClient;
 
-	RemoveOngoingSigningSignalWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, DocumentClient documentClient) {
-		super(camundaClient, failureHandler, gson);
+	RemoveOngoingSigningSignalWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, DocumentClient documentClient) {
+		super(engineClient, failureHandler, gson);
 		this.documentClient = documentClient;
 	}
 

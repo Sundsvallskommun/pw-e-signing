@@ -29,6 +29,7 @@ camunda:
 # Integration settings
 #----------------------------------------
 config:
+  process-engine-type: camunda
   common:
     client-id: client-id
     client-secret: client-secret
