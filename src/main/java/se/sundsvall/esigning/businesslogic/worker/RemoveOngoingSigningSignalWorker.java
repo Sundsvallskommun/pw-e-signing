@@ -9,8 +9,8 @@ import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
 
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
 
 @Component
@@ -27,7 +27,7 @@ public class RemoveOngoingSigningSignalWorker extends AbstractWorker {
 	@Override
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 		final var request = getSigningRequest(externalTask);
-		final String municipalityId = externalTask.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
+		final String municipalityId = externalTask.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID);
 		try {
 			logInfo("Removing metadata entry flagging document {} with registration number {} as part of an ongoing signing process", request.getFileName(), request.getRegistrationNumber());
 
