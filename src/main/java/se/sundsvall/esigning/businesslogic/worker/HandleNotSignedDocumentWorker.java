@@ -7,9 +7,9 @@ import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS;
@@ -26,8 +26,8 @@ public class HandleNotSignedDocumentWorker extends AbstractWorker {
 	private final ComfactFacadeClient comfactFacadeClient;
 	private final DocumentClient documentClient;
 
-	HandleNotSignedDocumentWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
-		super(camundaClient, failureHandler, gson);
+	HandleNotSignedDocumentWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
+		super(engineClient, failureHandler, gson);
 		this.comfactFacadeClient = comfactFacadeClient;
 		this.documentClient = documentClient;
 	}

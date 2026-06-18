@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.apache.hc.core5.http.ContentType.APPLICATION_PDF;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
@@ -30,8 +30,8 @@ public class InitiateSigningWorker extends AbstractWorker {
 	private final ComfactFacadeClient comfactFacadeClient;
 	private final DocumentClient documentClient;
 
-	InitiateSigningWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
-		super(camundaClient, failureHandler, gson);
+	InitiateSigningWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
+		super(engineClient, failureHandler, gson);
 		this.comfactFacadeClient = comfactFacadeClient;
 		this.documentClient = documentClient;
 	}

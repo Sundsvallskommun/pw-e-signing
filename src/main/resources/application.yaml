@@ -37,6 +37,12 @@ openapi:
   version: '@project.version@'
 
 #----------------------------------------
+# Process engine
+#----------------------------------------
+process-engine:
+  type: ${config.process-engine-type:camunda}
+
+#----------------------------------------
 # Camunda
 #----------------------------------------
 camunda:

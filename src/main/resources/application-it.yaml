@@ -18,6 +18,7 @@ camunda:
 # Integration settings
 #----------------------------------------
 config:
+  process-engine-type: camunda
   common:
     token-uri: http://localhost:${wiremock.server.port}/api-gateway/token
     client-id: the-client-id

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mockStatic;
@@ -34,8 +34,8 @@ class AbstractWorkerTest {
 
 	private static class Worker extends AbstractWorker {
 
-		protected Worker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson) {
-			super(camundaClient, failureHandler, gson);
+		protected Worker(EngineClient engineClient, FailureHandler failureHandler, Gson gson) {
+			super(engineClient, failureHandler, gson);
 		}
 
 		@Override
@@ -43,7 +43,7 @@ class AbstractWorkerTest {
 	} // Test class extending the abstract class
 
 	@Mock
-	private CamundaClient camundaClientMock;
+	private EngineClient engineClientMock;
 
 	@Mock
 	private ExternalTask externalTaskMock;
@@ -77,8 +77,8 @@ class AbstractWorkerTest {
 
 		// Assert and verify
 		verify(externalTaskMock).getProcessInstanceId();
-		verify(camundaClientMock).setProcessInstanceVariable(uuid, key, value);
-		verifyNoMoreInteractions(externalTaskMock, camundaClientMock);
+		verify(engineClientMock).setProcessInstanceVariable(uuid, key, value);
+		verifyNoMoreInteractions(externalTaskMock, engineClientMock);
 		verifyNoInteractions(externalTaskServiceMock, failureHandlerMock, gsonMock);
 	}
 
@@ -101,7 +101,7 @@ class AbstractWorkerTest {
 
 		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verifyNoMoreInteractions(externalTaskMock);
-		verifyNoInteractions(camundaClientMock, externalTaskServiceMock, failureHandlerMock, gsonMock);
+		verifyNoInteractions(engineClientMock, externalTaskServiceMock, failureHandlerMock, gsonMock);
 	}
 
 	@Test
@@ -118,7 +118,7 @@ class AbstractWorkerTest {
 		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verifyNoMoreInteractions(externalTaskMock, gsonMock);
-		verifyNoInteractions(camundaClientMock, externalTaskServiceMock, failureHandlerMock);
+		verifyNoInteractions(engineClientMock, externalTaskServiceMock, failureHandlerMock);
 	}
 
 	@Test
@@ -136,7 +136,7 @@ class AbstractWorkerTest {
 			verify(loggerMock).info("message with parameters {} {}", new Object[] {
 				"parameter1", "parameter2"
 			});
-			verifyNoInteractions(camundaClientMock, failureHandlerMock, externalTaskServiceMock, externalTaskMock, gsonMock);
+			verifyNoInteractions(engineClientMock, failureHandlerMock, externalTaskServiceMock, externalTaskMock, gsonMock);
 		}
 	}
 
@@ -163,7 +163,7 @@ class AbstractWorkerTest {
 			verify(loggerMock).error("{} occurred in {} for task with id {} and businesskey {}", exception.getClass().getSimpleName(), Worker.class.getSimpleName(), id, businessKey, exception);
 			verify(externalTaskMock).getBusinessKey();
 			verifyNoMoreInteractions(externalTaskMock);
-			verifyNoInteractions(camundaClientMock, failureHandlerMock, gsonMock);
+			verifyNoInteractions(engineClientMock, failureHandlerMock, gsonMock);
 		}
 	}
 }

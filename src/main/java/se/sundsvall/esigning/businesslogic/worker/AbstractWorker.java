@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_E_SIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
@@ -18,19 +18,19 @@ import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
 abstract class AbstractWorker implements ExternalTaskHandler {
 
 	private final Logger logger;
-	private final CamundaClient camundaClient;
+	private final EngineClient engineClient;
 	private final Gson gson;
 	protected final FailureHandler failureHandler;
 
-	protected AbstractWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson) {
+	protected AbstractWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson) {
 		this.logger = LoggerFactory.getLogger(getClass());
-		this.camundaClient = camundaClient;
+		this.engineClient = engineClient;
 		this.failureHandler = failureHandler;
 		this.gson = gson;
 	}
 
 	protected void setProcessInstanceVariable(ExternalTask externalTask, String variableName, VariableValueDto variableValue) {
-		camundaClient.setProcessInstanceVariable(externalTask.getProcessInstanceId(), variableName, variableValue);
+		engineClient.setProcessInstanceVariable(externalTask.getProcessInstanceId(), variableName, variableValue);
 	}
 
 	protected SigningRequest getSigningRequest(ExternalTask externalTask) {
