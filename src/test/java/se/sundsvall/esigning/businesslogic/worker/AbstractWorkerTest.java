@@ -26,8 +26,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_E_SIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class AbstractWorkerTest {
@@ -87,7 +87,7 @@ class AbstractWorkerTest {
 		// Arrange
 		final var requestId = UUID.randomUUID().toString();
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(requestId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(requestId);
 
 		// Mock static RequestId to verify that static method is being called
 		try (MockedStatic<RequestId> requestIdMock = mockStatic(RequestId.class)) {
@@ -99,7 +99,7 @@ class AbstractWorkerTest {
 			requestIdMock.verify(() -> RequestId.init(requestId));
 		}
 
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verifyNoMoreInteractions(externalTaskMock);
 		verifyNoInteractions(camundaClientMock, externalTaskServiceMock, failureHandlerMock, gsonMock);
 	}
@@ -109,13 +109,13 @@ class AbstractWorkerTest {
 		final var json = "json";
 		final var bean = SigningRequest.create();
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 
 		final var signingRequest = worker.getSigningRequest(externalTaskMock);
 
 		assertThat(signingRequest).isEqualTo(bean);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verifyNoMoreInteractions(externalTaskMock, gsonMock);
 		verifyNoInteractions(camundaClientMock, externalTaskServiceMock, failureHandlerMock);

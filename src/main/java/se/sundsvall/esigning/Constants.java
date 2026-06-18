@@ -7,13 +7,13 @@ public final class Constants {
 	public static final String PROCESS_KEY = "process-e-signing"; // Must match ID of a process defined in bpmn schema
 	public static final String TENANT_ID = "E_SIGNING"; // Namespace where process is deployed, a.k.a tenant (must match setting in application.yaml)
 
-	public static final String CAMUNDA_VARIABLE_REQUEST_ID = "requestId";
-	public static final String CAMUNDA_VARIABLE_E_SIGNING_REQUEST = "eSigningRequest";
-	public static final String CAMUNDA_VARIABLE_WAIT_DURATION = "waitDuration";
-	public static final String CAMUNDA_VARIABLE_CALLBACK_PRESENT = "callbackPresent";
-	public static final String CAMUNDA_VARIABLE_COMFACT_SIGNING_ID = "comfactSigningId";
-	public static final String CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS = "comfactSigningStatus";
-	public static final String CAMUNDA_VARIABLE_MUNICIPALITY_ID = "municipalityId";
+	public static final String PROCESS_VARIABLE_REQUEST_ID = "requestId";
+	public static final String PROCESS_VARIABLE_E_SIGNING_REQUEST = "eSigningRequest";
+	public static final String PROCESS_VARIABLE_WAIT_DURATION = "waitDuration";
+	public static final String PROCESS_VARIABLE_CALLBACK_PRESENT = "callbackPresent";
+	public static final String PROCESS_VARIABLE_COMFACT_SIGNING_ID = "comfactSigningId";
+	public static final String PROCESS_VARIABLE_COMFACT_SIGNING_STATUS = "comfactSigningStatus";
+	public static final String PROCESS_VARIABLE_MUNICIPALITY_ID = "municipalityId";
 
 	public static final String DOCUMENT_USER = "E-signing-process";
 	public static final String DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS = "signingInProgress";

@@ -44,6 +44,7 @@ abstract class AbstractCamundaAppTest extends AbstractAppTest {
 		CAMUNDA.start();
 		final var camundaBaseUrl = "http://" + "localhost:" + CAMUNDA.getMappedPort(8080) + "/engine-rest";
 		registry.add("integration.camunda.url", () -> camundaBaseUrl);
+		registry.add("integration.operaton.url", () -> camundaBaseUrl);
 		registry.add("camunda.bpm.client.base-url", () -> camundaBaseUrl);
 	}
 
