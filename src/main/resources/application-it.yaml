@@ -24,6 +24,11 @@ config:
     client-secret: the-client-secret
   camunda:
     base-url: http://localhost:${wiremock.server.port}/api-camunda/engine-rest
+  operaton:
+    client-id: ${config.common.client-id}
+    client-secret: ${config.common.client-secret}
+    base-url: http://localhost:${wiremock.server.port}/api-operaton/engine-rest
+    token-uri: ${config.common.token-uri}
   comfactfacade:
     client-id: ${config.common.client-id}
     client-secret: ${config.common.client-secret}

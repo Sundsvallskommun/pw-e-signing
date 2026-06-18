@@ -35,6 +35,11 @@ config:
     token-uri: token.url
   camunda:
     base-url: camunda.url
+  operaton:
+    client-id: ${config.common.client-id}
+    client-secret: ${config.common.client-secret}
+    base-url: operaton.url
+    token-uri: ${config.common.token-uri}
   comfactfacade:
     client-id: ${config.common.client-id}
     client-secret: ${config.common.client-secret}
