@@ -39,6 +39,10 @@ openapi:
 #----------------------------------------
 # Process engine
 #----------------------------------------
+# Engine targeted by this instance (camunda/operaton). config.process-engine-base-url and config.operaton.*
+# are resolved from the external config per environment and have NO defaults on purpose - they must be
+# provisioned for every instance (the OperatonClient bean and 'operaton' OAuth2 registration always load,
+# regardless of engine type), otherwise the application fails to boot.
 process-engine:
   type: ${config.process-engine-type:camunda}
   deployment:
@@ -55,7 +59,9 @@ process-engine:
 camunda:
   bpm:
     client:
-      # Each instance points the external-task client at its own engine via config.process-engine-base-url
+      # External-task client polls this engine. Must point at the SAME engine as the active Feign client
+      # (integration.operaton.url / integration.camunda.url) - otherwise deploy/start and task polling
+      # hit different engines and the process stalls.
       base-url: ${config.process-engine-base-url}
       backoff:
         initTime: 500
