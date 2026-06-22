@@ -41,6 +41,13 @@ openapi:
 #----------------------------------------
 process-engine:
   type: ${config.process-engine-type:camunda}
+  deployment:
+    processes:
+      - name: E-signing process
+        tenant: E_SIGNING
+        bpmnResourcePattern: classpath*:processmodels/*.bpmn
+        dmnResourcePattern: classpath*:processmodels/*.dmn
+        formResourcePattern: classpath*:processmodels/*.form
 
 #----------------------------------------
 # Camunda
@@ -48,18 +55,12 @@ process-engine:
 camunda:
   bpm:
     client:
-      base-url: ${config.camunda.base-url}
+      # Each instance points the external-task client at its own engine via config.process-engine-base-url
+      base-url: ${config.process-engine-base-url}
       backoff:
         initTime: 500
         factor: 2
         maxTime: 15000
-    deployment:
-      processes:
-        - name: E-signing process
-          tenant: E_SIGNING
-          bpmnResourcePattern: classpath*:processmodels/*.bpmn
-          dmnResourcePattern: classpath*:processmodels/*.dmn
-          formResourcePattern: classpath*:processmodels/*.form
   worker:
     max:
       retries: 3

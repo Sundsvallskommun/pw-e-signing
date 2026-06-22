@@ -19,6 +19,7 @@ camunda:
 #----------------------------------------
 config:
   process-engine-type: camunda
+  process-engine-base-url: ${config.camunda.base-url}
   common:
     token-uri: http://localhost:${wiremock.server.port}/api-gateway/token
     client-id: the-client-id
