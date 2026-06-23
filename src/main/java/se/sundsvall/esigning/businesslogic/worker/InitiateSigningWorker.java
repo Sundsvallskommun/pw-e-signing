@@ -14,13 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.apache.hc.core5.http.ContentType.APPLICATION_PDF;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.integration.comfactfacade.mapper.ComfactFacadeMapper.toSigningRequest;
 
 @Component
@@ -30,8 +30,8 @@ public class InitiateSigningWorker extends AbstractWorker {
 	private final ComfactFacadeClient comfactFacadeClient;
 	private final DocumentClient documentClient;
 
-	InitiateSigningWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
-		super(camundaClient, failureHandler, gson);
+	InitiateSigningWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
+		super(engineClient, failureHandler, gson);
 		this.comfactFacadeClient = comfactFacadeClient;
 		this.documentClient = documentClient;
 	}
@@ -39,7 +39,7 @@ public class InitiateSigningWorker extends AbstractWorker {
 	@Override
 	public void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 		final var request = getSigningRequest(externalTask);
-		final String municipalityId = externalTask.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
+		final String municipalityId = externalTask.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID);
 
 		try {
 			logInfo("Initiating signing of document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
@@ -50,7 +50,7 @@ public class InitiateSigningWorker extends AbstractWorker {
 			// Create a signing instance
 			final var signingId = comfactFacadeClient.createSigningInstance(municipalityId, toSigningRequest(request, documentData.getBody(), APPLICATION_PDF.getMimeType())).getSigningId();
 
-			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID, signingId));
+			externalTaskService.complete(externalTask, Map.of(PROCESS_VARIABLE_COMFACT_SIGNING_ID, signingId));
 		} catch (final Exception exception) {
 			logException(externalTask, exception);
 			failureHandler.handleException(externalTaskService, externalTask, "%s occurred for document %s with registration number %s when initiating signing (%s).".formatted(

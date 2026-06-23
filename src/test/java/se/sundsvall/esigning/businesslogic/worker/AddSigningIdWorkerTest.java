@@ -23,8 +23,8 @@ import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.esigning.Constants;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,10 +34,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_E_SIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class AddSigningIdWorkerTest {
@@ -45,7 +45,7 @@ class AddSigningIdWorkerTest {
 	private static final String REQUEST_ID = "RequestId";
 
 	@Mock
-	private CamundaClient camundaClientMock;
+	private EngineClient engineClientMock;
 
 	@Mock
 	private ExternalTask externalTaskMock;
@@ -88,10 +88,10 @@ class AddSigningIdWorkerTest {
 		final var signingId = UUID.randomUUID().toString();
 		final var municipalityId = "municipalityId";
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
 		when(documentMock.getMetadataList()).thenReturn(existingMetadata);
@@ -100,9 +100,9 @@ class AddSigningIdWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(externalTaskServiceMock).complete(externalTaskMock);
 		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), doucmentUpdateRequestCaptor.capture());
@@ -131,9 +131,9 @@ class AddSigningIdWorkerTest {
 		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
 		final var problem = Problem.valueOf(HttpStatus.BAD_GATEWAY, "Big and stout");
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(documentClientMock.updateDocument(anyString(), any(), any())).thenThrow(problem);
 		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(documentMock);
@@ -143,12 +143,12 @@ class AddSigningIdWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), any());
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(eq(externalTaskServiceMock), eq(externalTaskMock), anyString());

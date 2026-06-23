@@ -1,7 +1,7 @@
 package se.sundsvall.esigning.service;
 
-import generated.se.sundsvall.camunda.ProcessInstanceWithVariablesDto;
-import generated.se.sundsvall.camunda.StartProcessInstanceDto;
+import generated.se.sundsvall.operaton.ProcessInstanceWithVariablesDto;
+import generated.se.sundsvall.operaton.StartProcessInstanceDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,8 +10,8 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
-import se.sundsvall.esigning.integration.camunda.mapper.CamundaMapper;
+import se.sundsvall.esigning.integration.operaton.OperatonClient;
+import se.sundsvall.esigning.integration.operaton.mapper.OperatonMapper;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.when;
 class ProcessServiceTest {
 
 	@Mock
-	private CamundaClient camundaClientMock;
+	private OperatonClient operatonClientMock;
 
 	@Mock
-	private CamundaMapper camundaMapperMock;
+	private OperatonMapper operatonMapperMock;
 
 	@InjectMocks
 	private ProcessService processService;
@@ -45,11 +45,8 @@ class ProcessServiceTest {
 		final var processInstance = new ProcessInstanceWithVariablesDto().id(uuid);
 		final var municipalityId = "municipalityId";
 
-		when(camundaMapperMock.toStartProcessInstanceDto(municipalityId, request)).thenReturn(startProcessInstance);
-		when(camundaClientMock.startProcessWithTenant(process, tenant, startProcessInstance)).thenReturn(processInstance);
-
-		when(camundaMapperMock.toStartProcessInstanceDto(municipalityId, request)).thenReturn(startProcessInstance);
-		when(camundaClientMock.startProcessWithTenant(process, tenant, startProcessInstance)).thenReturn(processInstance);
+		when(operatonMapperMock.toStartProcessInstanceDto(municipalityId, request)).thenReturn(startProcessInstance);
+		when(operatonClientMock.startProcessWithTenant(process, tenant, startProcessInstance)).thenReturn(processInstance);
 
 		// Mock static RequestId to enable spy and to verify that static method is being called
 		try (MockedStatic<RequestId> requestIdMock = mockStatic(RequestId.class)) {
@@ -60,7 +57,7 @@ class ProcessServiceTest {
 		}
 
 		// Assert
-		verify(camundaClientMock).startProcessWithTenant(process, tenant, startProcessInstance);
-		verifyNoMoreInteractions(camundaClientMock);
+		verify(operatonClientMock).startProcessWithTenant(process, tenant, startProcessInstance);
+		verifyNoMoreInteractions(operatonClientMock);
 	}
 }

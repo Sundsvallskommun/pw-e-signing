@@ -10,31 +10,31 @@ import org.slf4j.LoggerFactory;
 import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_E_SIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
 
 abstract class AbstractWorker implements ExternalTaskHandler {
 
 	private final Logger logger;
-	private final CamundaClient camundaClient;
+	private final EngineClient engineClient;
 	private final Gson gson;
 	protected final FailureHandler failureHandler;
 
-	protected AbstractWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson) {
+	protected AbstractWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson) {
 		this.logger = LoggerFactory.getLogger(getClass());
-		this.camundaClient = camundaClient;
+		this.engineClient = engineClient;
 		this.failureHandler = failureHandler;
 		this.gson = gson;
 	}
 
 	protected void setProcessInstanceVariable(ExternalTask externalTask, String variableName, VariableValueDto variableValue) {
-		camundaClient.setProcessInstanceVariable(externalTask.getProcessInstanceId(), variableName, variableValue);
+		engineClient.setProcessInstanceVariable(externalTask.getProcessInstanceId(), variableName, variableValue);
 	}
 
 	protected SigningRequest getSigningRequest(ExternalTask externalTask) {
-		return fromJson(externalTask.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST), SigningRequest.class);
+		return fromJson(externalTask.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST), SigningRequest.class);
 	}
 
 	protected <T> T fromJson(String json, Class<T> clazz) {
@@ -57,7 +57,7 @@ abstract class AbstractWorker implements ExternalTaskHandler {
 
 	@Override
 	public void execute(ExternalTask externalTask, ExternalTaskService externalTaskService) {
-		RequestId.init(externalTask.getVariable(CAMUNDA_VARIABLE_REQUEST_ID));
+		RequestId.init(externalTask.getVariable(PROCESS_VARIABLE_REQUEST_ID));
 		executeBusinessLogic(externalTask, externalTaskService);
 	}
 }

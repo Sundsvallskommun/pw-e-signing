@@ -8,13 +8,13 @@ import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static java.util.Optional.ofNullable;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_STATUS;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
 
 @Component
 @ExternalTaskSubscription("CheckSigningStatusTask")
@@ -22,8 +22,8 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 
 	private final ComfactFacadeClient comfactFacadeClient;
 
-	CheckSigningStatusWorker(CamundaClient camundaClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient) {
-		super(camundaClient, failureHandler, gson);
+	CheckSigningStatusWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient) {
+		super(engineClient, failureHandler, gson);
 		this.comfactFacadeClient = comfactFacadeClient;
 	}
 
@@ -33,12 +33,12 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 		try {
 			logInfo("Checking signing status for document {} with registration number {}", request.getFileName(), request.getRegistrationNumber());
 
-			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID), externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
+			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID), externalTask.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID));
 			String status = ofNullable(response.getStatus())
 				.map(Status::getCode)
 				.orElse("Notpresent");
 
-			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_COMFACT_SIGNING_STATUS, status));
+			externalTaskService.complete(externalTask, Map.of(PROCESS_VARIABLE_COMFACT_SIGNING_STATUS, status));
 
 		} catch (final Exception exception) {
 			logException(externalTask, exception);

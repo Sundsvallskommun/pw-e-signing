@@ -9,6 +9,8 @@ spring:
             token-uri: ${config.comfactfacade.token-uri}
           document:
             token-uri: ${config.document.token-uri}
+          operaton:
+            token-uri: ${config.operaton.token-uri}
         registration:
           comfactfacade:
             authorization-grant-type: client_credentials
@@ -20,6 +22,11 @@ spring:
             provider: document
             client-id: ${config.document.client-id}
             client-secret: ${config.document.client-secret}
+          operaton:
+            authorization-grant-type: client_credentials
+            provider: operaton
+            client-id: ${config.operaton.client-id}
+            client-secret: ${config.operaton.client-secret}
 
 #----------------------------------------
 # Open API
@@ -30,23 +37,36 @@ openapi:
   version: '@project.version@'
 
 #----------------------------------------
+# Process engine
+#----------------------------------------
+# Engine targeted by this instance (camunda/operaton). config.process-engine-base-url and config.operaton.*
+# are resolved from the external config per environment and have NO defaults on purpose - they must be
+# provisioned for every instance (the OperatonClient bean and 'operaton' OAuth2 registration always load,
+# regardless of engine type), otherwise the application fails to boot.
+process-engine:
+  type: ${config.process-engine-type:camunda}
+  deployment:
+    processes:
+      - name: E-signing process
+        tenant: E_SIGNING
+        bpmnResourcePattern: classpath*:processmodels/*.bpmn
+        dmnResourcePattern: classpath*:processmodels/*.dmn
+        formResourcePattern: classpath*:processmodels/*.form
+
+#----------------------------------------
 # Camunda
 #----------------------------------------
 camunda:
   bpm:
     client:
-      base-url: ${config.camunda.base-url}
+      # External-task client polls this engine. Must point at the SAME engine as the active Feign client
+      # (integration.operaton.url / integration.camunda.url) - otherwise deploy/start and task polling
+      # hit different engines and the process stalls.
+      base-url: ${config.process-engine-base-url}
       backoff:
         initTime: 500
         factor: 2
         maxTime: 15000
-    deployment:
-      processes:
-        - name: E-signing process
-          tenant: E_SIGNING
-          bpmnResourcePattern: classpath*:processmodels/*.bpmn
-          dmnResourcePattern: classpath*:processmodels/*.dmn
-          formResourcePattern: classpath*:processmodels/*.form
   worker:
     max:
       retries: 3
@@ -66,6 +86,10 @@ integration:
     connectTimeout: 5
     readTimeout: 20
     url: ${config.camunda.base-url}
+  operaton:
+    connectTimeout: 5
+    readTimeout: 20
+    url: ${config.operaton.base-url}
   comfactfacade:
     connectTimeout: 5
     readTimeout: 20
