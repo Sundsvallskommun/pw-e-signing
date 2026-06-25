@@ -1,4 +1,4 @@
-package apptest;
+package apptest.operaton;
 
 import static generated.se.sundsvall.camunda.HistoricProcessInstanceDto.StateEnum.COMPLETED;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -25,8 +25,8 @@ import se.sundsvall.esigning.Application;
 import se.sundsvall.esigning.api.model.StartResponse;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
 
-@WireMockAppTestSuite(files = "classpath:/CreateProcess/", classes = Application.class)
-class CreateProcessIT extends AbstractCamundaAppTest {
+@WireMockAppTestSuite(files = "classpath:/CreateProcessOperaton/", classes = Application.class)
+class CreateProcessIT extends AbstractOperatonAppTest {
 	private static final int DEFAULT_TESTCASE_TIMEOUT_IN_SECONDS = 30;
 	private static final String REQUEST_FILE = "request.json";
 	private static final String PATH = "/2281/process/start";
@@ -44,7 +44,9 @@ class CreateProcessIT extends AbstractCamundaAppTest {
 			.ignoreExceptions()
 			.until(() -> camundaClient.getDeployments("process-e-signing.bpmn", null, null).size(), equalTo(1));
 
-		verifyAllStubs();
+		// No verifyAllStubs() here (unlike the Camunda copy): the boot-time /api-gateway/token stub is only hit once at
+		// context startup, but the request journal is reset between test methods, so it would fail verification from the
+		// second method onwards. The per-test verifyAllStubs() at the end of each test covers the in-flow token calls.
 	}
 
 	@Test
