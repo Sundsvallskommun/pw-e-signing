@@ -32,7 +32,6 @@ process-engine:
 #----------------------------------------
 config:
   process-engine-type: camunda
-  process-engine-base-url: process-engine.url
   common:
     client-id: client-id
     client-secret: client-secret
