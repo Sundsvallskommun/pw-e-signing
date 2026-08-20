@@ -1,4 +1,4 @@
-package se.sundsvall.esigning.integration.camunda.deployment;
+package se.sundsvall.esigning.integration.engine.deployment;
 
 import org.junit.jupiter.api.Test;
 
