@@ -73,7 +73,7 @@ camunda:
     retry:
       timeout: 10
   process:
-    wait-duration: 0 0 * * * *
+    wait-duration: R/PT15M
 
 #----------------------------------------
 # Integration settings
