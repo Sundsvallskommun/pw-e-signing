@@ -20,6 +20,5 @@ public final class Constants {
 	public static final String DOCUMENT_METADATA_KEY_SIGNING_ID = "signingId";
 	public static final String DOCUMENT_METADATA_KEY_SIGNATORY = "signatory.";
 	public static final String DOCUMENT_METADATA_KEY_SIGNING_STATUS = "signingStatus";
-	public static final String DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE = "signingStatusMessage";
 
 }
