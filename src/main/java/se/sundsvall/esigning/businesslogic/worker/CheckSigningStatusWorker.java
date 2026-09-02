@@ -36,7 +36,7 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 			final var response = comfactFacadeClient.getSigningInstance(externalTask.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID), externalTask.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID));
 			String status = ofNullable(response.getStatus())
 				.map(Status::getCode)
-				.orElse("Notpresent");
+				.orElse("notpresent");
 
 			externalTaskService.complete(externalTask, Map.of(PROCESS_VARIABLE_COMFACT_SIGNING_STATUS, status));
 

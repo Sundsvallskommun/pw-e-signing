@@ -72,7 +72,7 @@ class CheckSigningStatusWorkerTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = {
-		"Created", "Active", "Halted", "Faulty", "Completed", "Approved", "Declined", "Withdrawn", "Expired"
+		"created", "active", "halted", "faulty", "completed", "approved", "declined", "withdrawn", "expired"
 	})
 	@NullSource
 	void execute(String statusCode) {
@@ -99,7 +99,7 @@ class CheckSigningStatusWorkerTest {
 		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).getSigningInstance(municipalityId, signingId);
-		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(PROCESS_VARIABLE_COMFACT_SIGNING_STATUS, isNull(statusCode) ? "Notpresent" : statusCode));
+		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(PROCESS_VARIABLE_COMFACT_SIGNING_STATUS, isNull(statusCode) ? "notpresent" : statusCode));
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock);
 		verifyNoInteractions(failureHandlerMock);
 	}
