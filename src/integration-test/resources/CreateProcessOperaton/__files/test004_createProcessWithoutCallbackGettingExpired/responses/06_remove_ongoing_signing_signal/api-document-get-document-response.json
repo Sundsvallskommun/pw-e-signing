@@ -30,10 +30,6 @@
 		{
 			"value": "Expired",
 			"key": "signingStatus"
-		},
-		{
-			"value": "The signing instance has expired.",
-			"key": "signingStatusMessage"
 		}
 	]
 }
