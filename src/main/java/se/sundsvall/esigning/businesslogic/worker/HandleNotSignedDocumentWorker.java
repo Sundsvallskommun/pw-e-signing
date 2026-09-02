@@ -16,7 +16,6 @@ import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_CALLBACK_PRESENT;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE;
 import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadata;
 import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
 
@@ -43,10 +42,9 @@ public class HandleNotSignedDocumentWorker extends AbstractWorker {
 			// Fetch signing instance
 			final var response = comfactFacadeClient.getSigningInstance(municipalityId, externalTask.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID));
 
-			// Save expired signing status and errormessage on document instance
+			// Save expired signing status on document instance
 			final var metaData = documentClient.getDocument(municipalityId, request.getRegistrationNumber()).getMetadataList();
 			metaData.add(toDocumentMetadata(DOCUMENT_METADATA_KEY_SIGNING_STATUS, response.getStatus().getCode()));
-			metaData.add(toDocumentMetadata(DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE, response.getStatus().getMessage()));
 			documentClient.updateDocument(municipalityId, request.getRegistrationNumber(), toDocumentUpdateRequest(metaData));
 
 			externalTaskService.complete(externalTask, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, isNotBlank(request.getCallbackUrl())));

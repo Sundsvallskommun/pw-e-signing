@@ -45,7 +45,6 @@ import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
 import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS;
-import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE;
 
 @ExtendWith(MockitoExtension.class)
 class HandleNotSignedDocumentWorkerTest {
@@ -96,15 +95,13 @@ class HandleNotSignedDocumentWorkerTest {
 		final var registrationNumber = "registrationNumber";
 		final var municipalityId = "municipalityId";
 		final var code = "code";
-		final var message = "message";
 		final var signingId = UUID.randomUUID().toString();
 		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS).value("true")));
 		final var bean = SigningRequest.create()
 			.withRegistrationNumber(registrationNumber)
 			.withCallbackUrl(callbackPresent ? "callbackUrl" : null);
 		final var status = new generated.se.sundsvall.comfactfacade.Status()
-			.code(code)
-			.message(message);
+			.code(code);
 
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
 		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
@@ -132,12 +129,9 @@ class HandleNotSignedDocumentWorkerTest {
 			assertThat(req.getArchive()).isNull();
 			assertThat(req.getCreatedBy()).isEqualTo(Constants.DOCUMENT_USER);
 			assertThat(req.getDescription()).isNull();
-			assertThat(req.getMetadataList()).hasSize(3).satisfiesExactlyInAnyOrder(metadata -> {
+			assertThat(req.getMetadataList()).hasSize(2).satisfiesExactlyInAnyOrder(metadata -> {
 				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_STATUS);
 				assertThat(metadata.getValue()).isEqualTo("code");
-			}, metadata -> {
-				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_STATUS_MESSAGE);
-				assertThat(metadata.getValue()).isEqualTo("message");
 			}, metadata -> {
 				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS);
 				assertThat(metadata.getValue()).isEqualTo("true");
