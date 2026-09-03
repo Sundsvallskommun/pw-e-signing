@@ -12,9 +12,11 @@ import se.sundsvall.esigning.integration.document.DocumentClient;
 import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNED;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_CALLBACK_PRESENT;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadata;
 import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentMetadatas;
 import static se.sundsvall.esigning.integration.document.mapper.DocumentMapper.toDocumentUpdateRequest;
 
@@ -41,9 +43,11 @@ public class AddMetadataToDocumentWorker extends AbstractWorker {
 			// Fetch signing instance
 			final var response = comfactFacadeClient.getSigningInstance(municipalityId, externalTask.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID));
 
-			// Save signatory information as metadata on a document
+			// Save signatory information and signed flag as metadata on a document
 			final var metaData = documentClient.getDocument(municipalityId, request.getRegistrationNumber()).getMetadataList();
 			metaData.addAll(toDocumentMetadatas(response.getSignatories()));
+			metaData.removeIf(item -> item.getKey().equals(DOCUMENT_METADATA_KEY_SIGNED));
+			metaData.add(toDocumentMetadata(DOCUMENT_METADATA_KEY_SIGNED, "true"));
 			documentClient.updateDocument(municipalityId, request.getRegistrationNumber(), toDocumentUpdateRequest(metaData));
 
 			externalTaskService.complete(externalTask, Map.of(PROCESS_VARIABLE_CALLBACK_PRESENT, isNotBlank(request.getCallbackUrl())));

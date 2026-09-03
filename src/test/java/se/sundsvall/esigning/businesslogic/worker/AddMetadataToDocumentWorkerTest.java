@@ -40,6 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNED;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_CALLBACK_PRESENT;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
@@ -127,7 +128,7 @@ class AddMetadataToDocumentWorkerTest {
 			assertThat(req.getArchive()).isNull();
 			assertThat(req.getCreatedBy()).isEqualTo(Constants.DOCUMENT_USER);
 			assertThat(req.getDescription()).isNull();
-			assertThat(req.getMetadataList()).hasSize(3).satisfiesExactlyInAnyOrder(metadata -> {
+			assertThat(req.getMetadataList()).hasSize(4).satisfiesExactlyInAnyOrder(metadata -> {
 				assertThat(metadata.getKey()).isEqualTo("signatory.1");
 				assertThat(metadata.getValue()).isEqualTo("{\"name\":\"1.name\",\"partyId\":\"1.partyId\",\"email\":\"1.email\"}");
 			}, metadata -> {
@@ -135,6 +136,9 @@ class AddMetadataToDocumentWorkerTest {
 				assertThat(metadata.getValue()).isEqualTo("{\"name\":\"2.name\",\"partyId\":\"2.partyId\",\"email\":\"2.email\"}");
 			}, metadata -> {
 				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS);
+				assertThat(metadata.getValue()).isEqualTo("true");
+			}, metadata -> {
+				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNED);
 				assertThat(metadata.getValue()).isEqualTo("true");
 			});
 		});
@@ -173,6 +177,38 @@ class AddMetadataToDocumentWorkerTest {
 		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
 			"ThrowableProblem occurred for document fileName with registration number registrationNumber when adding signatory metadata to document (Bad Request: Big and stout).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
+	}
+
+	@Test
+	void executeReplacesExistingSignedMetadata() {
+		// Arrange
+		final var json = "json";
+		final var registrationNumber = "registrationNumber";
+		final var municipalityId = "municipalityId";
+		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
+		final var signingId = UUID.randomUUID().toString();
+		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNED).value("true")));
+
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
+		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
+		when(comfactFacadeClientMock.getSigningInstance(municipalityId, signingId)).thenReturn(new SigningInstance()
+			.signatories(List.of(createSignatory("1.name", "1.partyId", "1.email"))));
+		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(new generated.se.sundsvall.document.Document().metadataList(existingMetadata));
+
+		// Act
+		worker.execute(externalTaskMock, externalTaskServiceMock);
+
+		// Assert and verify
+		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), documentUpdateRequestCaptor.capture());
+		verifyNoInteractions(failureHandlerMock);
+
+		assertThat(documentUpdateRequestCaptor.getValue().getMetadataList())
+			.filteredOn(metadata -> DOCUMENT_METADATA_KEY_SIGNED.equals(metadata.getKey()))
+			.hasSize(1)
+			.allSatisfy(metadata -> assertThat(metadata.getValue()).isEqualTo("true"));
 	}
 
 	private static Signatory createSignatory(String name, String partyId, String email) {
