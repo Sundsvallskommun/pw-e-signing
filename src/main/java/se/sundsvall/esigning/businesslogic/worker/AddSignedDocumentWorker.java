@@ -42,7 +42,7 @@ public class AddSignedDocumentWorker extends AbstractWorker {
 			// Create a new revision of a document with signed documentdata
 			documentClient.addFileToDocument(municipalityId, request.getRegistrationNumber(),
 				toDocumentDataCreateRequest(),
-				toMultipartFile(response.getSignedDocument()));
+				toMultipartFile(response.getSignedDocument(), request.getFileName()));
 
 			externalTaskService.complete(externalTask);
 		} catch (final Exception exception) {
