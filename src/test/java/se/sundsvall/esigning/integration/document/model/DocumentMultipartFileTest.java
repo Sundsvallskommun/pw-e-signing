@@ -29,6 +29,7 @@ class DocumentMultipartFileTest {
 
 		final var name = "name";
 		final var fileName = "fileName";
+		final var overriddenFileName = "overriddenFileName";
 		final var mimeType = "mimeType";
 		final var document = new Document()
 			.name(name)
@@ -36,13 +37,13 @@ class DocumentMultipartFileTest {
 			.mimeType(mimeType)
 			.content(isNull(content) ? null : content.getBytes());
 
-		final var multipartFile = DocumentMultipartFile.create(document);
+		final var multipartFile = DocumentMultipartFile.create(document, overriddenFileName);
 
 		assertThat(multipartFile.getBytes()).isNullOrEmpty();
 		assertThat(multipartFile.getContentType()).isEqualTo(mimeType);
 		assertThat(multipartFile.getInputStream().readAllBytes()).isEmpty();
 		assertThat(multipartFile.getName()).isEqualTo(name);
-		assertThat(multipartFile.getOriginalFilename()).isEqualTo(fileName);
+		assertThat(multipartFile.getOriginalFilename()).isEqualTo(overriddenFileName);
 		assertThat(multipartFile.getResource().getContentAsByteArray()).isEmpty();
 		assertThat(multipartFile.getSize()).isZero();
 		assertThat(multipartFile.isEmpty()).isTrue();
@@ -53,6 +54,7 @@ class DocumentMultipartFileTest {
 
 		final var name = "name";
 		final var fileName = "fileName";
+		final var overriddenFileName = "overriddenFileName";
 		final var mimeType = "mimeType";
 		final var content = "content".getBytes();
 		final var document = new Document()
@@ -61,13 +63,13 @@ class DocumentMultipartFileTest {
 			.mimeType(mimeType)
 			.content(content);
 
-		final var multipartFile = DocumentMultipartFile.create(document);
+		final var multipartFile = DocumentMultipartFile.create(document, overriddenFileName);
 
 		assertThat(multipartFile.getBytes()).isEqualTo(content);
 		assertThat(multipartFile.getContentType()).isEqualTo(mimeType);
 		assertThat(multipartFile.getInputStream().readAllBytes()).isEqualTo(content);
 		assertThat(multipartFile.getName()).isEqualTo(name);
-		assertThat(multipartFile.getOriginalFilename()).isEqualTo(fileName);
+		assertThat(multipartFile.getOriginalFilename()).isEqualTo(overriddenFileName);
 		assertThat(multipartFile.getResource().getContentAsByteArray()).isEqualTo(content);
 		assertThat(multipartFile.getSize()).isEqualTo(content.length);
 		assertThat(multipartFile.isEmpty()).isFalse();
@@ -84,7 +86,7 @@ class DocumentMultipartFileTest {
 			.fileName(fileName)
 			.mimeType(mimeType)
 			.content(content);
-		final var multipartFile = DocumentMultipartFile.create(document);
+		final var multipartFile = DocumentMultipartFile.create(document, fileName);
 
 		final var file = Files.createTempFile("test_", null).toFile();
 		multipartFile.transferTo(file);
@@ -102,7 +104,7 @@ class DocumentMultipartFileTest {
 			.name(name)
 			.fileName(fileName)
 			.mimeType(mimeType);
-		final var multipartFile = DocumentMultipartFile.create(document);
+		final var multipartFile = DocumentMultipartFile.create(document, fileName);
 
 		multipartFile.transferTo(fileMock);
 

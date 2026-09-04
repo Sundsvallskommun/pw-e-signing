@@ -87,10 +87,11 @@ class AddSignedDocumentWorkerTest {
 		final var json = "json";
 		final var content = "content";
 		final var fileName = "fileName";
+		final var requestedFileName = "requestedFileName";
 		final var name = "name";
 		final var mimeType = "mimeType";
 		final var registrationNumber = "registrationNumber";
-		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
+		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber).withFileName(requestedFileName);
 		final var signingId = UUID.randomUUID().toString();
 		final var document = new Document()
 			.content(content.getBytes())
@@ -123,7 +124,7 @@ class AddSignedDocumentWorkerTest {
 		assertThat(multiPartFileCaptor.getValue().getBytes()).isEqualTo(content.getBytes());
 		assertThat(multiPartFileCaptor.getValue().getContentType()).isEqualTo(mimeType);
 		assertThat(multiPartFileCaptor.getValue().getName()).isEqualTo(name);
-		assertThat(multiPartFileCaptor.getValue().getOriginalFilename()).isEqualTo(fileName);
+		assertThat(multiPartFileCaptor.getValue().getOriginalFilename()).isEqualTo(requestedFileName);
 	}
 
 	@Test

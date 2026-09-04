@@ -12,12 +12,6 @@
 	"documentData": [
 		{
 			"fileName": "termination_contract.pdf",
-			"fileSizeInBytes": 44399,
-			"id": "3b706160-96f9-4694-88cf-88aea8430ad0",
-			"mimeType": "application/pdf"
-		},
-		{
-			"fileName": "termination_contract signed.pdf",
 			"fileSizeInBytes": 55384,
 			"id": "713f7c03-a5b3-40fa-a11e-8b2476db526d",
 			"mimeType": "application/pdf"

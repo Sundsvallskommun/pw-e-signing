@@ -77,7 +77,7 @@ class DocumentMapperTest {
 
 	@Test
 	void toMultipartFileFromNull() {
-		final var e = assertThrows((NullPointerException.class), () -> DocumentMapper.toMultipartFile(null));
+		final var e = assertThrows((NullPointerException.class), () -> DocumentMapper.toMultipartFile(null, "fileName"));
 		assertThat(e.getMessage()).isEqualTo("Document must be provided");
 	}
 
@@ -85,6 +85,7 @@ class DocumentMapperTest {
 	void toMultipartFile() throws Exception {
 		final var name = "name";
 		final var fileName = "fileName";
+		final var overriddenFileName = "overriddenFileName";
 		final var mimeType = "mimeType";
 		final var content = "content".getBytes();
 		final var document = new Document()
@@ -93,13 +94,13 @@ class DocumentMapperTest {
 			.mimeType(mimeType)
 			.content(content);
 
-		final var multipartFile = DocumentMapper.toMultipartFile(document);
+		final var multipartFile = DocumentMapper.toMultipartFile(document, overriddenFileName);
 
 		assertThat(multipartFile.getBytes()).isEqualTo(content);
 		assertThat(multipartFile.getContentType()).isEqualTo(mimeType);
 		assertThat(multipartFile.getInputStream().readAllBytes()).isEqualTo(content);
 		assertThat(multipartFile.getName()).isEqualTo(name);
-		assertThat(multipartFile.getOriginalFilename()).isEqualTo(fileName);
+		assertThat(multipartFile.getOriginalFilename()).isEqualTo(overriddenFileName);
 		assertThat(multipartFile.getResource().getContentAsByteArray()).isEqualTo(content);
 		assertThat(multipartFile.getSize()).isEqualTo(content.length);
 		assertThat(multipartFile.isEmpty()).isFalse();
