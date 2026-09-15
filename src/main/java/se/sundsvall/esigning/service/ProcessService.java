@@ -2,8 +2,8 @@ package se.sundsvall.esigning.service;
 
 import org.springframework.stereotype.Service;
 import se.sundsvall.esigning.api.model.SigningRequest;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
-import se.sundsvall.esigning.integration.camunda.mapper.CamundaMapper;
+import se.sundsvall.esigning.integration.operaton.OperatonClient;
+import se.sundsvall.esigning.integration.operaton.mapper.OperatonMapper;
 
 import static se.sundsvall.esigning.Constants.PROCESS_KEY;
 import static se.sundsvall.esigning.Constants.TENANT_ID;
@@ -11,15 +11,16 @@ import static se.sundsvall.esigning.Constants.TENANT_ID;
 @Service
 public class ProcessService {
 
-	private final CamundaClient camundaClient;
-	private final CamundaMapper camundaMapper;
+	private final OperatonClient operatonClient;
+	private final OperatonMapper operatonMapper;
 
-	public ProcessService(CamundaClient camundaClient, CamundaMapper camundaMapper) {
-		this.camundaClient = camundaClient;
-		this.camundaMapper = camundaMapper;
+	public ProcessService(OperatonClient operatonClient, OperatonMapper operatonMapper) {
+		this.operatonClient = operatonClient;
+		this.operatonMapper = operatonMapper;
 	}
 
 	public String startProcess(String municipalityId, SigningRequest request) {
-		return camundaClient.startProcessWithTenant(PROCESS_KEY, TENANT_ID, camundaMapper.toStartProcessInstanceDto(municipalityId, request)).getId();
+		// New processes are always created in Operaton.
+		return operatonClient.startProcessWithTenant(PROCESS_KEY, TENANT_ID, operatonMapper.toStartProcessInstanceDto(municipalityId, request)).getId();
 	}
 }

@@ -50,11 +50,11 @@ On success the returned signingId is stored as a process variable.</bpmn:documen
       <bpmn:outgoing>signing_expired</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="signing_completed" name="Completed" sourceRef="gateway_signing_status" targetRef="add_signed_document">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${comfactSigningStatus == 'Completed'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${comfactSigningStatus == 'completed'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0y2xc0t" name="Active" sourceRef="gateway_signing_status" targetRef="wait_timer"/>
     <bpmn:sequenceFlow id="signing_expired" name="Not active or completed" sourceRef="gateway_signing_status" targetRef="handle_unsigned_document_signing">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${comfactSigningStatus != 'Active' &amp;&amp; comfactSigningStatus != 'Completed'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${comfactSigningStatus != 'active' &amp;&amp; comfactSigningStatus != 'completed'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_00iwjxr" sourceRef="execute_callback" targetRef="remove_ongoing_signing_signal"/>
     <bpmn:exclusiveGateway id="gateway_callback_present" name="Callback present?" default="callback_not_present">

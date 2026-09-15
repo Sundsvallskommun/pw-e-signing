@@ -16,15 +16,17 @@ import static java.util.Objects.requireNonNull;
 public class DocumentMultipartFile implements MultipartFile {
 
 	private final Document document;
+	private final String fileName;
 
-	public static DocumentMultipartFile create(Document document) {
+	public static DocumentMultipartFile create(Document document, String fileName) {
 		requireNonNull(document, "Document must be provided");
 
-		return new DocumentMultipartFile(document);
+		return new DocumentMultipartFile(document, fileName);
 	}
 
-	private DocumentMultipartFile(Document document) {
+	private DocumentMultipartFile(Document document, String fileName) {
 		this.document = document;
+		this.fileName = fileName;
 	}
 
 	@Override
@@ -34,7 +36,7 @@ public class DocumentMultipartFile implements MultipartFile {
 
 	@Override
 	public String getOriginalFilename() {
-		return document.getFileName();
+		return fileName;
 	}
 
 	@Override

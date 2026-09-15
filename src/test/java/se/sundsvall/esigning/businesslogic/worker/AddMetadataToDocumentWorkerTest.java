@@ -28,9 +28,9 @@ import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.esigning.Constants;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,12 +40,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_CALLBACK_PRESENT;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_COMFACT_SIGNING_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_MUNICIPALITY_ID;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNED;
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_CALLBACK_PRESENT;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_E_SIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class AddMetadataToDocumentWorkerTest {
@@ -53,7 +54,7 @@ class AddMetadataToDocumentWorkerTest {
 	private static final String REQUEST_ID = "RequestId";
 
 	@Mock
-	private CamundaClient camundaClientMock;
+	private EngineClient engineClientMock;
 
 	@Mock
 	private ExternalTask externalTaskMock;
@@ -101,10 +102,10 @@ class AddMetadataToDocumentWorkerTest {
 		final var signingId = UUID.randomUUID().toString();
 		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS).value("true")));
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		when(comfactFacadeClientMock.getSigningInstance(municipalityId, signingId)).thenReturn(new SigningInstance()
 			.signatories(List.of(createSignatory("1.name", "1.partyId", "1.email"), createSignatory("2.name", "2.partyId", "2.email"))));
@@ -114,12 +115,12 @@ class AddMetadataToDocumentWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).getSigningInstance(municipalityId, signingId);
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), documentUpdateRequestCaptor.capture());
-		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(CAMUNDA_VARIABLE_CALLBACK_PRESENT, callbackPresent));
+		verify(externalTaskServiceMock).complete(externalTaskMock, Map.of(PROCESS_VARIABLE_CALLBACK_PRESENT, callbackPresent));
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, comfactFacadeClientMock, documentClientMock);
 		verifyNoInteractions(failureHandlerMock);
 
@@ -127,7 +128,7 @@ class AddMetadataToDocumentWorkerTest {
 			assertThat(req.getArchive()).isNull();
 			assertThat(req.getCreatedBy()).isEqualTo(Constants.DOCUMENT_USER);
 			assertThat(req.getDescription()).isNull();
-			assertThat(req.getMetadataList()).hasSize(3).satisfiesExactlyInAnyOrder(metadata -> {
+			assertThat(req.getMetadataList()).hasSize(4).satisfiesExactlyInAnyOrder(metadata -> {
 				assertThat(metadata.getKey()).isEqualTo("signatory.1");
 				assertThat(metadata.getValue()).isEqualTo("{\"name\":\"1.name\",\"partyId\":\"1.partyId\",\"email\":\"1.email\"}");
 			}, metadata -> {
@@ -135,6 +136,9 @@ class AddMetadataToDocumentWorkerTest {
 				assertThat(metadata.getValue()).isEqualTo("{\"name\":\"2.name\",\"partyId\":\"2.partyId\",\"email\":\"2.email\"}");
 			}, metadata -> {
 				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNING_IN_PROGRESS);
+				assertThat(metadata.getValue()).isEqualTo("true");
+			}, metadata -> {
+				assertThat(metadata.getKey()).isEqualTo(DOCUMENT_METADATA_KEY_SIGNED);
 				assertThat(metadata.getValue()).isEqualTo("true");
 			});
 		});
@@ -152,27 +156,59 @@ class AddMetadataToDocumentWorkerTest {
 		final var signingId = UUID.randomUUID().toString();
 		final var municipalityId = "municipalityId";
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
 		when(comfactFacadeClientMock.getSigningInstance(anyString(), any())).thenThrow(problem);
 
 		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_MUNICIPALITY_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID);
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(comfactFacadeClientMock).getSigningInstance(municipalityId, signingId);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
 			"ThrowableProblem occurred for document fileName with registration number registrationNumber when adding signatory metadata to document (Bad Request: Big and stout).");
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
+	}
+
+	@Test
+	void executeReplacesExistingSignedMetadata() {
+		// Arrange
+		final var json = "json";
+		final var registrationNumber = "registrationNumber";
+		final var municipalityId = "municipalityId";
+		final var bean = SigningRequest.create().withRegistrationNumber(registrationNumber);
+		final var signingId = UUID.randomUUID().toString();
+		final var existingMetadata = new ArrayList<>(List.of(new DocumentMetadata().key(DOCUMENT_METADATA_KEY_SIGNED).value("true")));
+
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_COMFACT_SIGNING_ID)).thenReturn(signingId);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_MUNICIPALITY_ID)).thenReturn(municipalityId);
+		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
+		when(comfactFacadeClientMock.getSigningInstance(municipalityId, signingId)).thenReturn(new SigningInstance()
+			.signatories(List.of(createSignatory("1.name", "1.partyId", "1.email"))));
+		when(documentClientMock.getDocument(municipalityId, registrationNumber)).thenReturn(new generated.se.sundsvall.document.Document().metadataList(existingMetadata));
+
+		// Act
+		worker.execute(externalTaskMock, externalTaskServiceMock);
+
+		// Assert and verify
+		verify(documentClientMock).updateDocument(eq(municipalityId), eq(registrationNumber), documentUpdateRequestCaptor.capture());
+		verifyNoInteractions(failureHandlerMock);
+
+		assertThat(documentUpdateRequestCaptor.getValue().getMetadataList())
+			.filteredOn(metadata -> DOCUMENT_METADATA_KEY_SIGNED.equals(metadata.getKey()))
+			.hasSize(1)
+			.allSatisfy(metadata -> assertThat(metadata.getValue()).isEqualTo("true"));
 	}
 
 	private static Signatory createSignatory(String name, String partyId, String email) {

@@ -20,7 +20,7 @@ import se.sundsvall.dept44.problem.Problem;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.callback.CallbackClient;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import se.sundsvall.esigning.integration.engine.EngineClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,8 +31,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_E_SIGNING_REQUEST;
-import static se.sundsvall.esigning.Constants.CAMUNDA_VARIABLE_REQUEST_ID;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_E_SIGNING_REQUEST;
+import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
 
 @ExtendWith(MockitoExtension.class)
 class ExecuteCallbackWorkerTest {
@@ -40,7 +40,7 @@ class ExecuteCallbackWorkerTest {
 	private static final String REQUEST_ID = "RequestId";
 
 	@Mock
-	private CamundaClient camundaClientMock;
+	private EngineClient engineClientMock;
 
 	@Mock
 	private ExternalTask externalTaskMock;
@@ -82,8 +82,8 @@ class ExecuteCallbackWorkerTest {
 			.withExpires(OffsetDateTime.MAX)
 			.withRegistrationNumber("2024-ACTIVE");
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(externalTaskMock.getProcessInstanceId()).thenReturn(processinstanceId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 
@@ -91,7 +91,7 @@ class ExecuteCallbackWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
 		verify(externalTaskMock).getProcessInstanceId();
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(callbackClientMock).sendRequest(URICaptor.capture());
@@ -115,15 +115,15 @@ class ExecuteCallbackWorkerTest {
 			.withExpires(OffsetDateTime.MAX)
 			.withRegistrationNumber("2024-ACTIVE");
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(externalTaskMock.getProcessInstanceId()).thenReturn(processinstanceId);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 
 		final var problem = Problem.valueOf(HttpStatus.BAD_REQUEST, "Big and stout");
 
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
-		when(externalTaskMock.getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_REQUEST_ID)).thenReturn(REQUEST_ID);
+		when(externalTaskMock.getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST)).thenReturn(json);
 		when(gsonMock.fromJson(json, SigningRequest.class)).thenReturn(bean);
 		doThrow(problem).when(externalTaskServiceMock).complete(externalTaskMock);
 
@@ -131,12 +131,12 @@ class ExecuteCallbackWorkerTest {
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
 		// Assert and verify
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_E_SIGNING_REQUEST);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_E_SIGNING_REQUEST);
 		verify(externalTaskMock).getProcessInstanceId();
 		verify(gsonMock).fromJson(json, SigningRequest.class);
 		verify(callbackClientMock).sendRequest(any());
 		verify(externalTaskServiceMock).complete(externalTaskMock);
-		verify(externalTaskMock).getVariable(CAMUNDA_VARIABLE_REQUEST_ID);
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
 		verify(failureHandlerMock).handleException(eq(externalTaskServiceMock), eq(externalTaskMock), anyString());

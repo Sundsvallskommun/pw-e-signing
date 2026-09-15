@@ -44,8 +44,8 @@ public final class DocumentMapper {
 		return new DocumentDataCreateRequest(DOCUMENT_USER);
 	}
 
-	public static MultipartFile toMultipartFile(Document document) {
-		return DocumentMultipartFile.create(document);
+	public static MultipartFile toMultipartFile(Document document, String fileName) {
+		return DocumentMultipartFile.create(document, fileName);
 	}
 
 	private static SignatoryMetaData toSignatoryMetaData(Signatory signatory) {

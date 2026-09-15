@@ -1,0 +1,30 @@
+{
+	"request": {
+		"headers": {
+			"Authorization": {
+				"equalTo": "Bearer example-access"
+			},
+			"Content-Type": {
+				"contains": "multipart/form-data"
+			}
+		},
+		"method": "PUT",
+		"urlPath": "/api-document/2281/documents/2024-1234-2/files",
+		"multipartPatterns": [
+			{
+				"name": "documentFile",
+				"headers": {
+					"Content-Disposition": {
+						"contains": "filename=\"termination_contract.pdf\""
+					}
+				}
+			}
+		]
+	},
+	"newScenarioState": "add_signed_document-worker---api-document-put-documentdata",
+	"response": {
+		"status": 204
+	},
+	"requiredScenarioState": "add_signed_document-worker---api-comfactfacade-get-signinginstance",
+	"scenarioName": "create-process-without-callback-being-completed"
+}

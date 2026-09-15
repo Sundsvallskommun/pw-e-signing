@@ -9,7 +9,17 @@
 			}
 		},
 		"method": "PUT",
-		"urlPath": "/api-document/2281/documents/2024-1234-2/files"
+		"urlPath": "/api-document/2281/documents/2024-1234-2/files",
+		"multipartPatterns": [
+			{
+				"name": "documentFile",
+				"headers": {
+					"Content-Disposition": {
+						"contains": "filename=\"termination_contract.pdf\""
+					}
+				}
+			}
+		]
 	},
 	"newScenarioState": "add_signed_document-worker---api-document-put-documentdata",
 	"response": {

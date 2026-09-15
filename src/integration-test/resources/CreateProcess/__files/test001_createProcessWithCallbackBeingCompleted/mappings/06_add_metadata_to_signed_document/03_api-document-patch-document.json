@@ -22,6 +22,10 @@
 						{
 							"value": "{\"name\":\"John Connor\",\"partyId\":\"58253228-246f-44bb-8f97-4ed22bf6aee2\",\"email\":\"john.connor@noreply.com\"}",
 							"key": "signatory.1"
+						},
+						{
+							"value": "true",
+							"key": "signed"
 						}
 					]
 				}

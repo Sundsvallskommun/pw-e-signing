@@ -28,7 +28,7 @@
 			"key": "signingId"
 		},
 		{
-			"value": "Expired",
+			"value": "expired",
 			"key": "signingStatus"
 		}
 	]
