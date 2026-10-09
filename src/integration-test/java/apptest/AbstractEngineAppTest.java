@@ -1,9 +1,5 @@
 package apptest;
 
-import static java.util.Comparator.comparing;
-import static java.util.Objects.isNull;
-import static java.util.stream.Stream.concat;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
@@ -13,18 +9,21 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import se.sundsvall.dept44.test.AbstractAppTest;
 import se.sundsvall.esigning.integration.camunda.CamundaClient;
+
+import static java.util.Comparator.comparing;
+import static java.util.Objects.isNull;
+import static java.util.stream.Stream.concat;
 
 /**
  * Engine-neutral base for the testcontainer-driven process tests. Holds the shared route helper; the per-engine base
  * classes (in the {@code apptest.camunda} and {@code apptest.operaton} packages) pick the engine by delegating their
- * {@code @DynamicPropertySource} to {@link apptest.engine.EngineTestProperties}. The {@code camundaClient} is used purely
+ * {@code @DynamicPropertySource} to {@link apptest.engine.EngineTestProperties}. The {@code camundaClient} is used
+ * purely
  * as a read client for process history and works against either engine since Operaton is API-compatible with Camunda 7.
  * See Camunda API for more details https://docs.camunda.org/rest/camunda-bpm-platform/7.21/
  */
