@@ -1,5 +1,17 @@
 package apptest.camunda;
 
+import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
+import java.time.Duration;
+import org.apache.commons.lang3.Strings;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
+import se.sundsvall.esigning.Application;
+import se.sundsvall.esigning.api.model.StartResponse;
+import se.sundsvall.esigning.integration.camunda.CamundaClient;
+import tools.jackson.core.JacksonException;
+
 import static generated.se.sundsvall.camunda.HistoricProcessInstanceDto.StateEnum.COMPLETED;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -12,18 +24,6 @@ import static org.awaitility.Awaitility.setDefaultTimeout;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.ACCEPTED;
-
-import tools.jackson.core.JacksonException;
-import generated.se.sundsvall.camunda.HistoricActivityInstanceDto;
-import java.time.Duration;
-import org.apache.commons.lang3.Strings;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import se.sundsvall.dept44.test.annotation.wiremock.WireMockAppTestSuite;
-import se.sundsvall.esigning.Application;
-import se.sundsvall.esigning.api.model.StartResponse;
-import se.sundsvall.esigning.integration.camunda.CamundaClient;
 
 @WireMockAppTestSuite(files = "classpath:/CreateProcess/", classes = Application.class)
 class CreateProcessIT extends AbstractCamundaAppTest {
