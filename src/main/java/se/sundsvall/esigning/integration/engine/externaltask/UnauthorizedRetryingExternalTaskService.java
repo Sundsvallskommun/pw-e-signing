@@ -36,17 +36,11 @@ public final class UnauthorizedRetryingExternalTaskService {
 		});
 	}
 
-	// Why: ExternalTaskService declares no checked exceptions, so the cause is always a RuntimeException or an Error
-	private static Object invoke(final ExternalTaskService externalTaskService, final Method method, final Object[] args) {
+	private static Object invoke(final ExternalTaskService externalTaskService, final Method method, final Object[] args) throws Throwable {
 		try {
 			return method.invoke(externalTaskService, args);
 		} catch (final InvocationTargetException e) {
-			if (e.getCause() instanceof final Error error) {
-				throw error;
-			}
-			throw (RuntimeException) e.getCause();
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
+			throw e.getCause();
 		}
 	}
 }

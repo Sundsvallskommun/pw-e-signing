@@ -9,8 +9,7 @@ camunda:
   bpm:
     client:
       base-url: http://replaced_by_test:8080
-      # Why: subscriptions open one by one at startup and the first long poll only carries the topics open at that moment,
-      # so the remaining topics wait for it to time out. Kept below the 30 s await of the process tests.
+      # Topics subscribed after the first long poll wait for it to time out, so keep below the 30 s await of the process tests
       async-response-timeout: 2000
       backoff:
         maxTime: 5000

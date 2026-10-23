@@ -38,7 +38,7 @@ public class OperatonExternalTaskToken {
 		return lastAuthorizationHeader;
 	}
 
-	// Why: only evicts if the cached token is still the one last handed out, so a token fetched in between survives
+	// Only evicts if the cached token is still the one last handed out, so a token fetched in between survives
 	void evict() {
 		oAuth2RequestInterceptor.removeToken(lastAuthorizationHeader);
 	}
