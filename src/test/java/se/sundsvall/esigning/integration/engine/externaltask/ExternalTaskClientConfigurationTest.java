@@ -1,25 +1,22 @@
-package se.sundsvall.esigning.integration.operaton.configuration;
+package se.sundsvall.esigning.integration.engine.externaltask;
 
 import org.camunda.bpm.client.interceptor.ClientRequestInterceptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-class OperatonExternalTaskClientConfigurationTest {
+class ExternalTaskClientConfigurationTest {
 
 	private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-		.withUserConfiguration(OperatonExternalTaskClientConfiguration.class)
-		.withBean(ClientRegistrationRepository.class, () -> mock(ClientRegistrationRepository.class))
-		.withBean(OAuth2AuthorizedClientService.class, () -> mock(OAuth2AuthorizedClientService.class));
+		.withUserConfiguration(ExternalTaskClientConfiguration.class)
+		.withBean(OperatonExternalTaskToken.class, () -> mock(OperatonExternalTaskToken.class));
 
 	@Test
 	void interceptorRegisteredWhenEngineIsOperaton() {
 		contextRunner.withPropertyValues("process-engine.type=operaton")
-			.run(context -> assertThat(context).hasSingleBean(ClientRequestInterceptor.class));
+			.run(context -> assertThat(context).getBean(ClientRequestInterceptor.class).isInstanceOf(OperatonExternalTaskAuthInterceptor.class));
 	}
 
 	@Test
