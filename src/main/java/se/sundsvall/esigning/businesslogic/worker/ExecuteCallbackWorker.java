@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.callback.CallbackClient;
 import se.sundsvall.esigning.integration.engine.EngineClient;
+import se.sundsvall.esigning.integration.engine.externaltask.OperatonExternalTaskToken;
 
 import static se.sundsvall.esigning.businesslogic.util.UriUtility.addProcessIdParameter;
 
@@ -17,8 +18,8 @@ public class ExecuteCallbackWorker extends AbstractWorker {
 
 	private final CallbackClient callbackClient;
 
-	ExecuteCallbackWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, CallbackClient callbackClient) {
-		super(engineClient, failureHandler, gson);
+	ExecuteCallbackWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, CallbackClient callbackClient, OperatonExternalTaskToken token) {
+		super(engineClient, failureHandler, gson, token);
 		this.callbackClient = callbackClient;
 	}
 

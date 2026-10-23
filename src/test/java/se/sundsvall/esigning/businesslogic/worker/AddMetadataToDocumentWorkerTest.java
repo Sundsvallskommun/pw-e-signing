@@ -174,8 +174,8 @@ class AddMetadataToDocumentWorkerTest {
 		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
-			"ThrowableProblem occurred for document fileName with registration number registrationNumber when adding signatory metadata to document (Bad Request: Big and stout).");
+		verify(failureHandlerMock).handleException(any(ExternalTaskService.class), eq(externalTaskMock),
+			eq("ThrowableProblem occurred for document fileName with registration number registrationNumber when adding signatory metadata to document (Bad Request: Big and stout)."));
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}
 

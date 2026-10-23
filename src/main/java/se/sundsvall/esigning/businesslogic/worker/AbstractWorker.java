@@ -11,6 +11,8 @@ import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.engine.EngineClient;
+import se.sundsvall.esigning.integration.engine.externaltask.OperatonExternalTaskToken;
+import se.sundsvall.esigning.integration.engine.externaltask.UnauthorizedRetryingExternalTaskService;
 
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_E_SIGNING_REQUEST;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_REQUEST_ID;
@@ -21,12 +23,14 @@ abstract class AbstractWorker implements ExternalTaskHandler {
 	private final EngineClient engineClient;
 	private final Gson gson;
 	protected final FailureHandler failureHandler;
+	private final OperatonExternalTaskToken token;
 
-	protected AbstractWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson) {
+	protected AbstractWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, OperatonExternalTaskToken token) {
 		this.logger = LoggerFactory.getLogger(getClass());
 		this.engineClient = engineClient;
 		this.failureHandler = failureHandler;
 		this.gson = gson;
+		this.token = token;
 	}
 
 	protected void setProcessInstanceVariable(ExternalTask externalTask, String variableName, VariableValueDto variableValue) {
@@ -58,6 +62,6 @@ abstract class AbstractWorker implements ExternalTaskHandler {
 	@Override
 	public void execute(ExternalTask externalTask, ExternalTaskService externalTaskService) {
 		RequestId.init(externalTask.getVariable(PROCESS_VARIABLE_REQUEST_ID));
-		executeBusinessLogic(externalTask, externalTaskService);
+		executeBusinessLogic(externalTask, UnauthorizedRetryingExternalTaskService.wrap(externalTaskService, token));
 	}
 }

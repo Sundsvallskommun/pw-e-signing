@@ -151,7 +151,7 @@ class AddSigningIdWorkerTest {
 		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(eq(externalTaskServiceMock), eq(externalTaskMock), anyString());
+		verify(failureHandlerMock).handleException(any(ExternalTaskService.class), eq(externalTaskMock), anyString());
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, documentClientMock);
 	}
 }

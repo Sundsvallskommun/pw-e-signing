@@ -9,6 +9,7 @@ import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.document.DocumentClient;
 import se.sundsvall.esigning.integration.engine.EngineClient;
+import se.sundsvall.esigning.integration.engine.externaltask.OperatonExternalTaskToken;
 
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_MUNICIPALITY_ID;
@@ -22,8 +23,8 @@ public class AddSignedDocumentWorker extends AbstractWorker {
 	private final ComfactFacadeClient comfactFacadeClient;
 	private final DocumentClient documentClient;
 
-	AddSignedDocumentWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient) {
-		super(engineClient, failureHandler, gson);
+	AddSignedDocumentWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, DocumentClient documentClient, OperatonExternalTaskToken token) {
+		super(engineClient, failureHandler, gson, token);
 		this.comfactFacadeClient = comfactFacadeClient;
 		this.documentClient = documentClient;
 	}

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.comfactfacade.ComfactFacadeClient;
 import se.sundsvall.esigning.integration.engine.EngineClient;
+import se.sundsvall.esigning.integration.engine.externaltask.OperatonExternalTaskToken;
 
 import static java.util.Optional.ofNullable;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
@@ -22,8 +23,8 @@ public class CheckSigningStatusWorker extends AbstractWorker {
 
 	private final ComfactFacadeClient comfactFacadeClient;
 
-	CheckSigningStatusWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient) {
-		super(engineClient, failureHandler, gson);
+	CheckSigningStatusWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, ComfactFacadeClient comfactFacadeClient, OperatonExternalTaskToken token) {
+		super(engineClient, failureHandler, gson, token);
 		this.comfactFacadeClient = comfactFacadeClient;
 	}
 
