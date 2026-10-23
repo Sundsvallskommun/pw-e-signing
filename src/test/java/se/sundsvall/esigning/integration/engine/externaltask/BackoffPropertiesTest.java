@@ -1,4 +1,4 @@
-package se.sundsvall.esigning.integration.camunda.configuration;
+package se.sundsvall.esigning.integration.engine.externaltask;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
