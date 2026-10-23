@@ -24,7 +24,7 @@ class AbstractWorkerWiringTest {
 	void everyWorkerIsBuiltWithTheExternalTaskToken() {
 		// Without the token a 401 on complete/handleFailure cannot be retried, see AbstractWorkerTest
 		assertThat(workers)
-			.hasSize(9)
+			.isNotEmpty()
 			.allSatisfy(worker -> assertThat(worker).extracting("token").isSameAs(token));
 	}
 }

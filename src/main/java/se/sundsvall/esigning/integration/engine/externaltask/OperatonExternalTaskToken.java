@@ -21,7 +21,7 @@ public class OperatonExternalTaskToken {
 
 	private final OAuth2RequestInterceptor oAuth2RequestInterceptor;
 
-	private volatile String lastAuthorizationHeader;
+	private String lastAuthorizationHeader;
 
 	OperatonExternalTaskToken(final ClientRegistrationRepository clientRegistrationRepository) {
 		this.oAuth2RequestInterceptor = new OAuth2RequestInterceptor(clientRegistrationRepository.findByRegistrationId(CLIENT_ID), Set.of("device_" + randomUUID()));
