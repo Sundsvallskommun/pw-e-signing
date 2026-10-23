@@ -97,6 +97,7 @@ class UnauthorizedRetryingExternalTaskServiceTest {
 			.isThrownBy(() -> externalTaskService.complete(externalTaskMock));
 
 		verify(externalTaskServiceMock).complete(externalTaskMock);
+		verifyNoMoreInteractions(externalTaskServiceMock);
 		verifyNoInteractions(tokenMock);
 	}
 

@@ -118,14 +118,19 @@ class AbstractWorkerTest {
 
 	@Test
 	void executeEvictsTokenAndRetriesServiceCallOnUnauthorized() {
+		// Arrange
 		final var restException = new RestException("message", "type", 0);
 		restException.setHttpStatusCode(401);
 		doThrow(new UnknownHttpErrorException("Unauthorized", restException)).doNothing().when(externalTaskServiceMock).complete(externalTaskMock);
 
+		// Act
 		worker.execute(externalTaskMock, externalTaskServiceMock);
 
+		// Assert and verify
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
 		verify(externalTaskServiceMock, times(2)).complete(externalTaskMock);
-		verifyNoMoreInteractions(externalTaskServiceMock);
+		verifyNoMoreInteractions(externalTaskMock, externalTaskServiceMock);
+		verifyNoInteractions(engineClientMock, failureHandlerMock, gsonMock);
 		// evict() is package-private in another package, so the invocation is read from the mock instead of verified
 		assertThat(mockingDetails(tokenMock).getInvocations())
 			.extracting(invocation -> invocation.getMethod().getName())

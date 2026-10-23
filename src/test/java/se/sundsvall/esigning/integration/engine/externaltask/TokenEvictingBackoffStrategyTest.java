@@ -45,6 +45,7 @@ class TokenEvictingBackoffStrategyTest {
 		strategy.reconfigure(List.of(), connectionLost());
 
 		assertThat(strategy.calculateBackoffTime()).isEqualTo(500);
+		verifyNoInteractions(tokenMock);
 	}
 
 	@Test
@@ -53,6 +54,7 @@ class TokenEvictingBackoffStrategyTest {
 		strategy.reconfigure(List.of(), connectionLost());
 
 		assertThat(strategy.calculateBackoffTime()).isEqualTo(1000);
+		verifyNoInteractions(tokenMock);
 	}
 
 	@Test
@@ -70,6 +72,7 @@ class TokenEvictingBackoffStrategyTest {
 			strategy.reconfigure(List.of(), connectionLost());
 		}
 		assertThat(strategy.calculateBackoffTime()).isEqualTo(15000);
+		verifyNoInteractions(tokenMock);
 	}
 
 	@Test
@@ -82,6 +85,7 @@ class TokenEvictingBackoffStrategyTest {
 
 		strategy.reconfigure(List.of(), connectionLost());
 		assertThat(strategy.calculateBackoffTime()).isEqualTo(500);
+		verifyNoInteractions(tokenMock);
 	}
 
 	@Test
