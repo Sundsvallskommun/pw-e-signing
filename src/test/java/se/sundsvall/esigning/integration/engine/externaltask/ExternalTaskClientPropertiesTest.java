@@ -1,5 +1,6 @@
-package se.sundsvall.esigning.integration.camunda.configuration;
+package se.sundsvall.esigning.integration.engine.externaltask;
 
+import org.camunda.bpm.client.spring.boot.starter.ClientProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,15 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("junit")
-class BackoffPropertiesTest {
+class ExternalTaskClientPropertiesTest {
 
 	@Autowired
-	private BackoffProperties properties;
+	private ClientProperties clientProperties;
 
 	@Test
-	void testProperties() {
-		assertThat(properties.initTime()).isEqualTo(500);
-		assertThat(properties.factor()).isEqualTo(2);
-		assertThat(properties.maxTime()).isEqualTo(15000);
+	void longPollingTimeoutIs25Seconds() {
+		assertThat(clientProperties.getAsyncResponseTimeout()).isEqualTo(25000L);
 	}
 }

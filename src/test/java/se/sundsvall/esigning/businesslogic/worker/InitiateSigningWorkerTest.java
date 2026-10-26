@@ -161,8 +161,8 @@ class InitiateSigningWorkerTest {
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
-			"ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Not Found: File fileName of type application/pdf was not found within document with registrationNumber registrationNumber).");
+		verify(failureHandlerMock).handleException(any(ExternalTaskService.class), eq(externalTaskMock),
+			eq("ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Not Found: File fileName of type application/pdf was not found within document with registrationNumber registrationNumber)."));
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}
 
@@ -192,8 +192,8 @@ class InitiateSigningWorkerTest {
 		verify(documentClientMock).getDocument(municipalityId, registrationNumber);
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
-			"ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Bad Request: Big and stout).");
+		verify(failureHandlerMock).handleException(any(ExternalTaskService.class), eq(externalTaskMock),
+			eq("ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Bad Request: Big and stout)."));
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}
 
@@ -233,8 +233,8 @@ class InitiateSigningWorkerTest {
 		verify(comfactFacadeClientMock).createSigningInstance(eq(municipalityId), signingRequestCaptor.capture());
 		verify(externalTaskMock).getId();
 		verify(externalTaskMock).getBusinessKey();
-		verify(failureHandlerMock).handleException(externalTaskServiceMock, externalTaskMock,
-			"ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Bad Request: Big and stout).");
+		verify(failureHandlerMock).handleException(any(ExternalTaskService.class), eq(externalTaskMock),
+			eq("ThrowableProblem occurred for document fileName with registration number registrationNumber when initiating signing (Bad Request: Big and stout)."));
 		verifyNoMoreInteractions(externalTaskServiceMock, externalTaskMock, gsonMock, failureHandlerMock, comfactFacadeClientMock, documentClientMock);
 	}
 }

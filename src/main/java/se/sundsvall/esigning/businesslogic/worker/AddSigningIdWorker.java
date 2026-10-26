@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.document.DocumentClient;
 import se.sundsvall.esigning.integration.engine.EngineClient;
+import se.sundsvall.esigning.integration.engine.externaltask.OperatonExternalTaskToken;
 
 import static se.sundsvall.esigning.Constants.DOCUMENT_METADATA_KEY_SIGNING_ID;
 import static se.sundsvall.esigning.Constants.PROCESS_VARIABLE_COMFACT_SIGNING_ID;
@@ -21,8 +22,8 @@ public class AddSigningIdWorker extends AbstractWorker {
 
 	private final DocumentClient documentClient;
 
-	AddSigningIdWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, DocumentClient documentClient) {
-		super(engineClient, failureHandler, gson);
+	AddSigningIdWorker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, DocumentClient documentClient, OperatonExternalTaskToken token) {
+		super(engineClient, failureHandler, gson, token);
 		this.documentClient = documentClient;
 	}
 

@@ -3,6 +3,8 @@ package se.sundsvall.esigning.businesslogic.worker;
 import com.google.gson.Gson;
 import generated.se.sundsvall.camunda.VariableValueDto;
 import java.util.UUID;
+import org.camunda.bpm.client.exception.RestException;
+import org.camunda.bpm.client.exception.UnknownHttpErrorException;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
 import org.camunda.bpm.engine.variable.type.ValueType;
@@ -19,9 +21,13 @@ import se.sundsvall.dept44.requestid.RequestId;
 import se.sundsvall.esigning.api.model.SigningRequest;
 import se.sundsvall.esigning.businesslogic.handler.FailureHandler;
 import se.sundsvall.esigning.integration.engine.EngineClient;
+import se.sundsvall.esigning.integration.engine.externaltask.OperatonExternalTaskToken;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.mockingDetails;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -34,13 +40,15 @@ class AbstractWorkerTest {
 
 	private static class Worker extends AbstractWorker {
 
-		protected Worker(EngineClient engineClient, FailureHandler failureHandler, Gson gson) {
-			super(engineClient, failureHandler, gson);
+		protected Worker(EngineClient engineClient, FailureHandler failureHandler, Gson gson, OperatonExternalTaskToken token) {
+			super(engineClient, failureHandler, gson, token);
 		}
 
 		@Override
-		protected void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {}
-	} // Test class extending the abstract class
+		protected void executeBusinessLogic(ExternalTask externalTask, ExternalTaskService externalTaskService) {
+			externalTaskService.complete(externalTask);
+		}
+	} // Test class extending the abstract class, completing the task through the service it is given
 
 	@Mock
 	private EngineClient engineClientMock;
@@ -59,6 +67,9 @@ class AbstractWorkerTest {
 
 	@Mock
 	private Gson gsonMock;
+
+	@Mock
+	private OperatonExternalTaskToken tokenMock;
 
 	@InjectMocks
 	private Worker worker;
@@ -100,8 +111,30 @@ class AbstractWorkerTest {
 		}
 
 		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
-		verifyNoMoreInteractions(externalTaskMock);
-		verifyNoInteractions(engineClientMock, externalTaskServiceMock, failureHandlerMock, gsonMock);
+		verify(externalTaskServiceMock).complete(externalTaskMock);
+		verifyNoMoreInteractions(externalTaskMock, externalTaskServiceMock);
+		verifyNoInteractions(engineClientMock, failureHandlerMock, gsonMock, tokenMock);
+	}
+
+	@Test
+	void executeEvictsTokenAndRetriesServiceCallOnUnauthorized() {
+		// Arrange
+		final var restException = new RestException("message", "type", 0);
+		restException.setHttpStatusCode(401);
+		doThrow(new UnknownHttpErrorException("Unauthorized", restException)).doNothing().when(externalTaskServiceMock).complete(externalTaskMock);
+
+		// Act
+		worker.execute(externalTaskMock, externalTaskServiceMock);
+
+		// Assert and verify
+		verify(externalTaskMock).getVariable(PROCESS_VARIABLE_REQUEST_ID);
+		verify(externalTaskServiceMock, times(2)).complete(externalTaskMock);
+		verifyNoMoreInteractions(externalTaskMock, externalTaskServiceMock);
+		verifyNoInteractions(engineClientMock, failureHandlerMock, gsonMock);
+		// evict() is package-private in another package, so the invocation is read from the mock instead of verified
+		assertThat(mockingDetails(tokenMock).getInvocations())
+			.extracting(invocation -> invocation.getMethod().getName())
+			.containsExactly("evict");
 	}
 
 	@Test
@@ -128,7 +161,7 @@ class AbstractWorkerTest {
 			loggerFactoryMock.when(() -> LoggerFactory.getLogger(Worker.class)).thenReturn(loggerMock);
 
 			// Act
-			final var theWorker = new AbstractWorkerTest.Worker(null, null, null);
+			final var theWorker = new AbstractWorkerTest.Worker(null, null, null, null);
 			theWorker.logInfo("message with parameters {} {}", "parameter1", "parameter2");
 
 			// Assert and verify
@@ -154,7 +187,7 @@ class AbstractWorkerTest {
 			loggerFactoryMock.when(() -> LoggerFactory.getLogger(Worker.class)).thenReturn(loggerMock);
 
 			// Act
-			final var theWorker = new AbstractWorkerTest.Worker(null, null, null);
+			final var theWorker = new AbstractWorkerTest.Worker(null, null, null, null);
 			final var exception = new Exception("testexception");
 			theWorker.logException(externalTaskMock, exception);
 

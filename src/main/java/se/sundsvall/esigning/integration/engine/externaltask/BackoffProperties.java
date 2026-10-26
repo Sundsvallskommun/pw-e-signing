@@ -1,4 +1,4 @@
-package se.sundsvall.esigning.integration.camunda.configuration;
+package se.sundsvall.esigning.integration.engine.externaltask;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
