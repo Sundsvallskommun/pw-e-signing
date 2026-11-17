@@ -1,7 +1,0 @@
-{
-	"access_token": "example-access",
-	"refresh_token": "example-refresh",
-	"scope": "create",
-	"token_type": "bearer",
-	"expires_in": -1
-}

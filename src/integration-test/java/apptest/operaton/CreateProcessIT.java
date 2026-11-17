@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 
-@WireMockAppTestSuite(files = "classpath:/CreateProcessOperaton/", classes = Application.class)
+@WireMockAppTestSuite(files = "classpath:/CreateProcess/", classes = Application.class)
 class CreateProcessIT extends AbstractOperatonAppTest {
 	private static final int DEFAULT_TESTCASE_TIMEOUT_IN_SECONDS = 30;
 	private static final String REQUEST_FILE = "request.json";
